@@ -773,6 +773,7 @@ function mapGeneralData(formattedInput) {
     
     
     dataOutput.data.details.level.value = formattedInput.level;
+    dataOutput.data.attributes.hd.total = formattedInput.hit_dice.hd;
     
     
     
@@ -841,8 +842,10 @@ function setCreatureTypeItem (formattedInput) {
     itemEntry.data.savingThrows.ref.value = "";
     itemEntry.data.savingThrows.will.value = "";
     //itemEntry.data.hd = "";
+    
+    itemEntry.data.levels = +formattedInput.hit_dice.hd;
         
-    itemEntry.data.hp = Math.floor(+getDiceAverage(formattedInput.hit_dice.hd_diceSize) * +formattedInput.hit_dice.hd) + +formattedInput.hit_dice.hd_bonus;
+    itemEntry.data.hp = Math.floor(+getDiceAverage(formattedInput.hit_dice.hd_diceSize) * +formattedInput.hit_dice.hd);
 
     //itemEntry.data.bab = "";
     //itemEntry.data.skillsPerLevel = "";
@@ -861,12 +864,12 @@ function setConversionItem (formattedInput) {
     for (var key in formattedInput.ac_bonus_types) {
         console.log("key in bonus types: " + key);
         // Exclude dex, size and natural, as these are included elsewhere in the sheet
-        if ( (key !== "dex") && (key !== "size") && (key !== "natural") ) {
+        if ( (key.toLowerCase() !== "dex") && (key.toLowerCase() !== "size") && (key.toLowerCase() !== "natural") ) {
             
             let acChange = [];
             
             // Special Treatment for Armor and Shield Boni
-            if ( ( key == "armor" ) || ( key == "shield" ) ) {
+            if ( ( key.toLowerCase() == "armor" ) || ( key.toLowerCase() == "shield" ) ) {
                 acChange.push(+formattedInput.ac_bonus_types[key]);
                 acChange.push("ac");
                 if ( key == "armor") {
