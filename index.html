@@ -1,0 +1,117 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Foundry PF1 Statblock Converter</title>
+        <meta name="description" content="Starfinder Roll20 Monster Converter">
+        <meta name="author" content="DMNC">
+        <link rel="stylesheet" href="css/styles.css?v=1.0">
+    </head>
+
+    <body>
+        <div class="title">PF1 STATBLOCK CONVERTER</div>
+
+        <hr>
+        
+        <div>
+            This Tool converts Stat Blocks from the SRD or PDFs to JSON Files compatible with FoundryVTT<br/>
+            Currently only for the following Game Systems:<br/>
+            <ul>
+                <li>PF1, Pathfinder 1. Edition</li>
+            </ul>
+            
+            Tested with the following Setup:
+            <ul>
+                <li>Core Version FoundryVTT: 0.6.0</li>
+                <li>System Version PF1: 0.54</li>
+            </ul>
+            </div>
+        
+        <hr>
+        
+        <div class="gridContainer">
+            <div class="oneHalf">
+                <label class="statBlockInputLabel">Input</label>
+                <textarea class="statBlockInput" id="input" form="statBlockInputForm" placeholder="Paste Statblock here">
+GnollCR 1
+
+XP 400
+CE Medium humanoid (gnoll)
+Init +0; Senses darkvision 60 ft.; Perception +2
+
+DEFENSE
+
+AC 15, touch 10, flat-footed 15 (+2 armor, +1 natural, +2 shield)
+hp 11 (2d8+2)
+Fort +4, Ref +0, Will +0
+
+OFFENSE
+
+Speed 30 ft.
+Melee spear +3 (1d8+3/x3)
+Ranged spear +1 (1d8+2/x3)
+
+STATISTICS
+
+Str 15, Dex 10, Con 13, Int 8, Wis 11, Cha 8
+Base Atk +1; CMB +3; CMD 13
+Feats Power Attack
+Skills Perception +2
+Languages Gnoll
+
+Editor’s Note
+The stats given for the gnoll indicate that it has a shield bonus to its AC, as well as listing a heavy wooden shield in the Treasure line. However, the attack line states that it is wielding a spear two-handed in melee. It is completely reasonable that gnolls use a wide variety of weapons, so here are two alternative stat block entries which allow for both situations (wielding a heavy shield or wielding a spear two-handed.) The entries below should replace those given in the original stat block at left (depending on which you choose to use).
+
+Wielding Battleaxe plus Heavy Wooden Shield
+
+AC As shown at left
+Melee battleaxe +3 (1d8+2/x3)
+Ranged longbow +1 (1d8/x3)
+
+Wielding Spear Two-Handed:
+
+AC 14, touch 10, flat-footed 14 (+3 armor, +1 natural)
+Melee As shown at left
+Treasure NPC Gear (studded leather armor, spear, other treasure)
+
+ECOLOGY
+
+Environment warm plains or desert
+Organization solitary, pair, hunting party (2–5 gnolls and 1–2 hyenas), band (10–100 adults plus 50% noncombatant children, 1 sergeant of 3rd level per 20 adults, 1 leader of 4th–6th level, and 5–8 hyenas), or tribe (20–200 plus 1 sergeant of 3rd level per 20 adults, 1 or 2 lieutenants of 4th or 5th level, 1 leader of 6th–8th level, 7–12 hyenas, and 4–7 hyaenodons)
+Treasure NPC Gear (leather armor, heavy wooden shield, battleaxe, longbow with 20 arrows, other treasure)
+
+Gnolls are a race of hulking, humanoids that resemble hyenas in more than mere appearance; they show a striking affinity with the scavenging animals, to the point of keeping them as pets, and reflect many of the lesser creatures’ behaviors.
+                </textarea>
+                <form onsubmit="return false" onClick="convertStatBlock(input)" id="statBlockInputForm">
+                    <input type="submit" class="submitButton" value="Convert Stat Block"/>
+                </form>
+            </div>
+
+            <div class="oneHalf">
+                <label class="statBlockLabel">Output</label>
+                <textarea class="statBlockInput" id="output" placeholder="JSON will appear here" disabled></textarea>
+                <form onsubmit="return false" onClick="saveJSON(output)" id="statBlockOutputForm">
+                    <input type="submit" class="submitButton" value="Save JSON"/>
+                </form>
+            </div>
+        </div>
+        <div class="gridContainer">
+            <div class="fullWidth statusOutput" id="statusOutput"><br/>STATUS<br/><br/></div>
+        </div>
+
+        
+
+
+        
+        <script src="js/fileSaver.js" type="text/javascript"></script>
+        <script src="js/jszip.js" type="text/javascript"></script>
+        <script src="js/convertStatBlock.js" type="module"></script>
+        
+        <script>
+            
+            
+        </script>
+
+    </body>
+</html>
