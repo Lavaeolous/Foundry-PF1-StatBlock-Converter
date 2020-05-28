@@ -94,7 +94,6 @@ window.saveJSON = saveJSON;
 // Initilization
 function init() {
 
-    console.log("init");
     // Check for the various File API support.
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         // Great success! All the File APIs are supported.
@@ -183,7 +182,6 @@ function convertStatBlock(input) {
     // Split stringOffenseData, everything between Speed and Tactics or Statistics
     // If there is a tactics block, split there, parse Offense and tactics next
     if(foundOffenseData && foundTacticsData == true)  {
-        console.log("tactics found");
         splitInput = tempInputRest.split(/\nTACTICS\n/gmi);
         tempInputRest = splitInput[1];
         stringOffenseData = splitInput[0].replace(/\nTACTICS\n/gmi,"");
@@ -192,7 +190,6 @@ function convertStatBlock(input) {
     // If there is no tactics block, split and parse Offense and Statistics next 
     else if (foundOffenseData == true) {
         splitInput = tempInputRest.split(/\nStr/);
-        console.log("splitInput No TACTICS: " + splitInput[0]);
         tempInputRest = "Str".concat(splitInput[1]);
         stringOffenseData = splitInput[0].replace(/(OFFENSE)/gmi,"").replace(/(STATISTICS)/gmi,"");
         splitInput = "";
@@ -200,7 +197,6 @@ function convertStatBlock(input) {
     
     // Split Tactics Data if available (mainly NPCs)
     if(foundTacticsData == true) {
-        console.log("splitting tactics");
         splitInput = tempInputRest.split(/\nStr/);
         tempInputRest = "Str" + splitInput[1];
         stringTacticsData = splitInput[0].replace(/(STATISTICS)/gmi,"");
@@ -404,7 +400,7 @@ function splitGeneralData(stringGeneralData) {
     
     // Aura
     let splitAura = "";
-    if (splitGeneralData.search(/Aura/igm) !== -1) {
+    if (splitGeneralData.search(/\bAura\b/igm) !== -1) {
         splitAura = splitGeneralData.match(/(?:Aura )(.*?)(?:;|\n|$)/igm)[0].replace("Aura ","");
     }
     
@@ -422,9 +418,7 @@ function splitGeneralData(stringGeneralData) {
     } else {
         formattedInput.level = formattedInput.cr;
     }
-    
-    console.log("type found: " + splitType);
-    
+        
     formattedInput.xp = splitXP;
     formattedInput.alignment = splitAlignment;
     formattedInput.size = splitSize;
@@ -447,29 +441,20 @@ function splitDefenseData(stringDefenseData) {
         
     let splitDefenseData = stringDefenseData.split(/\n/);
     
-    // Extract Bonus Type from Parentheses
-    
-    
-    /*
-     * Add other bonus types
-     */
-    
+ 
    
     
     
     // Get all AC Boni included in Input (everything in parenthesis in splitDefenseData[0]) and split them into separate strings
     let splitACBonusTypes = JSON.stringify(splitDefenseData[0].match(/\([\s\S]*?\)/)).split(/,/);
-    console.log("splitACBonusTypes: " + splitACBonusTypes);
     
     // Loop through the found AC Boni and set changes accordingly
     
     splitACBonusTypes.forEach( function ( item, index) {
-        console.log("found Boni: " + item);
         
         // get the bonus type
         let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
         let foundBonusValue = item.match(/(\+[\d]*)|(-[\d]*)/i)[0].replace(/\+/,"");
-        console.log("foundBonusType: " + foundBonusType);
         
         formattedInput.ac_bonus_types[foundBonusType] = +foundBonusValue;
         
@@ -477,54 +462,27 @@ function splitDefenseData(stringDefenseData) {
     
     formattedInput.acNotes = JSON.parse(splitACBonusTypes)[0];
     
-    console.log("formattedInput.ac_bonus_types: " + JSON.stringify(formattedInput.ac_bonus_types));
-    /*
-    splitACBonusTypes.forEach( function ( item, index) {
-        if (this[index].match(/(dex)/i)) {
-            let splitACBonusTypeDex = item.match(/(\+\d+|-\d+)/g)[0];
-            formattedInput.ac_bonus_types.dex = +splitACBonusTypeDex;
-        } else if (this[index].match(/(natural)/i)) {
-            let splitACBonusTypeNatural = item.match(/(\+\d+|-\d+)/g)[0];
-            formattedInput.ac_bonus_types.natural = splitACBonusTypeNatural;
-        } else if (this[index].match(/(size)/i)) {
-            let splitACBonusTypeSize = item.match(/(\+\d+|-\d+)/g)[0];
-            formattedInput.ac_bonus_types.size = splitACBonusTypeSize;
-        } else if (this[index].match(/(insight)/i)) {
-            let splitACBonusTypeInsight = item.match(/(\+\d+|-\d+)/g)[0];
-            formattedInput.ac_bonus_types.insight = splitACBonusTypeInsight;
-        } else if (this[index].match(/(profane)/i)) {
-            let splitACBonusTypeProfane = item.match(/(\+\d+|-\d+)/g)[0];
-            formattedInput.ac_bonus_types.profane = splitACBonusTypeProfane;
-        } else {
-            
-        }
-    }, splitACBonusTypes);
-    */
-
     // Extract AC, Touch AC and Flat-Footed AC
     splitDefenseData[0] = splitDefenseData[0].replace(/\([\s\S]*?\)/,"");
     let splitArmorClasses = splitDefenseData[0].split(/[,;]/g);
     
     splitArmorClasses.forEach( function (item, index) {
-        if (this[index].match(/(AC)/gmi)) {
-            let splitAC = this[index].replace(/(AC)/gmi,"").replace(/^ *| *$|^\n*/g,"");
-            console.log("splitAC: " + splitAC);
+        if (this[index].match(/(\bAC\b)/gmi)) {
+            let splitAC = this[index].replace(/(\bAC\b)/gmi,"").replace(/^ *| *$|^\n*/g,"");
             formattedInput.ac = splitAC;
-        } else if (this[index].match(/(Touch)/gmi)) {
-            let splitTouch = this[index].replace(/(touch)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+        } else if (this[index].match(/(\bTouch\b)/gmi)) {
+            let splitTouch = this[index].replace(/(\btouch\b)/gmi,"").replace(/^ *| *$|^\n*/g,"");
             formattedInput.touch = splitTouch;
-        } else if (this[index].match(/(flat-footed)/gmi)) {
-            let splitFlatFooted = this[index].replace(/(flat-footed)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+        } else if (this[index].match(/(\bflat-footed\b)/gmi)) {
+            let splitFlatFooted = this[index].replace(/(\bflat-footed\b)/gmi,"").replace(/^ *| *$|^\n*/g,"");
             formattedInput.flat_footed = splitFlatFooted;
         }
     }, splitArmorClasses);
     
     // Extract Number and Size of Hit Dies as well as HP
     // Hit dice
-    console.log("splitDefenseData[1]: " + splitDefenseData[1]);
     let splitHP = splitDefenseData[1].split(/(?:hp )([\d]*)/)[1];
     let splitHitDice = JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/));
-    console.log("splitHitDice: " + splitHitDice);
     let splitHD = splitHitDice.match(/([\d]*)d/)[1];
     let splitHDSize = splitHitDice.match(/d([\d]*)/)[1];
     let splitHDBonus = "";
@@ -581,6 +539,8 @@ function splitDefenseData(stringDefenseData) {
         }, splitResistances);
     }
     
+    console.log("weaknesses: " + formattedInput.weaknesses);
+    
     console.log("done");
 }
 
@@ -626,19 +586,33 @@ function splitTacticsData(stringTacticsData) {
 function splitStatisticsData(stringStatisticsData) {
     console.log("parsing Statistics Data");
     
-    
     /*
      * LOOP OVER THE ATTRIBUTES
      * !!! ERROR WHEN ATTRIBUTE IS —
      */
     
     // Attributes
-    formattedInput.str = stringStatisticsData.match(/(?:Str )(\d+)|(?:Str )(—)/)[1];
-    formattedInput.dex = stringStatisticsData.match(/(?:Dex )(\d+)|(?:Dex )(—)/)[1];
-    formattedInput.con = stringStatisticsData.match(/(?:Con )(\d+)|(?:Con )(—)/)[1];
-    formattedInput.int = stringStatisticsData.match(/(?:Int )(\d+)|(?:Int )(—)/)[1];
-    formattedInput.wis = stringStatisticsData.match(/(?:Wis )(\d+)|(?:Wis )(—)/)[1];
-    formattedInput.cha = stringStatisticsData.match(/(?:Cha )(\d+)|(?:Cha )(—)/)[1];
+    
+    console.log("stringStatisticsData: " + stringStatisticsData);
+    
+    let splitAttributes = stringStatisticsData.match(/(\bStr\b).*(\bCha\b [0-9-—]{1,2})/gmi)[0].split(/,/);
+    
+    splitAttributes.forEach ( function (item, index) {
+        let tempItem = item.replace(/^\s/,"").split(/\s/);
+        let tempAttr = tempItem[0];
+        let tempValue = tempItem[1];
+        
+        // Check if the Item is -, e.g. for Undead (Con) or Oozes (Int)
+        
+        if ( ( tempValue === "—" ) || ( tempValue === "-" ) ) {
+            // Set the attribute to "-" to work with it later on
+            formattedInput[tempAttr.toLowerCase()] = "-";
+        } else {
+            formattedInput[tempAttr.toLowerCase()] = +tempValue;
+        }
+            
+    })
+    
     // Attack Modifier
     formattedInput.bab = stringStatisticsData.match(/(?:Base Atk[\s+-]*)([\d]*)/i)[1];
     formattedInput.cmb = stringStatisticsData.match(/(?:Cmb[\s+-]*)([\d]*)/i)[1];
@@ -731,9 +705,7 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
             formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype[0].concat(")"));
     } else {
         // If there is no subtype, lose the parentheses
-        dataOutput.data.attributes.creatureType =
-        dataOutput.data.details.raceType =
-            formattedInput.creature_type
+        dataOutput.data.attributes.creatureType = dataOutput.data.details.raceType = formattedInput.creature_type;
     }
     
     dataOutput.data.details.race = "";
@@ -756,6 +728,22 @@ function mapGeneralData(formattedInput) {
     // Top of the Character Sheet
     dataOutput.name = dataOutput.token.name = formattedInput.name;
     
+    // Token Data
+    dataOutput.token.name = dataOutput.token.name = formattedInput.name;
+    dataOutput.token.width = dataOutput.token.height = enumTokenSize[formattedInput.size].w;
+    dataOutput.token.scale = enumTokenSize[formattedInput.size].scale;
+    dataOutput.token.bar1 = { "attribute": "attributes.hp" };
+    
+    // Details
+    dataOutput.data.details.level.value = formattedInput.level;
+    dataOutput.data.details.cr = formattedInput.cr;
+    dataOutput.data.details.xp.value = formattedInput.xp;
+    dataOutput.data.details.alignment = formattedInput.alignment;
+    
+    // Attributes
+    dataOutput.data.attributes.hd.total = formattedInput.hit_dice.hd;
+    dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex);
+    
     // Creature Type (and Subtype)
     dataOutput.data.attributes.creatureType = formattedInput.creature_type;
     if (formattedInput.creature_type) {
@@ -763,24 +751,6 @@ function mapGeneralData(formattedInput) {
     } else {
         dataOutput.data.details.type = formattedInput.creature_type;
     }
-    
-    
-    // Token Data
-    dataOutput.token.name = dataOutput.token.name = formattedInput.name;
-    dataOutput.token.width = dataOutput.token.height = enumTokenSize[formattedInput.size].w;
-    dataOutput.token.scale = enumTokenSize[formattedInput.size].scale;
-    dataOutput.token.bar1 = { "attribute": "attributes.hp" };
-    
-    
-    dataOutput.data.details.level.value = formattedInput.level;
-    dataOutput.data.attributes.hd.total = formattedInput.hit_dice.hd;
-    
-    
-    
-    dataOutput.data.details.cr = formattedInput.cr;
-    dataOutput.data.details.xp.value = formattedInput.xp;
-    dataOutput.data.details.alignment = formattedInput.alignment;
-    dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex);
 }
 
 // Map data.classes.class
@@ -860,9 +830,7 @@ function setConversionItem (formattedInput) {
     let itemEntry = templateConversionItem;
     
     // Add Changes to AC
-    // !!! Check to only use the ones availablee
     for (var key in formattedInput.ac_bonus_types) {
-        console.log("key in bonus types: " + key);
         // Exclude dex, size and natural, as these are included elsewhere in the sheet
         if ( (key.toLowerCase() !== "dex") && (key.toLowerCase() !== "size") && (key.toLowerCase() !== "natural") ) {
             
@@ -894,29 +862,29 @@ function setConversionItem (formattedInput) {
         let saveChange = [];
         let tempSaveString = item + "_save";
         
-        let attrModifier = getModifier(formattedInput[enumSaveModifier[index]]);
+        console.log("item: " + item);
         
-        saveChange.push(+formattedInput[tempSaveString]-attrModifier);
+        let attrModifier = getModifier(formattedInput[enumSaveModifier[index]]);
+        console.log("attrModifier: " + attrModifier);
+        console.log("formattedInput[enumSaveModifier[index]]: " + formattedInput[enumSaveModifier[index]]);
+        
+        // Check for Undead without Constitution, because they handle Fort-Saves differently
+        console.log("enumSaveModifier: " + enumSaveModifier[index]);
+        if ( ( formattedInput.creature_type.toLowerCase() === "undead" ) && ( enumSaveModifier[index] === "con" ) && ( formattedInput[enumSaveModifier[index]] === "-" ) ) {
+            console.log("this is an undead without con");
+            // Set the Change to 0, because thats handled automatically in the undead creature item
+            saveChange.push(0);
+        } else {
+            saveChange.push(+formattedInput[tempSaveString]-attrModifier);
+        }
+        
+        
         saveChange.push("savingThrows");
         saveChange.push(item);
         saveChange.push("untyped");
 
         itemEntry.data.changes.push(saveChange);  
     });
-    
-    // Add Attribute Values in Changes
-    // WHY???
-    /*
-    enumAttributes.forEach( function (item, index) {
-        let attrChange = [];
-        attrChange.push(+formattedInput[item]-10);
-        attrChange.push("ability");
-        attrChange.push(item);
-        attrChange.push("untyped");
-        
-        itemEntry.data.changes.push(attrChange);  
-    });
-    */
     
     itemEntry.data.active = true;
     
@@ -955,41 +923,43 @@ function mapDefenseData (formattedInput) {
 function mapStatisticData (formattedInput) {
     
     // Abilities
-    dataOutput.data.abilities.str.total = +formattedInput.str;
-    dataOutput.data.abilities.str.value = +formattedInput.str;
-    dataOutput.data.abilities.str.mod =getModifier(formattedInput.str);
+    
+    let carryCapacity = 0;
     dataOutput.data.abilities.str.carryMultiplier = carrySizeModificators[formattedInput.size];
     dataOutput.data.abilities.str.carryBonus = 0;
     
-    dataOutput.data.abilities.dex.total = +formattedInput.dex;
-    dataOutput.data.abilities.dex.value = +formattedInput.dex;
-    dataOutput.data.abilities.dex.mod = getModifier(formattedInput.dex);
+    enumAttributes.forEach ( function (item, index) {
+        if (formattedInput[item] !== "-") {
+            dataOutput.data.abilities[item].total = +formattedInput[item];
+            dataOutput.data.abilities[item].value = +formattedInput[item];
+            dataOutput.data.abilities[item].mod = getModifier(formattedInput[item]);
+            
+            if (item.toLowerCase() === "str") {
+                carryCapacity = getEncumbrance(formattedInput[item]) * dataOutput.data.abilities.str.carryMultiplier;
+            }
+            
+        } else {
+            // The sheet currently doesn't support - as input, so set everything to 0
+            dataOutput.data.abilities[item].total = 0;
+            dataOutput.data.abilities[item].value = 0;
+            // And negate effects on the modificator in the conversion item
+            dataOutput.data.abilities[item].mod = -5;
+            
+            // A Creature without Strength (e.g. incorporeal undead) can't carry stuff?!
+            if (item.toLowerCase() === "str") {
+                carryCapacity = 0;
+            }
+        }
+    });
     
-    
-    dataOutput.data.abilities.con.total = +formattedInput.con;
-    dataOutput.data.abilities.con.value = +formattedInput.con;
-    dataOutput.data.abilities.con.mod = getModifier(formattedInput.con);
-    
-    dataOutput.data.abilities.int.total = +formattedInput.int;
-    dataOutput.data.abilities.int.value = +formattedInput.int;
-    dataOutput.data.abilities.int.mod = getModifier(formattedInput.int);
-    
-    dataOutput.data.abilities.wis.total = +formattedInput.wis;
-    dataOutput.data.abilities.wis.value = +formattedInput.wis;
-    dataOutput.data.abilities.wis.mod = getModifier(formattedInput.wis);
-    
-    dataOutput.data.abilities.cha.total = +formattedInput.cha;
-    dataOutput.data.abilities.cha.value = +formattedInput.cha;
-    dataOutput.data.abilities.cha.mod = getModifier(formattedInput.cha);
-    
-    // Attributes
-    let carryCapacity = getEncumbrance(formattedInput.str) * carrySizeModificators[formattedInput.size];
+    // Finish Carry Capacity
     dataOutput.data.attributes.encumbrance.levels.light = Math.floor(1/3 * carryCapacity);
     dataOutput.data.attributes.encumbrance.levels.medium = Math.floor(2/3 * carryCapacity);
     dataOutput.data.attributes.encumbrance.levels.heavy = Math.floor(carryCapacity);
     dataOutput.data.attributes.encumbrance.levels.carry = Math.floor(2 * carryCapacity);
     dataOutput.data.attributes.encumbrance.levels.drag = Math.floor(5 * carryCapacity);
     
+    // BAB, CMB, CMD
     dataOutput.data.attributes.bab.total = "+" + +formattedInput.bab;
     dataOutput.data.attributes.cmb.total = "+" + +formattedInput.cmb;
     dataOutput.data.attributes.cmd.total = formattedInput.cmd;
@@ -999,7 +969,6 @@ function mapStatisticData (formattedInput) {
 
 // Return RawJSON to the Output TextArea
 function returnJSON(output) {
-
     outputTextArea.value = output;
     outputTextArea.disabled = false;
     inputTextArea.disabled = true;
