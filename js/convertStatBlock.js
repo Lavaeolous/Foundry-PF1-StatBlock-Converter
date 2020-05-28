@@ -153,7 +153,7 @@ function convertStatBlock(input) {
     let foundSpecialAbilitiesData = false;
     let foundEcologyData = false;
     
-    if(dataInput.search(/\nDEFENSE\n/gmi) == -1) { foundDefenseData = false; }
+    if(dataInput.search(/(\nDEFENSE\n)|(\nDEFENSES\n)/gmi) == -1) { foundDefenseData = false; }
     if(dataInput.search(/\nOFFENSE\n/gmi) == -1) { foundOffenseData = false; }
     if(dataInput.search(/\nTACTICS\n/gmi) !== -1) { foundTacticsData = true; }
     if(dataInput.search(/\nSTATISTICS\n/gmi) == -1) { foundStatisticsData = false; }
@@ -200,7 +200,7 @@ function convertStatBlock(input) {
     
     // Split Tactics Data if available (mainly NPCs)
     if(foundTacticsData == true) {
-        console.log("spülitting tactics");
+        console.log("splitting tactics");
         splitInput = tempInputRest.split(/\nStr/);
         tempInputRest = "Str" + splitInput[1];
         stringTacticsData = splitInput[0].replace(/(STATISTICS)/gmi,"");
@@ -633,12 +633,12 @@ function splitStatisticsData(stringStatisticsData) {
      */
     
     // Attributes
-    formattedInput.str = stringStatisticsData.match(/(?:Str )(\d+)/)[1];
-    formattedInput.dex = stringStatisticsData.match(/(?:Dex )(\d+)/)[1];
-    formattedInput.con = stringStatisticsData.match(/(?:Con )(\d+)/)[1];
-    formattedInput.int = stringStatisticsData.match(/(?:Int )(\d+)/)[1];
-    formattedInput.wis = stringStatisticsData.match(/(?:Wis )(\d+)/)[1];
-    formattedInput.cha = stringStatisticsData.match(/(?:Cha )(\d+)/)[1];
+    formattedInput.str = stringStatisticsData.match(/(?:Str )(\d+)|(?:Str )(—)/)[1];
+    formattedInput.dex = stringStatisticsData.match(/(?:Dex )(\d+)|(?:Dex )(—)/)[1];
+    formattedInput.con = stringStatisticsData.match(/(?:Con )(\d+)|(?:Con )(—)/)[1];
+    formattedInput.int = stringStatisticsData.match(/(?:Int )(\d+)|(?:Int )(—)/)[1];
+    formattedInput.wis = stringStatisticsData.match(/(?:Wis )(\d+)|(?:Wis )(—)/)[1];
+    formattedInput.cha = stringStatisticsData.match(/(?:Cha )(\d+)|(?:Cha )(—)/)[1];
     // Attack Modifier
     formattedInput.bab = stringStatisticsData.match(/(?:Base Atk[\s+-]*)([\d]*)/i)[1];
     formattedInput.cmb = stringStatisticsData.match(/(?:Cmb[\s+-]*)([\d]*)/i)[1];
