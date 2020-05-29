@@ -268,7 +268,7 @@ function convertStatBlock(input) {
     
     /*
      * Extract Values from the Blocks
-     * and save that in a temporaryData Object
+     * and save that in a Object for formattedInput
      * to be mapped onto the dataTemplate later
      */
     
