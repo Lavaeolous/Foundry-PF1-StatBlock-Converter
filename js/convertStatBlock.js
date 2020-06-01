@@ -2,6 +2,8 @@ import templateData from "./templateData.js"
 import templateActor from "./templateActor.js"
 import templateClassData from "./templateClassData.js"
 import templateClassItem from "./templateClassItem.js"
+import templateRaceItem from "./templateRaceItem.js"
+import templateRacialHDItem from "./templateRacialHDItem.js"
 import templateConversionItem from "./templateConversionItem.js"
 import enumTypes from "./enumTypes.js"
 import enumSubtypes from "./enumSubtypes.js"
@@ -144,44 +146,72 @@ function convertStatBlock(input) {
     let stringEcologyData = "";
     
     // Set some flags for (optional) data blocks found in the input
-    
-    let foundDefenseData = true;
-    let foundOffenseData = true;
+    // mandatory
+    let foundDefenseData = false;
+    let foundOffenseData = false;
+    let foundStatisticsData = false;
+    // optional
     let foundTacticsData = false;
-    let foundStatisticsData = true;
     let foundSpecialAbilitiesData = false;
     let foundEcologyData = false;
     
-    if(dataInput.search(/(\nDEFENSE\n)|(\nDEFENSES\n)/gmi) == -1) { foundDefenseData = false; }
-    if(dataInput.search(/\nOFFENSE\n/gmi) == -1) { foundOffenseData = false; }
+    // Check if enough Data to start conversion is available
+    if(dataInput.search(/(\n\bAC\b(?:[\s\S]*)\nhp)/gmi) !== -1) { foundDefenseData = true; }
+    if(dataInput.search(/(\n\bSpeed\b)/mi) !== -1) { foundOffenseData = true; }
+    if(dataInput.search(/(\n\bSTR\b)/gmi) !== -1) { foundStatisticsData = true; }
+    // Check for optional Datablocks marked by keywords for now
     if(dataInput.search(/\nTACTICS\n/gmi) !== -1) { foundTacticsData = true; }
-    if(dataInput.search(/\nSTATISTICS\n/gmi) == -1) { foundStatisticsData = false; }
     if(dataInput.search(/\nSPECIAL ABILITIES\n/gmi) !== -1) { foundSpecialAbilitiesData = true; }
     if(dataInput.search(/\nECOLOGY\n/gmi) !== -1) { foundEcologyData = true; }
     
-    if(foundDefenseData == false || foundOffenseData == false || foundStatisticsData == false) {
+    // 
+    if( (foundDefenseData == false) || (foundOffenseData == false) || (foundStatisticsData == false) ) {
         console.log("Not enough Data, check if at least a block marked with defense, offense and statistics is included in the input");
-        statusOutput.innerHTML += "<p class='criticalErrorMsg'>Not enough Data, check if at least a block marked with defense, offense and statistics is included in the input</p>";
+        statusOutput.innerHTML += "<p class='criticalErrorMsg'>Could not find enough Data or the Input is malformed.</p>";
+        statusOutput.innerHTML += "Input-Analysis:<br/>Mandatory: <ul>";
+        statusOutput.innerHTML += "<li>Offense-Data found: " + foundOffenseData + "</li>";
+        statusOutput.innerHTML += "<li>Defense-Data found: " + foundDefenseData + "</li>";
+        statusOutput.innerHTML += "<li>Statistic-Data found: " + foundStatisticsData + "</li></ul><br/>";
+        statusOutput.innerHTML += "Optional: <ul>";
+        statusOutput.innerHTML += "<li>Tactics-Data found: " + foundTacticsData + "</li>";
+        statusOutput.innerHTML += "<li>Special Abilities-Data found: " + foundSpecialAbilitiesData + "</li>";
+        statusOutput.innerHTML += "<li>Ecology-Data found: " + foundEcologyData + "</li></ul>";
         return;
     }
+    
+    // Output the prelimenary analysis of the input
+    statusOutput.innerHTML += "Input-Analysis:<br/>Mandatory: <ul>";
+    statusOutput.innerHTML += "<li>Offense-Data found: " + foundOffenseData + "</li>";
+    statusOutput.innerHTML += "<li>Defense-Data found: " + foundDefenseData + "</li>";
+    statusOutput.innerHTML += "<li>Statistic-Data found: " + foundStatisticsData + "</li></ul><br/>";
+    statusOutput.innerHTML += "Optional: <ul>";
+    statusOutput.innerHTML += "<li>Tactics-Data found: " + foundTacticsData + "</li>";
+    statusOutput.innerHTML += "<li>Special Abilities-Data found: " + foundSpecialAbilitiesData + "</li>";
+    statusOutput.innerHTML += "<li>Ecology-Data found: " + foundEcologyData + "</li></ul>";
     
     let tempInputRest = "";
 
     // Split stringGeneralData, e.g. everything between the Start of the Input and "AC", removing "DEFENSE"
-    splitInput = dataInput.split(/^AC/m);
-    tempInputRest = "AC".concat(splitInput[1]);
-    stringGeneralData = splitInput[0].replace(/(DEFENSE)/,"");
+    splitInput = dataInput.split(/(?=(^AC))/m);
+    console.log("splitINput" + splitInput);
+    tempInputRest = splitInput[2];
+    stringGeneralData = splitInput[0].replace(/(DEFENSE)/gm,"");
     splitInput = "";
+    
+    console.log("tempInputRest: " + tempInputRest);
         
     // Split stringDefenseData, everything between AC and Speed
-    splitInput = tempInputRest.split(/(Speed)|(speed)/);
-    tempInputRest = "Speed".concat(splitInput[3]);
+    splitInput = tempInputRest.split(/(?=(^Speed))/mi);
+    tempInputRest = splitInput[2];
     stringDefenseData = splitInput[0].replace(/(OFFENSE)/,"");
     splitInput = "";
+    
+    console.log("stringDefenseData: " + stringDefenseData);
             
     // Split stringOffenseData, everything between Speed and Tactics or Statistics
     // If there is a tactics block, split there, parse Offense and tactics next
     if(foundOffenseData && foundTacticsData == true)  {
+        console.log("found offense and tactics");
         splitInput = tempInputRest.split(/\nTACTICS\n/gmi);
         tempInputRest = splitInput[1];
         stringOffenseData = splitInput[0].replace(/\nTACTICS\n/gmi,"");
@@ -189,7 +219,8 @@ function convertStatBlock(input) {
     }  
     // If there is no tactics block, split and parse Offense and Statistics next 
     else if (foundOffenseData == true) {
-        splitInput = tempInputRest.split(/\nStr/);
+        console.log("found offense");
+        splitInput = tempInputRest.split(/\nStr/i);
         tempInputRest = "Str".concat(splitInput[1]);
         stringOffenseData = splitInput[0].replace(/(OFFENSE)/gmi,"").replace(/(STATISTICS)/gmi,"");
         splitInput = "";
@@ -197,7 +228,7 @@ function convertStatBlock(input) {
     
     // Split Tactics Data if available (mainly NPCs)
     if(foundTacticsData == true) {
-        splitInput = tempInputRest.split(/\nStr/);
+        splitInput = tempInputRest.split(/\nStr/i);
         tempInputRest = "Str" + splitInput[1];
         stringTacticsData = splitInput[0].replace(/(STATISTICS)/gmi,"");
         splitInput = "";
@@ -205,7 +236,6 @@ function convertStatBlock(input) {
     
     // Split Statistics
     if(foundStatisticsData == true) {
-        console.log("splitting statistics");
         // Check if there are Special Abilities or Ecology Data following the Statistics
         let splitInput = "";
         let tempSplit = "";
@@ -225,6 +255,7 @@ function convertStatBlock(input) {
             splitInput = tempInputRest;
         }
         stringStatisticsData = splitInput;
+        console.log("stringStatisticsData: " + stringStatisticsData);
         
     }
     
@@ -317,6 +348,9 @@ function splitGeneralData(stringGeneralData) {
     // XP
     let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");
     
+    // Gender, Race, Class(es) and Levels
+    
+    
     //Alignment
     let splitAlignment = splitGeneralData.match(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
     
@@ -339,20 +373,34 @@ function splitGeneralData(stringGeneralData) {
         default: break;
     }
     
-    // Split Classes
+    // Split Classes, if available
+    
     let regExClasses = new RegExp(enumClassAndLevel.join("|"), "ig");
     let splitClasses = splitGeneralData.match(regExClasses);
+    // If there are classes, get them, their level and the race / gender as well
     if (splitClasses !== null) {
         dataInputHasClasses = "true";
+        // Get Class(es)
         splitClasses.forEach( function(item, index) {
             // Check for className (first for classes with two words e.g. vampire hunter)
             let className = "";
             let classLevel = "";
+            // For Classes with two words
             if (item.match(/\b([a-zA-Z]+?)\b \b([a-zA-Z]+?)\b/)) {
                 className = item.match(/\b([a-zA-Z]+?)\b \b([a-zA-Z]+?)\b/);
-            } else {
+            }
+            // for all classes with only one word
+            else {
                 className = item.match(/(\b[a-zA-Z]+?\b)/);
             }
+            // If it's an NPC Class, add NPC to the Name
+            if (className[0] === ("expert") ) {
+                console.log("Expert class found");
+                className[0] = className[0].concat("Npc");
+            }
+            
+            console.log("className[0]: " + className[0]);
+            
             classLevel = item.match(/\b[\d]+?\b/);
 
             formattedInput.classes[className[0]] = {
@@ -360,6 +408,11 @@ function splitGeneralData(stringGeneralData) {
                 "level" : classLevel[0]
             }
         });
+        // Get Gender and Race
+        let regExGenderAndRace = new RegExp("(?:[0-9]*?)([^0-9]*)(?:" + enumClassAndLevel.join("|") + ")", "ig");
+        console.log("regExGenderAndRace: " + regExGenderAndRace);
+        let stringGenderAndRace = splitGeneralData.split(regExGenderAndRace)[1];
+        console.log("stringGenderAndRace: " + stringGenderAndRace);
     }
     
     // Get Race if available
@@ -369,7 +422,7 @@ function splitGeneralData(stringGeneralData) {
      */
     
     
-    // Type & Race
+    // Creature Type and Subtype(s)
     let splitType = splitGeneralData.match(new RegExp(enumTypes.join("|"), "i"))[0];
     
     // Subtypes
@@ -395,8 +448,11 @@ function splitGeneralData(stringGeneralData) {
     // Initiative (positive and negative)
     let splitInit = splitGeneralData.match(/(?:Init )(\+\d+|-\d+)/)[1];
     
+    let splitSenses = "";
     // Senses
-    let splitSenses = splitGeneralData.match(/(?:Senses )(.*?)(?:;|\n|$)/igm)[0].replace("Senses ","");
+    if (splitGeneralData.search(/\bSenses\b/gmi) !== -1) {
+        splitSenses = splitGeneralData.match(/(?:Senses )(.*?)(?:;|\n|$)/igm)[0].replace("Senses ","");
+    }
     
     // Aura
     let splitAura = "";
@@ -414,6 +470,8 @@ function splitGeneralData(stringGeneralData) {
         // What, if it has class levels as well as racialHD?
         
         // For now, use cr as level
+        formattedInput.level = formattedInput.cr;
+    } else if (dataInputHasClasses == true && dataInputHasRacialHD == true) {
         formattedInput.level = formattedInput.cr;
     } else {
         formattedInput.level = formattedInput.cr;
@@ -438,19 +496,32 @@ function splitDefenseData(stringDefenseData) {
     console.log("parsing Defense Data");
     
     stringDefenseData = stringDefenseData.replace(/^ | $|^\n*/,"");
-        
+    
+    // Clean up the Input if there are extra linebreaks (often when copy and pasted from pdfs)
+    // Remove linebreaks in parenthesis
+    stringDefenseData = stringDefenseData.replace(/(\([^(.]+?)(?:\n)([^(.]+?\))+?/mi, "$1 $2");
+    // Remove linebreaks in Melee Attacks
+    stringDefenseData = stringDefenseData.replace(/(Melee.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
+    // Remove linebreaks in Ranged Attacks
+    stringDefenseData = stringDefenseData.replace(/(Ranged.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
+    // Remove linebreaks in Multi Attacks
+    stringDefenseData = stringDefenseData.replace(/(Multi.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
+    
+    
+    
     let splitDefenseData = stringDefenseData.split(/\n/);
     
  
-   
+    console.log("splitDefenseData: " + splitDefenseData);
     
     
     // Get all AC Boni included in Input (everything in parenthesis in splitDefenseData[0]) and split them into separate strings
     let splitACBonusTypes = JSON.stringify(splitDefenseData[0].match(/\([\s\S]*?\)/)).split(/,/);
-    
+    console.log("splitACBonusTypes: " + splitACBonusTypes);
     // Loop through the found AC Boni and set changes accordingly
     
     splitACBonusTypes.forEach( function ( item, index) {
+        console.log("item AC BONUS TYPE: " + item);
         
         // get the bonus type
         let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
@@ -665,7 +736,7 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     }
     
     // Create a Item for the Creature Type
-    setCreatureTypeItem(formattedInput);
+    setRacialHDItem(formattedInput);
     
     // Create a custom Item for Conversion Stuff (e.g. Changes to AC, Saves)
     setConversionItem(formattedInput);
@@ -676,43 +747,7 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     // Map statisticData
     mapStatisticData(formattedInput);
 
-    // Size and Size-Related Stuff
-    switch(formattedInput.size) {
-        case "Fine": dataOutput.data.traits.size = "fine"; break;
-        case "Diminutive": dataOutput.data.traits.size = "dim"; break;
-        case "Tiny": dataOutput.data.traits.size = "tiny"; break;
-        case "Small": dataOutput.data.traits.size = "sm"; break;
-        case "Medium": dataOutput.data.traits.size = "med"; break;
-        case "Large": dataOutput.data.traits.size = "lg"; break;
-        case "Huge": dataOutput.data.traits.size = "huge"; break;
-        case "Gargantuan": dataOutput.data.traits.size = "grg"; break;
-        case "Colossal": dataOutput.data.traits.size = "col"; break;
-        default: dataOutput.data.traits.size = "med"; break;
-    }
     
-    // Race and Types
-    
-    
-    // If there are multiple subtypes, join them
-    if (formattedInput.creature_subtype.length > 1) {
-        dataOutput.data.attributes.creatureType =
-        dataOutput.data.details.raceType =
-            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype.join(", ")).concat(")");
-    } else if (formattedInput.creature_subtype.length == 1) {
-        // If not, just use the one
-        dataOutput.data.attributes.creatureType =
-        dataOutput.data.details.raceType =
-            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype[0].concat(")"));
-    } else {
-        // If there is no subtype, lose the parentheses
-        dataOutput.data.attributes.creatureType = dataOutput.data.details.raceType = formattedInput.creature_type;
-    }
-    
-    dataOutput.data.details.race = "";
-     
-    // Initiative
-    dataOutput.data.attributes.init.total = formattedInput.initiative;
-
     
     
     // Map Attributes
@@ -743,27 +778,61 @@ function mapGeneralData(formattedInput) {
     // Attributes
     dataOutput.data.attributes.hd.total = formattedInput.hit_dice.hd;
     dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex);
+    dataOutput.data.attributes.init.total = formattedInput.initiative;
     
-    // Creature Type (and Subtype)
-    dataOutput.data.attributes.creatureType = formattedInput.creature_type;
-    if (formattedInput.creature_type) {
-        dataOutput.data.details.type = formattedInput.creature_type + " " + formattedInput.creature_subtype;
-    } else {
-        dataOutput.data.details.type = formattedInput.creature_type;
+    // Size and Size-Related Stuff
+    switch(formattedInput.size) {
+        case "Fine": dataOutput.data.traits.size = "fine"; break;
+        case "Diminutive": dataOutput.data.traits.size = "dim"; break;
+        case "Tiny": dataOutput.data.traits.size = "tiny"; break;
+        case "Small": dataOutput.data.traits.size = "sm"; break;
+        case "Medium": dataOutput.data.traits.size = "med"; break;
+        case "Large": dataOutput.data.traits.size = "lg"; break;
+        case "Huge": dataOutput.data.traits.size = "huge"; break;
+        case "Gargantuan": dataOutput.data.traits.size = "grg"; break;
+        case "Colossal": dataOutput.data.traits.size = "col"; break;
+        default: dataOutput.data.traits.size = "med"; break;
     }
+    
+    // !!! THIS CHANGED: TYPES ARE NOW ONLY FOUND IN THE ITEMS
+    
+    // Creature Type and Subtype(s)
+    /*
+    if (formattedInput.creature_subtype.length > 1) {
+        dataOutput.data.attributes.creatureType =
+        dataOutput.data.details.raceType =
+            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype.join(", ")).concat(")");
+    } else if (formattedInput.creature_subtype.length == 1) {
+        // If not, just use the one
+        dataOutput.data.attributes.creatureType =
+        dataOutput.data.details.raceType =
+            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype[0].concat(")"));
+    } else {
+        // If there is no subtype, lose the parentheses
+        dataOutput.data.attributes.creatureType = dataOutput.data.details.raceType = formattedInput.creature_type;
+    }
+    */
+    
+    // Race
+    dataOutput.data.details.race = "";
+
 }
 
 // Map data.classes.class
 function setClassData (classInput) {
 
+    console.log("classInput: " + JSON.stringify(classInput));
     let classKey = Object.keys(classInput);
+    console.log("classKEy: " + classKey);
 
     let classEntries = {};
     
     for (var i=0; i < classKey.length; i++) {
         
         // Split Classes
-        let classEntry = enumClassData[classKey[i].toLowerCase()];
+        let classEntry = enumClassData[classKey[i].toLowerCase().replace(/npc/,"Npc")];
+        
+        console.log("classEntry: " + classEntry);
         
         let tempClassName = classKey[i];
 
@@ -781,11 +850,13 @@ function setClassData (classInput) {
 // Create Class and Race Item
 function setClassItem (classInput) {
 
+    console.log("classInput: " + JSON.stringify(classInput));
     let classKey = Object.keys(classInput);
+    console.log("classKEy: " + classKey);
     
     for (var i=0; i < classKey.length; i++) {
         // Create Item for the Class starting from the template
-        let itemEntry = templateClassItem[classKey[i].toLowerCase()];
+        let itemEntry = templateClassItem[classKey[i].toLowerCase().replace(/npc/,"Npc")];
         itemEntry.data.levels = classInput[classKey[i]].level;
         itemEntry.data.savingThrows.fort.value = "";
         itemEntry.data.savingThrows.ref.value = "";
@@ -804,10 +875,10 @@ function setClassItem (classInput) {
 }
 
 // Create Item for Creature Type
-function setCreatureTypeItem (formattedInput) {
+function setRacialHDItem (formattedInput) {
 
     // Create Item for the Class starting from the template
-    let itemEntry = templateClassItem[formattedInput.creature_type.toLowerCase()];
+    let itemEntry = templateRacialHDItem[formattedInput.creature_type.toLowerCase()];
     itemEntry.data.savingThrows.fort.value = "";
     itemEntry.data.savingThrows.ref.value = "";
     itemEntry.data.savingThrows.will.value = "";

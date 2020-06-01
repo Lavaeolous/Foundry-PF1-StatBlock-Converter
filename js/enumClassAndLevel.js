@@ -1,4 +1,5 @@
 export default [
+    "Adept \\d+",
     "Alchemist \\d+",
     "Antipaladin \\d+",
     "Arcanist \\d+",
@@ -23,6 +24,7 @@ export default [
     "Mesmerist \\d+",
     "Monk \\d+",
     "Ninja \\d+",
+    "Omdura \\d+",
     "Occultist \\d+",
     "Oracle \\d+",
     "Paladin \\d+",

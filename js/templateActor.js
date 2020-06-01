@@ -1,5 +1,5 @@
 export default {
-  "name": "Template",
+  "name": "templateNPC",
   "type": "npc",
   "data": {
     "abilities": {
@@ -68,7 +68,6 @@ export default {
     },
     "resources": {},
     "attributes": {
-      "creatureType": "humanoid",
       "encumbrance": {
         "level": 0,
         "levels": {
@@ -84,6 +83,7 @@ export default {
         "lowLight": false,
         "darkvision": 0
       },
+      "hpAbility": "con",
       "hd": {
         "base": {
           "_deprecated": true,
@@ -152,13 +152,16 @@ export default {
       "quadruped": false,
       "savingThrows": {
         "fort": {
-          "total": 0
+          "total": 0,
+          "ability": "con"
         },
         "ref": {
-          "total": 0
+          "total": 0,
+          "ability": "dex"
         },
         "will": {
-          "total": 0
+          "total": 0,
+          "ability": "wis"
         }
       },
       "hp": {
@@ -245,6 +248,7 @@ export default {
             "autoSpellLevels": true,
             "arcaneSpellFailure": true,
             "baseDCFormula": "10 + @sl + @ablMod",
+            "spontaneous": false,
             "spells": {
               "spell0": {
                 "value": 0,
@@ -315,6 +319,7 @@ export default {
             "autoSpellLevels": true,
             "arcaneSpellFailure": true,
             "baseDCFormula": "10 + @sl + @ablMod",
+            "spontaneous": false,
             "spells": {
               "spell0": {
                 "value": 0,
@@ -385,6 +390,7 @@ export default {
             "autoSpellLevels": true,
             "arcaneSpellFailure": true,
             "baseDCFormula": "10 + @sl + @ablMod",
+            "spontaneous": false,
             "spells": {
               "spell0": {
                 "value": 0,
@@ -455,6 +461,7 @@ export default {
             "autoSpellLevels": true,
             "arcaneSpellFailure": true,
             "baseDCFormula": "10 + @sl + @ablMod",
+            "spontaneous": false,
             "spells": {
               "spell0": {
                 "value": 0,
@@ -516,6 +523,7 @@ export default {
       "spelldc": {
         "_deprecated": true
       },
+      "spellLevel": 0,
       "mods": {
         "skills": {}
       }
@@ -536,19 +544,12 @@ export default {
         "public": ""
       },
       "bonusSkillRankFormula": "",
+      "type": "",
+      "environment": "",
+      "cr": 1,
       "xp": {
-        "value": 0,
-        "min": 0,
-        "max": 300,
-        "pct": null
-      },
-      "race": "",
-      "raceType": "",
-      "height": "",
-      "weight": "",
-      "gender": "",
-      "deity": "",
-      "age": ""
+        "value": 400
+      }
     },
     "skills": {
       "acr": {
@@ -934,6 +935,8 @@ export default {
       "dr": "",
       "eres": "",
       "cres": "",
+      "regen": "",
+      "fastHealing": "",
       "languages": {
         "value": [],
         "custom": ""
@@ -952,14 +955,6 @@ export default {
       },
       "perception": {
         "_deprecated": true
-      },
-      "weaponProf": {
-        "value": [],
-        "custom": ""
-      },
-      "armorProf": {
-        "value": [],
-        "custom": ""
       }
     },
     "currency": {
@@ -978,16 +973,17 @@ export default {
   },
   "sort": 100001,
   "flags": {
+    "pf1": {},
     "exportSource": {
       "world": "rappan-athuk",
       "system": "pf1",
-      "coreVersion": "0.5.5",
-      "systemVersion": 0.44
+      "coreVersion": "0.6.0",
+      "systemVersion": 0.551
     }
   },
   "token": {
     "flags": {},
-    "name": "Template",
+    "name": "templateNPC",
     "displayName": 0,
     "img": "icons/svg/mystery-man.svg",
     "width": 1,
@@ -1003,7 +999,7 @@ export default {
     "sightAngle": 360,
     "lightAngle": 360,
     "lightAlpha": 1,
-    "actorId": "F96JxTDlLdfcW1TH",
+    "actorId": "QlJH0KiscySfUlCb",
     "actorLink": false,
     "actorData": {},
     "disposition": -1,
@@ -1013,6 +1009,6 @@ export default {
     "randomImg": false
   },
   "items": [],
-  "_id": "F96JxTDlLdfcW1TH",
+  "_id": "QlJH0KiscySfUlCb",
   "img": "icons/svg/mystery-man.svg"
-};
+}

@@ -1,5 +1,5 @@
 export default {
-      "adept": {
+      "adeptNpc": {
         "level": 1,
         "name": "Adept",
         "hd": 6,
@@ -67,7 +67,7 @@ export default {
           "alt": 0
         }
       },
-      "aristocrat": {
+      "aristocratNpc": {
         "level": 1,
         "name": "Aristocrat",
         "hd": 8,
@@ -186,7 +186,7 @@ export default {
           "alt": 0
         }
       },
-      "commoner": {
+      "commonerNpc": {
         "level": 1,
         "name": "Commoner",
         "hd": 6,
@@ -220,7 +220,7 @@ export default {
           "alt": 0
         }
       },
-      "expert": {
+      "expertNpc": {
         "level": 1,
         "name": "Expert",
         "hd": 8,
@@ -730,7 +730,7 @@ export default {
           "alt": 0
         }
       },
-      "warrior": {
+      "warriorNpc": {
         "level": 1,
         "name": "Warrior",
         "hd": 10,
