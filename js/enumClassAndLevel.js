@@ -1,4 +1,8 @@
 export default [
+    // Regex returns 3 groups
+    // Group 1: Class, e.g. "Cleric"
+    // Group 2: additional words, e.g. "of Nethys"
+    // Group 3: Level, e.g. "9"
     "Adept \\d+",
     "Alchemist \\d+",
     "Antipaladin \\d+",
@@ -9,7 +13,7 @@ export default [
     "Bloodrager \\d+",
     "Brawler \\d+",
     "Cavalier \\d+",
-    "Cleric \\d+",
+    "(Cleric)(?:[\s]*?)([\w\s]*?)(?:[\s]*?)(\d+)",
     "Commoner \\d",
     "Druid \\d+",
     "Expert \\d",

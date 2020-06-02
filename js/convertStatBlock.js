@@ -8,6 +8,7 @@ import templateConversionItem from "./templateConversionItem.js"
 import enumTypes from "./enumTypes.js"
 import enumSubtypes from "./enumSubtypes.js"
 import enumClassAndLevel from "./enumClassAndLevel.js"
+import enumClasses from "./enumClasses.js"
 import enumClassData from "./enumClassData.js"
 import enumBonusTypes from "./enumBonusTypes.js"
 
@@ -44,6 +45,13 @@ var enumSizes = [
     "Gargantuan",
     "Colossal"
 ];
+
+var enumGender = [
+    "Male or Female",
+    "Female or Male",
+    "Male",
+    "Female"
+]
 
 var carrySizeModificators = {
     "Fine": 1/8,
@@ -106,7 +114,6 @@ function init() {
     // Load FoundryVTT Actor Template
     
     dataTemplate = templateActor;
-    console.log(dataTemplate);
 }
 
 
@@ -193,25 +200,19 @@ function convertStatBlock(input) {
 
     // Split stringGeneralData, e.g. everything between the Start of the Input and "AC", removing "DEFENSE"
     splitInput = dataInput.split(/(?=(^AC))/m);
-    console.log("splitINput" + splitInput);
     tempInputRest = splitInput[2];
     stringGeneralData = splitInput[0].replace(/(DEFENSE)/gm,"");
     splitInput = "";
-    
-    console.log("tempInputRest: " + tempInputRest);
-        
+            
     // Split stringDefenseData, everything between AC and Speed
     splitInput = tempInputRest.split(/(?=(^Speed))/mi);
     tempInputRest = splitInput[2];
     stringDefenseData = splitInput[0].replace(/(OFFENSE)/,"");
     splitInput = "";
-    
-    console.log("stringDefenseData: " + stringDefenseData);
-            
+                
     // Split stringOffenseData, everything between Speed and Tactics or Statistics
     // If there is a tactics block, split there, parse Offense and tactics next
     if(foundOffenseData && foundTacticsData == true)  {
-        console.log("found offense and tactics");
         splitInput = tempInputRest.split(/\nTACTICS\n/gmi);
         tempInputRest = splitInput[1];
         stringOffenseData = splitInput[0].replace(/\nTACTICS\n/gmi,"");
@@ -219,7 +220,6 @@ function convertStatBlock(input) {
     }  
     // If there is no tactics block, split and parse Offense and Statistics next 
     else if (foundOffenseData == true) {
-        console.log("found offense");
         splitInput = tempInputRest.split(/\nStr/i);
         tempInputRest = "Str".concat(splitInput[1]);
         stringOffenseData = splitInput[0].replace(/(OFFENSE)/gmi,"").replace(/(STATISTICS)/gmi,"");
@@ -241,21 +241,17 @@ function convertStatBlock(input) {
         let tempSplit = "";
         
         if(foundSpecialAbilitiesData == true) {
-            console.log("found Special Abilities");
             tempSplit = tempInputRest.split(/SPECIAL ABILITIES/gmi)
             splitInput = tempSplit[0];
             tempInputRest = tempSplit[1];
         } else if (foundEcologyData == true) {
-            console.log("found Ecology");
             tempSplit = tempInputRest.split(/ECOLOGY/gmi)
             splitInput = tempSplit[0];
             tempInputRest = tempSplit[1];
         } else {
-            console.log("found not further data blocks");
             splitInput = tempInputRest;
         }
         stringStatisticsData = splitInput;
-        console.log("stringStatisticsData: " + stringStatisticsData);
         
     }
     
@@ -346,10 +342,7 @@ function splitGeneralData(stringGeneralData) {
     let splitCR = splitGeneralData.match(/(?!CR )(\d+)/)[0];
     
     // XP
-    let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");
-    
-    // Gender, Race, Class(es) and Levels
-    
+    let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");    
     
     //Alignment
     let splitAlignment = splitGeneralData.match(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
@@ -375,44 +368,74 @@ function splitGeneralData(stringGeneralData) {
     
     // Split Classes, if available
     
-    let regExClasses = new RegExp(enumClassAndLevel.join("|"), "ig");
+    let regExClasses = new RegExp(enumClasses.join("|"), "ig");
     let splitClasses = splitGeneralData.match(regExClasses);
+    console.log("splitClasses: " + splitClasses);
     // If there are classes, get them, their level and the race / gender as well
     if (splitClasses !== null) {
         dataInputHasClasses = "true";
         // Get Class(es)
         splitClasses.forEach( function(item, index) {
+            console.log("classItem: " + item);
             // Check for className (first for classes with two words e.g. vampire hunter)
+            let classNameAndLevel = "";
             let className = "";
+            let classNameSuffix = "";
             let classLevel = "";
-            // For Classes with two words
-            if (item.match(/\b([a-zA-Z]+?)\b \b([a-zA-Z]+?)\b/)) {
-                className = item.match(/\b([a-zA-Z]+?)\b \b([a-zA-Z]+?)\b/);
-            }
-            // for all classes with only one word
-            else {
-                className = item.match(/(\b[a-zA-Z]+?\b)/);
-            }
-            // If it's an NPC Class, add NPC to the Name
-            if (className[0] === ("expert") ) {
-                console.log("Expert class found");
-                className[0] = className[0].concat("Npc");
+            
+            // Get Classlevel and words in between class an level
+            
+            let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
+            console.log("regExClassAndLevel: " + regExClassAndLevel);
+            
+            classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
+            
+            console.log("classNameAndLevel: " + classNameAndLevel);
+            
+            className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
+            classNameSuffix = classNameAndLevel[0].split(/[\s](?:\d)/)[0].replace(regExClasses, "").replace(/^ | $/, "");
+            classLevel = classNameAndLevel[0].match(/(\d+?)/)[0];
+            
+            
+            
+            console.log("className: " + className);
+            console.log("classNameSuffix: " + classNameSuffix);
+            console.log("classLevel: " + classLevel);
+            
+            // If it's an NPC Class, add Npc to the Name
+            // Because thats the notation used in the gameSystem
+            if (className[0].search(/(adept)|(commoner)|(expert)|(warrior)|(aristocrat)/i) !== -1 ) {
+                className = className[0].concat("Npc");
             }
             
-            console.log("className[0]: " + className[0]);
-            
-            classLevel = item.match(/\b[\d]+?\b/);
-
-            formattedInput.classes[className[0]] = {
+            formattedInput.classes[className] = {
                 "name" : className[0],
-                "level" : classLevel[0]
+                "nameSuffix" : classNameSuffix,
+                "level" : +classLevel
             }
+
         });
-        // Get Gender and Race
-        let regExGenderAndRace = new RegExp("(?:[0-9]*?)([^0-9]*)(?:" + enumClassAndLevel.join("|") + ")", "ig");
+        
+        // Get Gender if available
+        let regExGenderAndRace = new RegExp("(?:[0-9]*?)([^0-9]*)(?:" + enumClasses.join("|") + ")", "ig");
         console.log("regExGenderAndRace: " + regExGenderAndRace);
-        let stringGenderAndRace = splitGeneralData.split(regExGenderAndRace)[1];
-        console.log("stringGenderAndRace: " + stringGenderAndRace);
+        console.log("splitGeneralData.split(regExGenderAndRace): " + splitGeneralData.split(regExGenderAndRace)[1]);
+        
+        // Search if there is info before the class to evaluate
+        if (splitGeneralData.split(regExGenderAndRace)[1]) {
+        
+            let stringGenderAndRace = splitGeneralData.split(regExGenderAndRace)[1];
+            console.log("stringGenderAndRace: " + stringGenderAndRace);
+
+            let regExGender = new RegExp("(" + enumGender.join("|") + ")", "i");
+            let foundGender = stringGenderAndRace.match(regExGender)[0];
+
+            formattedInput.gender = foundGender;
+        }
+        
+        // Get Race
+        
+        
     }
     
     // Get Race if available
@@ -507,21 +530,13 @@ function splitDefenseData(stringDefenseData) {
     // Remove linebreaks in Multi Attacks
     stringDefenseData = stringDefenseData.replace(/(Multi.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
     
-    
-    
     let splitDefenseData = stringDefenseData.split(/\n/);
-    
- 
-    console.log("splitDefenseData: " + splitDefenseData);
-    
     
     // Get all AC Boni included in Input (everything in parenthesis in splitDefenseData[0]) and split them into separate strings
     let splitACBonusTypes = JSON.stringify(splitDefenseData[0].match(/\([\s\S]*?\)/)).split(/,/);
-    console.log("splitACBonusTypes: " + splitACBonusTypes);
-    // Loop through the found AC Boni and set changes accordingly
     
+    // Loop through the found AC Boni and set changes accordingly
     splitACBonusTypes.forEach( function ( item, index) {
-        console.log("item AC BONUS TYPE: " + item);
         
         // get the bonus type
         let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
@@ -663,9 +678,6 @@ function splitStatisticsData(stringStatisticsData) {
      */
     
     // Attributes
-    
-    console.log("stringStatisticsData: " + stringStatisticsData);
-    
     let splitAttributes = stringStatisticsData.match(/(\bStr\b).*(\bCha\b [0-9-—]{1,2})/gmi)[0].split(/,/);
     
     splitAttributes.forEach ( function (item, index) {
@@ -794,24 +806,19 @@ function mapGeneralData(formattedInput) {
         default: dataOutput.data.traits.size = "med"; break;
     }
     
-    // !!! THIS CHANGED: TYPES ARE NOW ONLY FOUND IN THE ITEMS
-    
-    // Creature Type and Subtype(s)
-    /*
-    if (formattedInput.creature_subtype.length > 1) {
-        dataOutput.data.attributes.creatureType =
-        dataOutput.data.details.raceType =
-            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype.join(", ")).concat(")");
-    } else if (formattedInput.creature_subtype.length == 1) {
-        // If not, just use the one
-        dataOutput.data.attributes.creatureType =
-        dataOutput.data.details.raceType =
-            formattedInput.creature_type.concat(" (").concat(formattedInput.creature_subtype[0].concat(")"));
-    } else {
-        // If there is no subtype, lose the parentheses
-        dataOutput.data.attributes.creatureType = dataOutput.data.details.raceType = formattedInput.creature_type;
+    // Senses and Vision
+    if (formattedInput.senses.search(/low-light/i) !== -1) {
+        dataOutput.data.attributes.vision.lowLight = true;
     }
-    */
+    
+    if (formattedInput.senses.search(/darkvision/i) !== -1) {
+        let rangeDarkvision = formattedInput.senses.match(/(?:darkvision\s+?)(\d+)/)[1];
+        dataOutput.data.attributes.vision.darkvision = rangeDarkvision;
+    }
+    
+    dataOutput.token.vision = true;
+    dataOutput.token.dimSight = 120;
+    dataOutput.token.brightSight = 60;
     
     // Race
     dataOutput.data.details.race = "";
@@ -932,12 +939,8 @@ function setConversionItem (formattedInput) {
     enumSaves.forEach( function (item, index) {
         let saveChange = [];
         let tempSaveString = item + "_save";
-        
-        console.log("item: " + item);
-        
+                
         let attrModifier = getModifier(formattedInput[enumSaveModifier[index]]);
-        console.log("attrModifier: " + attrModifier);
-        console.log("formattedInput[enumSaveModifier[index]]: " + formattedInput[enumSaveModifier[index]]);
         
         // Check for Undead without Constitution, because they handle Fort-Saves differently
         console.log("enumSaveModifier: " + enumSaveModifier[index]);

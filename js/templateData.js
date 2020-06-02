@@ -7,6 +7,8 @@ export default {
     "xp": 0,
     "size": "",
     "alignment": "",
+    "gender": "",
+    "race": "",
     "creature_type": "",
     "creature_subtype": "",
     "initiative": 0,
