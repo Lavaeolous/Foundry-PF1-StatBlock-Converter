@@ -11,6 +11,8 @@ import enumSubtypes from "./enumSubtypes.js"
 import enumClasses from "./enumClasses.js"
 import enumClassData from "./enumClassData.js"
 import enumBonusTypes from "./enumBonusTypes.js"
+import enumConditions from "./enumConditions.js"
+import enumDamageTypes from "./enumDamageTypes.js"
 
 
 /*
@@ -346,7 +348,8 @@ function splitGeneralData(stringGeneralData) {
     let splitName = splitGeneralData.match(/.+?(?=CR)/)[0];
     
     // CR
-    let splitCR = splitGeneralData.match(/(?!CR )(\d+)/)[0];
+    let splitCR = splitGeneralData.match(/(1\/\d|\d+)/)[0];
+    console.log("splitCR: " + splitCR);
     
     // XP
     let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");    
@@ -374,8 +377,10 @@ function splitGeneralData(stringGeneralData) {
     }
     
     // Split Classes, if available
+    // Special Case: (Medium)(?: \d+?)
     
     let regExClasses = new RegExp(enumClasses.join("|"), "i");
+    console.log("regExClasses: " + regExClasses);
     let splitClasses = splitGeneralData.match(regExClasses);
     console.log("splitClasses: " + splitClasses);
     // If there are classes, get them, their level and the race / gender as well
@@ -442,8 +447,12 @@ function splitGeneralData(stringGeneralData) {
             let foundRace = "";
             
             if (stringGenderAndRace.search(regExPlayableRace) !== -1) {
-                foundRace = stringGenderAndRace.match(regExPlayableRace)[0];
-                dataInputHasPlayableRace = true;
+                //foundRace = stringGenderAndRace.match(regExPlayableRace)[0];
+                //dataInputHasPlayableRace = true;
+                
+                // FOR NOW JUST USE EVERYTHING AS NONPLAYABLE
+                foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
+                dataInputHasNonPlayableRace = true;
             } else {
                 // If no playable Race is found, simply remove the gender(s) and use the rest as race
                 foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
@@ -583,7 +592,20 @@ function splitDefenseData(stringDefenseData) {
     let splitHPTotal = splitDefenseData[1].split(/(?:hp )([\d]*)/)[1];
     //let stringHitDice = JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/));
     let stringHitDice = JSON.parse(JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/)));
-    console.log("stringHitDice: " + stringHitDice);
+
+    // If available, extract Regeneration
+    if (splitDefenseData[1].search(/Regeneration/i) !== -1) {
+        let tempRegen = splitDefenseData[1].match(/(?:Regeneration )([\s\S]+?)(?:\n|$|;)/i);
+        formattedInput.regeneration = tempRegen[1];
+    }
+    // If available, extract Fast Healing
+    if (splitDefenseData[1].search(/Regeneration/i) !== -1) {
+        let tempFastHealing = splitDefenseData[1].match(/(?:Fast Healing )([\s\S]+?)(?:\n|$|;)/i);
+        formattedInput.fast_healing = tempFastHealing[1];
+    }
+    
+    console.log("formattedInput.fast_healing: " + formattedInput.fast_healing);
+    console.log("formattedInput.regeneration: " + formattedInput.regeneration);
     
     // Extract HitDie and separate DicePools containing number and size of the die as well as the bonus
     let splitHitDice = {};
@@ -595,13 +617,12 @@ function splitDefenseData(stringDefenseData) {
     // Calculate HP for Class and Race Items
     
     // Get different DicePools, e.g. XdY combinations, mostly for combinations of racial and class hitDice
-    let hitDicePool = JSON.stringify(stringHitDice).match(/(\d+?d\d+?)/gi);
+    let hitDicePool = JSON.stringify(stringHitDice).match(/(\d+?d\d+)/gi);
     console.log("hitDicePool: " + hitDicePool);
-    
     
     // Find the Dicepool for class(es)
     if (dataInputHasClasses == true) {
-        
+        console.log("Class, setting hp");
         let classKey = Object.keys(formattedInput.classes);
         let hitDicePoolKey = Object.keys(hitDicePool);
         
@@ -612,14 +633,21 @@ function splitDefenseData(stringDefenseData) {
             for (let j = 0; j < hitDicePoolKey.length; j++) {
                 let tempRegEx = new RegExp("(?:" + tempLevel + "d)(\\d+?)", "i");
                 if (hitDicePool[j].match(tempRegEx)) {
+                    console.log("Class, setting class hp");
                     // Set HP for classItem
                     let tempDiceSize = hitDicePool[j].match(tempRegEx)[1];
                     formattedInput.hp.class = Math.floor(+tempLevel * +getDiceAverage(tempDiceSize));
+                    formattedInput.hp.race = 0;
                     inputHDTotal += +tempLevel;
                 } else {
+                    console.log("Class, setting racial hp");
                     // Set HP for RacialHDItem                    
                     let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
                     let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
+                    
+                    console.log("tempDiceSize: " + tempDiceSize);
+                    console.log("tempRacialHD: " + tempRacialHD);
+                    
                     formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
                     inputHDTotal += +tempRacialHD;
                 }
@@ -627,6 +655,7 @@ function splitDefenseData(stringDefenseData) {
         }
 
     } else {
+        console.log("no Class, setting hp");
         // Set racialHD when no class is given
         let hitDicePoolKey = Object.keys(hitDicePool);
         for (let j = 0; j < hitDicePoolKey.length; j++) {
@@ -639,13 +668,15 @@ function splitDefenseData(stringDefenseData) {
         }
     }
     
+    console.log("formattedInput.hp.race: " + formattedInput.hp.race);
     
     formattedInput.hit_dice.hd = inputHDTotal;
     console.log("formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
     
     console.log("stringHitDice: " + stringHitDice);
     
-    let hitDiceBonusPool = JSON.stringify(stringHitDice).match(/[^d+\(](\d+)/gi);
+    //let hitDiceBonusPool = JSON.stringify(stringHitDice).match(/[^d+\(](\d+)/gi);
+    let hitDiceBonusPool = stringHitDice[0].replace(/(\d+d\d+)/gi,"").match(/\d+/g);
     
     let hitDiceBonus = 0;
     
@@ -659,22 +690,23 @@ function splitDefenseData(stringDefenseData) {
         }
     
     }
-    
-    
-    console.log("hitDicePool: " + hitDicePool);
-    console.log("hitDiceBonus: " + hitDiceBonus);
-    console.log("splitHPTotal: " + splitHPTotal);
 
-    
-    
-    
     formattedInput.hp.total = splitHPTotal;
     
-    
-    
-    
     // Extract Saves
-    let splitSaves = splitDefenseData[2].split(/,/);
+    console.log("splitDefenseData: " + JSON.stringify(splitDefenseData));
+    
+    let splitSaves;
+    
+    for (var i = 0; i < splitDefenseData.length; i++) {
+        if (splitDefenseData[i].search(/Fort/i) !== -1) {
+            splitSaves = splitDefenseData[i].split(/,|;/);
+        }
+    }
+    
+    //let splitSaves = splitDefenseData[2].split(/,/);
+    console.log("splitSaves: " + splitSaves);
+    
     splitSaves.forEach( function (item, index) {
         if (this[index].match(/(Fort)|(fort)/)) {
             let splitFort = item.match(/(\+[\d]*)|(-[\d]*)/g)[0];
@@ -699,23 +731,32 @@ function splitDefenseData(stringDefenseData) {
                 let splitDRType = item.match(/(?:\/)([\w\s]*)/)[1];
                 formattedInput.damage_reduction.dr_value = splitDRValue;
                 formattedInput.damage_reduction.dr_type = splitDRType;
-            } else if (this[index].match(/(Immune)|(Immunities)/gmi)) {
-                let splitImmunities = item.replace(/(Immune)|(Immunities)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+            } else if (this[index].match(/\bImmune\b|\bImmunities\b/mi)) {
+                let splitImmunities = item.replace(/\bImmune\b|(Immunities)/gmi,"").replace(/^ *| *$|^\n*/g,"");
                 formattedInput.immunities = splitImmunities;
-            } else if (this[index].match(/(Resist)|(Resistances)/gmi)) {
-                let splitResistances = item.replace(/(Resist)|(Resistances)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+            } else if (this[index].match(/\bResist\b|\bResistances\b/mi)) {
+                let splitResistances = item.replace(/\bResist\b|\bResistances\b/mi,"").replace(/^ *| *$|^\n*/g,"");
                 formattedInput.resistances = splitResistances;
-            } else if (this[index].match(/(Weaknesses)|(weaknesses)|(Weakness)|(weakness)/gmi)) {
-                let splitWeaknesses = item.replace(/(Weaknesses)|(weaknesses)|(Weakness)|(weakness)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+            } else if (this[index].match(/\bWeaknesses\b|\bWeakness\b/mi)) {
+                let splitWeaknesses = item.replace(/\bWeaknesses\b|\bWeakness\b/mi,"").replace(/^ *| *$|^\n*/g,"");
                 formattedInput.weaknesses = splitWeaknesses;
-            } else if (this[index].match(/(SR)/gmi)) {
-                let splitSR = item.replace(/(SR)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+            } else if (this[index].match(/\bSR\b/mi)) {
+                let splitSR = item.replace(/\bSR\b/mi,"").replace(/^ *| *$|^\n*/g,"");
                 formattedInput.spell_resistance = splitSR;
+            } else if (this[index].match(/\bDefensive Abilities\b/mi)) {
+                let splitDefensiveAbilities = item.replace(/\bDefensive Abilities\b/mi,"").replace(/^ *| *$|^\n*/g,"");
+                formattedInput.defensive_abilities = splitDefensiveAbilities;
             }
         }, splitResistances);
     }
     
     console.log("weaknesses: " + formattedInput.weaknesses);
+    console.log("immunities: " + formattedInput.immunities);
+    console.log("resistances: " + formattedInput.resistances);
+    console.log("defensive_abilities: " + formattedInput.defensive_abilities);
+    console.log("spell_resistance: " + formattedInput.spell_resistance);
+    
+    
     
     console.log("done");
 }
@@ -989,7 +1030,6 @@ function setRaceItem (raceInput) {
     dataOutput.items.push(itemEntry);
 }
 
-
 // Create Item for RacialHD
 function setRacialHDItem (formattedInput) {
 
@@ -1032,7 +1072,7 @@ function setConversionItem (formattedInput) {
         let tempHPDifference = +formattedInput.hp.total - +calculatedHPTotal;
         
         let hpChange = [
-            tempHPDifference,
+            +tempHPDifference,
             "misc",
             "mhp",
             "untyped"
@@ -1040,11 +1080,7 @@ function setConversionItem (formattedInput) {
         
         itemEntry.data.changes.push(hpChange);
     }
-    
-    
-    
-    
-    
+
     // Add Changes to AC
     for (var key in formattedInput.ac_bonus_types) {
         // Exclude dex, size and natural, as these are included elsewhere in the sheet
@@ -1078,7 +1114,9 @@ function setConversionItem (formattedInput) {
         let saveChange = [];
         let tempSaveString = item + "_save";
                 
-        let attrModifier = getModifier(formattedInput[enumSaveModifier[index]]);
+        let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]]);
+        
+        console.log("item: " + item + " - modifier: " +attrModifier);
         
         // Check for Undead without Constitution, because they handle Fort-Saves differently
         console.log("enumSaveModifier: " + enumSaveModifier[index]);
@@ -1087,6 +1125,7 @@ function setConversionItem (formattedInput) {
             // Set the Change to 0, because thats handled automatically in the undead creature item
             saveChange.push(0);
         } else {
+            console.log("+formattedInput[tempSaveString]: " + +formattedInput[tempSaveString]);
             saveChange.push(+formattedInput[tempSaveString]-attrModifier);
         }
         
@@ -1103,29 +1142,47 @@ function setConversionItem (formattedInput) {
     dataOutput.items.push(itemEntry);
 }
 
+// Map defensive Data
 function mapDefenseData (formattedInput) {
 
     // Attributes
     dataOutput.data.attributes.hp.value = +formattedInput.hp.total;
     dataOutput.data.attributes.hp.max = +formattedInput.hp.total;
     
-
     dataOutput.data.attributes.ac.normal.total = +formattedInput.ac;
     dataOutput.data.attributes.ac.touch.total = +formattedInput.touch;
     dataOutput.data.attributes.ac.flatFooted.total = +formattedInput.flat_footed;
-    
+    dataOutput.data.attributes.naturalAC = +formattedInput.ac_bonus_types.natural;
     dataOutput.data.attributes.acNotes = formattedInput.acNotes;
     
     dataOutput.data.attributes.savingThrows.fort.total = +formattedInput.fort_save;
     dataOutput.data.attributes.savingThrows.ref.total = +formattedInput.ref_save;
     dataOutput.data.attributes.savingThrows.will.total = +formattedInput.will_save;
-    dataOutput.data.attributes.sr.total = +formattedInput.spell_resistance;
     
+    dataOutput.data.attributes.sr.total = +formattedInput.spell_resistance;
+    // !!! SR Formula
+    
+    // DR
     if (formattedInput.damage_reduction.dr_value) {
         dataOutput.data.traits.dr = +formattedInput.damage_reduction.dr_value + "/" + formattedInput.damage_reduction.dr_type;
     }
     
-    dataOutput.data.attributes.naturalAC = +formattedInput.ac_bonus_types.natural;
+    // Regeneration & Fast Healing
+    dataOutput.data.traits.regen = formattedInput.regeneration;
+    dataOutput.data.traits.fastHealing = formattedInput.fast_healing;
+    
+    // Defensive Abilities
+    console.log("formattedInput.defensive_abilities: " + formattedInput.defensive_abilities);
+    // Split the abilities and generate an empty item for each of them
+    
+    //!!!!!!!!!!!!!!!!!!!!!1
+    
+    
+    
+    
+    
+    
+    
     
     // Reset Max Dex Bonus
     dataOutput.data.attributes.maxDexBonus = 0;

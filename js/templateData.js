@@ -40,6 +40,8 @@ export default {
         "dr_value" : 0,
         "dr_type" : ""
     },
+    "regeneration": "",
+    "fast_healing": "",
     "speed": 0,
     "melee": "",
     "ranged": "",

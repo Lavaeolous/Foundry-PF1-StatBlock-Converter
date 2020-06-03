@@ -31,14 +31,7 @@ export default {
     "identifiedName": "Conversion Changes"
   },
   "sort": 100001,
-  "flags": {
-    "exportSource": {
-      "world": "rappan-athuk",
-      "system": "pf1",
-      "coreVersion": "0.6.0",
-      "systemVersion": 0.551
-    }
-  },
+  "flags": {},
   "_id": "ZmOxqVVyMzgymhuE",
   "img": "icons/svg/mystery-man.svg"
 }
