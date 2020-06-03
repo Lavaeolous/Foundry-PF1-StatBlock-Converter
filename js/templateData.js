@@ -14,7 +14,11 @@ export default {
     "initiative": 0,
     "senses": "",
     "aura": "",
-    "hp": 0,
+    "hp": {
+        "total": 0,
+        "racial": 0,
+        "class": 0
+    },
     "hit_dice" : {
         "hd": 0,
         "hd_diceSize": 0,

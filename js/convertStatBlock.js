@@ -5,9 +5,9 @@ import templateClassItem from "./templateClassItem.js"
 import templateRaceItem from "./templateRaceItem.js"
 import templateRacialHDItem from "./templateRacialHDItem.js"
 import templateConversionItem from "./templateConversionItem.js"
+import enumRaces from "./enumRaces.js"
 import enumTypes from "./enumTypes.js"
 import enumSubtypes from "./enumSubtypes.js"
-import enumClassAndLevel from "./enumClassAndLevel.js"
 import enumClasses from "./enumClasses.js"
 import enumClassData from "./enumClassData.js"
 import enumBonusTypes from "./enumBonusTypes.js"
@@ -20,7 +20,10 @@ import enumBonusTypes from "./enumBonusTypes.js"
 // Global Variables
 
 var dataInput;
-var dataInputHasClasses = "false";
+var dataInputHasClasses = false;
+var dataInputHasNonPlayableRace = false;
+var dataInputHasPlayableRace = false;
+var dataInputHasRacialHD = true;
 var dataOutput;
 var dataTemplate;
 var formattedInput;
@@ -303,6 +306,8 @@ function convertStatBlock(input) {
     // Take Defense Data and extract AC, HP, Immunities and Stuff
     splitDefenseData(stringDefenseData);
     
+    console.log("stringDefenseData: " + stringDefenseData);
+    
     // Take Offense Data and extract 
     //splitOffenseeData(stringOffenseData);
     
@@ -368,15 +373,14 @@ function splitGeneralData(stringGeneralData) {
     
     // Split Classes, if available
     
-    let regExClasses = new RegExp(enumClasses.join("|"), "ig");
+    let regExClasses = new RegExp(enumClasses.join("|"), "i");
     let splitClasses = splitGeneralData.match(regExClasses);
     console.log("splitClasses: " + splitClasses);
     // If there are classes, get them, their level and the race / gender as well
     if (splitClasses !== null) {
-        dataInputHasClasses = "true";
+        dataInputHasClasses = true;
         // Get Class(es)
         splitClasses.forEach( function(item, index) {
-            console.log("classItem: " + item);
             // Check for className (first for classes with two words e.g. vampire hunter)
             let classNameAndLevel = "";
             let className = "";
@@ -386,7 +390,6 @@ function splitGeneralData(stringGeneralData) {
             // Get Classlevel and words in between class an level
             
             let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
-            console.log("regExClassAndLevel: " + regExClassAndLevel);
             
             classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
             
@@ -395,12 +398,6 @@ function splitGeneralData(stringGeneralData) {
             className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
             classNameSuffix = classNameAndLevel[0].split(/[\s](?:\d)/)[0].replace(regExClasses, "").replace(/^ | $/, "");
             classLevel = classNameAndLevel[0].match(/(\d+?)/)[0];
-            
-            
-            
-            console.log("className: " + className);
-            console.log("classNameSuffix: " + classNameSuffix);
-            console.log("classLevel: " + classLevel);
             
             // If it's an NPC Class, add Npc to the Name
             // Because thats the notation used in the gameSystem
@@ -416,33 +413,44 @@ function splitGeneralData(stringGeneralData) {
 
         });
         
-        // Get Gender if available
+        // Get Gender and Race if available
         let regExGenderAndRace = new RegExp("(?:[0-9]*?)([^0-9]*)(?:" + enumClasses.join("|") + ")", "ig");
-        console.log("regExGenderAndRace: " + regExGenderAndRace);
-        console.log("splitGeneralData.split(regExGenderAndRace): " + splitGeneralData.split(regExGenderAndRace)[1]);
-        
+
         // Search if there is info before the class to evaluate
         if (splitGeneralData.split(regExGenderAndRace)[1]) {
         
             let stringGenderAndRace = splitGeneralData.split(regExGenderAndRace)[1];
             console.log("stringGenderAndRace: " + stringGenderAndRace);
-
+            
+            // Get Gender
             let regExGender = new RegExp("(" + enumGender.join("|") + ")", "i");
-            let foundGender = stringGenderAndRace.match(regExGender)[0];
-
+            let foundGender = "";
+            
+            if (stringGenderAndRace.search(regExGender) !== -1) {
+                foundGender = stringGenderAndRace.match(regExGender)[0];
+            }
+            
+            // Get Race, check first if there is a playable race
+            let regExPlayableRace = new RegExp("(" + enumRaces.join("|") + ")", "i");
+            let regExNonPlayableRace = new RegExp("(?:" + enumGender.join("|") + ")(?:[\\s]*?)([^0-9]*)", "gi");
+            
+            let foundRace = "";
+            
+            if (stringGenderAndRace.search(regExPlayableRace) !== -1) {
+                foundRace = stringGenderAndRace.match(regExPlayableRace)[0];
+                dataInputHasPlayableRace = true;
+            } else {
+                // If no playable Race is found, simply remove the gender(s) and use the rest as race
+                foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
+                dataInputHasNonPlayableRace = true;
+            }
+          
             formattedInput.gender = foundGender;
-        }
-        
-        // Get Race
-        
+            formattedInput.race = foundRace;
+        }        
         
     }
     
-    // Get Race if available
-    
-    /*
-     * !!!!!!!!!!!!!
-     */
     
     
     // Creature Type and Subtype(s)
@@ -487,7 +495,7 @@ function splitGeneralData(stringGeneralData) {
     formattedInput.name = splitName;
     formattedInput.cr = splitCR;
     
-    if(dataInputHasClasses == "true") {
+    if(dataInputHasClasses == true) {
         // What should happen, if input has class levels?
         
         // What, if it has class levels as well as racialHD?
@@ -567,20 +575,98 @@ function splitDefenseData(stringDefenseData) {
     
     // Extract Number and Size of Hit Dies as well as HP
     // Hit dice
-    let splitHP = splitDefenseData[1].split(/(?:hp )([\d]*)/)[1];
-    let splitHitDice = JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/));
-    let splitHD = splitHitDice.match(/([\d]*)d/)[1];
-    let splitHDSize = splitHitDice.match(/d([\d]*)/)[1];
-    let splitHDBonus = "";
+    let splitHPTotal = splitDefenseData[1].split(/(?:hp )([\d]*)/)[1];
+    //let stringHitDice = JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/));
+    let stringHitDice = JSON.parse(JSON.stringify(splitDefenseData[1].match(/\([\s\S]*?\)/)));
+    console.log("stringHitDice: " + stringHitDice);
     
-    if (splitHitDice.indexOf("+") !== -1) {
-        splitHDBonus = splitHitDice.match(/\+([\d]*)/)[1];
+    // Extract HitDie and separate DicePools containing number and size of the die as well as the bonus
+    let splitHitDice = {};
+    let splitHitDie = {
+        "hd": 0,
+        "hdSize": 0,
     }
+    
+    // Calculate HP for Class and Race Items
+    
+    // Get different DicePools, e.g. XdY combinations, mostly for combinations of racial and class hitDice
+    let hitDicePool = JSON.stringify(stringHitDice).match(/(\d+?d\d+?)/gi);
+    console.log("hitDicePool: " + hitDicePool);
+    
+    
+    
+    
+    
+    
+    // Find the Dicepool for class(es)
+    if (dataInputHasClasses == true) {
+        
+        let classKey = Object.keys(formattedInput.classes);
+        let hitDicePoolKey = Object.keys(hitDicePool);
+        
+        for (let i = 0; i < classKey.length; i++) {
+        
+            let tempLevel = formattedInput.classes[classKey[i]].level;
+            
+            for (let j = 0; j < hitDicePoolKey.length; j++) {
+                let tempRegEx = new RegExp("(?:" + tempLevel + "d)(\\d+?)", "i");
+                if (hitDicePool[j].match(tempRegEx)) {
+                    // Set HP for classItem
+                    let tempDiceSize = hitDicePool[j].match(tempRegEx)[1];
+                    formattedInput.hp.class = Math.floor(+tempLevel * +getDiceAverage(tempDiceSize));
+                } else {
+                    // Set HP for RacialHDItem                    
+                    let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
+                    let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
+                    formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));                    
+                }
+            }
+        }
 
-    formattedInput.hp = splitHP;
-    formattedInput.hit_dice.hd = splitHD;
-    formattedInput.hit_dice.hd_diceSize = splitHDSize;
-    formattedInput.hit_dice.hd_bonus = splitHDBonus;
+    } else {
+        // Set racialHD when no class is given
+        let hitDicePoolKey = Object.keys(hitDicePool);
+        for (let j = 0; j < hitDicePoolKey.length; j++) {
+            
+            // Set HP for RacialHDItem        
+            let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
+            let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
+            formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
+        }
+    }
+    
+    
+    
+    
+    console.log("stringHitDice: " + stringHitDice);
+    
+    // !!!! ????? let hitDiceBonusPool = stringHitDice.match(/[^d+\(](\d+)/gi);
+    let hitDiceBonusPool = JSON.stringify(stringHitDice).match(/[^d+\(](\d+)/gi);
+    
+    let hitDiceBonus = 0;
+    
+    console.log("hitDiceBonusPool: " + hitDiceBonusPool);
+    
+    // Get the sum of all the additional bonus hp, denoted for example by "+XX" and / or "plus XX"
+    if (hitDiceBonusPool !== null) {
+        
+        for (let i = 0; i < hitDiceBonusPool.length; i++) {
+            hitDiceBonus += +hitDiceBonusPool[i];
+        }
+    
+    }
+    
+    
+    console.log("hitDicePool: " + hitDicePool);
+    console.log("hitDiceBonus: " + hitDiceBonus);
+    console.log("splitHPTotal: " + splitHPTotal);
+
+    
+    
+    
+    formattedInput.hp.total = splitHPTotal;
+    
+    
     
     
     // Extract Saves
@@ -739,12 +825,17 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     // Map generalData
     mapGeneralData(formattedInput);
 
-    if(dataInputHasClasses == "true") {
+    if(dataInputHasClasses == true) {
         // Create classes.class Data
         setClassData(formattedInput.classes);
 
         // Create a Feature/Class Item for Class and Race Entries
         setClassItem(formattedInput.classes);
+    }
+    
+    if( (dataInputHasPlayableRace == true) || (dataInputHasNonPlayableRace == true) ) {
+        console.log("parsing race");
+        setRaceItem(formattedInput.race);
     }
     
     // Create a Item for the Creature Type
@@ -806,6 +897,8 @@ function mapGeneralData(formattedInput) {
         default: dataOutput.data.traits.size = "med"; break;
     }
     
+    dataOutput.data.traits.senses = formattedInput.senses;
+    
     // Senses and Vision
     if (formattedInput.senses.search(/low-light/i) !== -1) {
         dataOutput.data.attributes.vision.lowLight = true;
@@ -820,9 +913,6 @@ function mapGeneralData(formattedInput) {
     dataOutput.token.dimSight = 120;
     dataOutput.token.brightSight = 60;
     
-    // Race
-    dataOutput.data.details.race = "";
-
 }
 
 // Map data.classes.class
@@ -854,32 +944,47 @@ function setClassData (classInput) {
     
 }
 
-// Create Class and Race Item
+// Create Class
 function setClassItem (classInput) {
 
-    console.log("classInput: " + JSON.stringify(classInput));
     let classKey = Object.keys(classInput);
-    console.log("classKEy: " + classKey);
     
     for (var i=0; i < classKey.length; i++) {
         // Create Item for the Class starting from the template
         let itemEntry = templateClassItem[classKey[i].toLowerCase().replace(/npc/,"Npc")];
-        itemEntry.data.levels = classInput[classKey[i]].level;
         itemEntry.data.savingThrows.fort.value = "";
         itemEntry.data.savingThrows.ref.value = "";
         itemEntry.data.savingThrows.will.value = "";
-        //itemEntry.data.hd = "";
         
-        // !!! CHANGE FROM HD TO CLASS LEVEL
-        // !!! Without the Bonus HP, as they are set in creatureTypeItem
-        
-        //itemEntry.data.hp = Math.floor(+getDiceAverage(formattedInput.hit_dice.hd_diceSize) * +formattedInput.hit_dice.hd);
+        itemEntry.data.levels = classInput[classKey[i]].level;
+        itemEntry.data.hp = +formattedInput.hp.class;
         //itemEntry.data.bab = "";
         //itemEntry.data.skillsPerLevel = "";
 
         dataOutput.items.push(itemEntry);
     }
 }
+
+// Create Race Item
+function setRaceItem (raceInput) {
+    
+    let itemEntry;
+    
+    // If it's a playable race
+    if (dataInputHasNonPlayableRace == true) {
+        itemEntry = templateRaceItem["default"];
+        itemEntry.name = raceInput;
+        console.log("itemEntry: " + JSON.stringify(itemEntry));
+    } else if (dataInputHasPlayableRace == true) {
+        itemEntry = templateRaceItem[raceInput.toLowerCase()];
+        
+        console.log("itemEntry: " + JSON.stringify(itemEntry));
+    } else {
+        console.log("something went wrong parsing the race");
+    }
+    dataOutput.items.push(itemEntry);
+}
+
 
 // Create Item for Creature Type
 function setRacialHDItem (formattedInput) {
@@ -892,8 +997,7 @@ function setRacialHDItem (formattedInput) {
     //itemEntry.data.hd = "";
     
     itemEntry.data.levels = +formattedInput.hit_dice.hd;
-        
-    itemEntry.data.hp = Math.floor(+getDiceAverage(formattedInput.hit_dice.hd_diceSize) * +formattedInput.hit_dice.hd);
+    itemEntry.data.hp = +formattedInput.hp.race;
 
     //itemEntry.data.bab = "";
     //itemEntry.data.skillsPerLevel = "";
@@ -968,8 +1072,8 @@ function setConversionItem (formattedInput) {
 function mapDefenseData (formattedInput) {
 
     // Attributes
-    dataOutput.data.attributes.hp.value = +formattedInput.hp;
-    dataOutput.data.attributes.hp.max = +formattedInput.hp;
+    dataOutput.data.attributes.hp.value = +formattedInput.hp.total;
+    dataOutput.data.attributes.hp.max = +formattedInput.hp.total;
     
 
     dataOutput.data.attributes.ac.normal.total = +formattedInput.ac;
