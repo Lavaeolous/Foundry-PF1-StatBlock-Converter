@@ -21,6 +21,8 @@ import enumBonusTypes from "./enumBonusTypes.js"
 
 var dataInput;
 var dataInputHasClasses = false;
+var inputHDTotal = 0;
+var inputClassHD = 0;
 var dataInputHasNonPlayableRace = false;
 var dataInputHasPlayableRace = false;
 var dataInputHasRacialHD = true;
@@ -377,38 +379,41 @@ function splitGeneralData(stringGeneralData) {
     let splitClasses = splitGeneralData.match(regExClasses);
     console.log("splitClasses: " + splitClasses);
     // If there are classes, get them, their level and the race / gender as well
-    if (splitClasses !== null) {
+    if ( (splitClasses !== null) && (splitClasses !== "") ) {
         dataInputHasClasses = true;
         // Get Class(es)
         splitClasses.forEach( function(item, index) {
-            // Check for className (first for classes with two words e.g. vampire hunter)
-            let classNameAndLevel = "";
-            let className = "";
-            let classNameSuffix = "";
-            let classLevel = "";
             
-            // Get Classlevel and words in between class an level
-            
-            let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
-            
-            classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
-            
-            console.log("classNameAndLevel: " + classNameAndLevel);
-            
-            className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
-            classNameSuffix = classNameAndLevel[0].split(/[\s](?:\d)/)[0].replace(regExClasses, "").replace(/^ | $/, "");
-            classLevel = classNameAndLevel[0].match(/(\d+?)/)[0];
-            
-            // If it's an NPC Class, add Npc to the Name
-            // Because thats the notation used in the gameSystem
-            if (className[0].search(/(adept)|(commoner)|(expert)|(warrior)|(aristocrat)/i) !== -1 ) {
-                className = className[0].concat("Npc");
-            }
-            
-            formattedInput.classes[className] = {
-                "name" : className[0],
-                "nameSuffix" : classNameSuffix,
-                "level" : +classLevel
+            if ( item !== undefined ) {
+                // Check for className (first for classes with two words e.g. vampire hunter)
+                let classNameAndLevel = "";
+                let className = "";
+                let classNameSuffix = "";
+                let classLevel = "";
+
+                // Get Classlevel and words in between class an level
+                console.log("item: " + item);
+                let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
+
+                classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
+
+                console.log("classNameAndLevel: " + classNameAndLevel);
+
+                className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
+                classNameSuffix = classNameAndLevel[0].split(/[\s](?:\d)/)[0].replace(regExClasses, "").replace(/^ | $/, "");
+                classLevel = classNameAndLevel[0].match(/(\d+?)/)[0];
+
+                // If it's an NPC Class, add Npc to the Name
+                // Because thats the notation used in the gameSystem
+                if (className[0].search(/(adept)|(commoner)|(expert)|(warrior)|(aristocrat)/i) !== -1 ) {
+                    className = className[0].concat("Npc");
+                }
+
+                formattedInput.classes[className] = {
+                    "name" : className[0],
+                    "nameSuffix" : classNameSuffix,
+                    "level" : +classLevel
+                }
             }
 
         });
@@ -594,10 +599,6 @@ function splitDefenseData(stringDefenseData) {
     console.log("hitDicePool: " + hitDicePool);
     
     
-    
-    
-    
-    
     // Find the Dicepool for class(es)
     if (dataInputHasClasses == true) {
         
@@ -614,11 +615,13 @@ function splitDefenseData(stringDefenseData) {
                     // Set HP for classItem
                     let tempDiceSize = hitDicePool[j].match(tempRegEx)[1];
                     formattedInput.hp.class = Math.floor(+tempLevel * +getDiceAverage(tempDiceSize));
+                    inputHDTotal += +tempLevel;
                 } else {
                     // Set HP for RacialHDItem                    
                     let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
                     let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
-                    formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));                    
+                    formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
+                    inputHDTotal += +tempRacialHD;
                 }
             }
         }
@@ -632,15 +635,16 @@ function splitDefenseData(stringDefenseData) {
             let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
             let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
             formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
+            inputHDTotal += +tempRacialHD;
         }
     }
     
     
-    
+    formattedInput.hit_dice.hd = inputHDTotal;
+    console.log("formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
     
     console.log("stringHitDice: " + stringHitDice);
     
-    // !!!! ????? let hitDiceBonusPool = stringHitDice.match(/[^d+\(](\d+)/gi);
     let hitDiceBonusPool = JSON.stringify(stringHitDice).match(/[^d+\(](\d+)/gi);
     
     let hitDiceBonus = 0;
@@ -879,7 +883,6 @@ function mapGeneralData(formattedInput) {
     dataOutput.data.details.alignment = formattedInput.alignment;
     
     // Attributes
-    dataOutput.data.attributes.hd.total = formattedInput.hit_dice.hd;
     dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex);
     dataOutput.data.attributes.init.total = formattedInput.initiative;
     
@@ -957,6 +960,7 @@ function setClassItem (classInput) {
         itemEntry.data.savingThrows.will.value = "";
         
         itemEntry.data.levels = classInput[classKey[i]].level;
+        inputClassHD = classInput[classKey[i]].level;
         itemEntry.data.hp = +formattedInput.hp.class;
         //itemEntry.data.bab = "";
         //itemEntry.data.skillsPerLevel = "";
@@ -986,7 +990,7 @@ function setRaceItem (raceInput) {
 }
 
 
-// Create Item for Creature Type
+// Create Item for RacialHD
 function setRacialHDItem (formattedInput) {
 
     // Create Item for the Class starting from the template
@@ -996,7 +1000,7 @@ function setRacialHDItem (formattedInput) {
     itemEntry.data.savingThrows.will.value = "";
     //itemEntry.data.hd = "";
     
-    itemEntry.data.levels = +formattedInput.hit_dice.hd;
+    itemEntry.data.levels = +formattedInput.hit_dice.hd - inputClassHD;
     itemEntry.data.hp = +formattedInput.hp.race;
 
     //itemEntry.data.bab = "";
@@ -1010,6 +1014,36 @@ function setConversionItem (formattedInput) {
 
     // Create Item for the Class starting from the template
     let itemEntry = templateConversionItem;
+    
+    // Add Changes to HP if needed
+    // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
+    // and compare that to the hp.total from the input
+    
+    console.log("+formattedInput.hp.race: " + +formattedInput.hp.race);
+    console.log("+formattedInput.hp.class: " + +formattedInput.hp.class);
+    console.log("+formattedInput.hit_dice.hd: " + +formattedInput.hit_dice.hd);
+    console.log("+getModifier(formattedInput.con): " + +getModifier(formattedInput.con));
+    
+    let calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
+    console.log("calculatedHPTotal: " + calculatedHPTotal);
+    
+    if (+calculatedHPTotal !== +formattedInput.hp.total) {
+        
+        let tempHPDifference = +formattedInput.hp.total - +calculatedHPTotal;
+        
+        let hpChange = [
+            tempHPDifference,
+            "misc",
+            "mhp",
+            "untyped"
+        ];
+        
+        itemEntry.data.changes.push(hpChange);
+    }
+    
+    
+    
+    
     
     // Add Changes to AC
     for (var key in formattedInput.ac_bonus_types) {

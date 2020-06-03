@@ -20,7 +20,7 @@ export default [
     "Investigator",
     "Kineticist",
     "Magus",
-    "Medium",
+    "(Medium)(?: \d+?)",
     "Mesmerist",
     "Monk",
     "Ninja",
