@@ -120,7 +120,7 @@ function init() {
 
     // Load FoundryVTT Actor Template
     
-    dataTemplate = templateActor;
+    dataTemplate = JSON.parse(JSON.stringify(templateActor));
 }
 
 
@@ -302,7 +302,7 @@ function convertStatBlock(input) {
      * to be mapped onto the dataTemplate later
      */
     
-    formattedInput = templateData;
+    formattedInput = JSON.parse(JSON.stringify(templateData));
     
     // Take General Data and extract Name, CR, XP and Stuff
     splitGeneralData(stringGeneralData);
@@ -355,7 +355,11 @@ function splitGeneralData(stringGeneralData) {
     let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");    
     
     //Alignment
-    let splitAlignment = splitGeneralData.match(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
+    let splitAlignment = "";
+    if (splitGeneralData.search(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /) !== -1) {
+        splitAlignment = splitGeneralData.match(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
+    }
+    
     
     // Size, Space and Reach
     let splitSize = splitGeneralData.match(new RegExp(enumSizes.join("|"), "i"))[0].replace(/\s+?/,"");
@@ -379,7 +383,7 @@ function splitGeneralData(stringGeneralData) {
     // Split Classes, if available
     // Special Case: (Medium)(?: \d+?)
     
-    let regExClasses = new RegExp(enumClasses.join("|"), "i");
+    let regExClasses = new RegExp(enumClasses.join("|"), "gi");
     console.log("regExClasses: " + regExClasses);
     let splitClasses = splitGeneralData.match(regExClasses);
     console.log("splitClasses: " + splitClasses);
@@ -388,6 +392,14 @@ function splitGeneralData(stringGeneralData) {
         dataInputHasClasses = true;
         // Get Class(es)
         splitClasses.forEach( function(item, index) {
+            
+            console.log("item: " + item);
+            
+            if (item.search(/Medium/i) !== -1) {
+                item = "medium";
+            }
+            
+            console.log("item: " + item);
             
             if ( item !== undefined ) {
                 // Check for className (first for classes with two words e.g. vampire hunter)
@@ -403,13 +415,19 @@ function splitGeneralData(stringGeneralData) {
                 classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
 
                 console.log("classNameAndLevel: " + classNameAndLevel);
-
-                className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
+                
+                if (item.search(/Medium/i) !== -1) {
+                    className = "Medium";
+                } else {
+                    className = classNameAndLevel[0].split(/[\s](?:\d)/)[0].match(regExClasses);
+                    
+                }
                 classNameSuffix = classNameAndLevel[0].split(/[\s](?:\d)/)[0].replace(regExClasses, "").replace(/^ | $/, "");
                 classLevel = classNameAndLevel[0].match(/(\d+?)/)[0];
 
                 // If it's an NPC Class, add Npc to the Name
                 // Because thats the notation used in the gameSystem
+                console.log("className: " + className);
                 if (className[0].search(/(adept)|(commoner)|(expert)|(warrior)|(aristocrat)/i) !== -1 ) {
                     className = className[0].concat("Npc");
                 }
@@ -447,12 +465,13 @@ function splitGeneralData(stringGeneralData) {
             let foundRace = "";
             
             if (stringGenderAndRace.search(regExPlayableRace) !== -1) {
-                //foundRace = stringGenderAndRace.match(regExPlayableRace)[0];
-                //dataInputHasPlayableRace = true;
+                // Test playable Races
+                foundRace = stringGenderAndRace.match(regExPlayableRace)[0];
+                dataInputHasPlayableRace = true;
                 
                 // FOR NOW JUST USE EVERYTHING AS NONPLAYABLE
-                foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
-                dataInputHasNonPlayableRace = true;
+                //foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
+                //dataInputHasNonPlayableRace = true;
             } else {
                 // If no playable Race is found, simply remove the gender(s) and use the rest as race
                 foundRace = stringGenderAndRace.split(regExNonPlayableRace).join("").replace(/^ | $/, "");
@@ -775,14 +794,16 @@ function splitTacticsData(stringTacticsData) {
     
     splitTacticsData = splitTacticsData.replace(/\n/gm," ");
     
+    console.log("splitTacticsData: " + splitTacticsData);
+    
     // Check for Keywords "During Combat, Before Combat and Morale"
     if(splitTacticsData.search(/Before Combat/m) !== -1) {
-        let splitTacticsBeforeCombat = splitTacticsData.match(/Before Combat .+?(?=Morale|During|Base Statistics)/);
+        let splitTacticsBeforeCombat = splitTacticsData.match(/Before Combat .+?(?=Morale|During|Base Statistics|$)/);
         formattedInput.tactics.before_combat = splitTacticsBeforeCombat;
     }
     
-    if(splitTacticsData.search(/During Combat/m) !== -1) {
-        let splitTacticsDuringCombat = splitTacticsData.match(/During Combat .+?(?=Morale|Before|Base Statistics)/)[0].replace(/During Combat /,"");
+    if(splitTacticsData.search(/During Combat/mi) !== -1) {
+        let splitTacticsDuringCombat = splitTacticsData.match(/During Combat .+?(?=Morale|Before|Base Statistics|$)/)[0].replace(/During Combat /,"");
         formattedInput.tactics.during_combat = splitTacticsDuringCombat;
     }
         
@@ -869,7 +890,7 @@ function splitStatisticsData(stringStatisticsData) {
 function mapInputToTemplateFoundryVTT(formattedInput) {
     
     // Generate a temporary dataOutput from the template
-    dataOutput = dataTemplate;
+    dataOutput = JSON.parse(JSON.stringify(dataTemplate));
     
     // Map generalData
     mapGeneralData(formattedInput);
@@ -902,7 +923,8 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     
     
     
-    // Map Attributes
+    // Map Notes
+    mapNotesData();
     
     
     
@@ -1238,6 +1260,27 @@ function mapStatisticData (formattedInput) {
     dataOutput.data.attributes.cmd.total = formattedInput.cmd;
     
     
+}
+
+// Map Notes in HTML
+function mapNotesData() {
+    let tempNotes = "";
+    
+    let tempTacticsSection = "<section id='tactics'><h2>TACTICS</h2>";
+    if (formattedInput.tactics.before_combat !== "") {
+        tempTacticsSection += "<p><span style='font-weight: 900'>Before Combat:</span> " + formattedInput.tactics.before_combat + "</p>";
+    }
+    if (formattedInput.tactics.during_combat !== "") {
+        tempTacticsSection += "<p><span style='font-weight: 900'>During Combat:</span> " + formattedInput.tactics.during_combat + "</p>";
+    }
+    if (formattedInput.tactics.morale !== "") {
+        tempTacticsSection += "<p><span style='font-weight: 900'>Morale:</span> " + formattedInput.tactics.morale + "</p>";
+    }
+    tempTacticsSection += "</section>";
+    
+    tempNotes += tempTacticsSection;
+    
+    dataOutput.data.details.notes.value = tempNotes;
 }
 
 // Return RawJSON to the Output TextArea
