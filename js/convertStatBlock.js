@@ -28,6 +28,9 @@ var inputClassHD = 0;
 var dataInputHasNonPlayableRace = false;
 var dataInputHasPlayableRace = false;
 var dataInputHasRacialHD = true;
+var dataInputHasTactics = false;
+var dataInputHasSpecialAbilities = false;
+var dataInputHasEcology = false;
 var dataOutput;
 var dataTemplate;
 var formattedInput;
@@ -174,9 +177,9 @@ function convertStatBlock(input) {
     if(dataInput.search(/(\n\bSpeed\b)/mi) !== -1) { foundOffenseData = true; }
     if(dataInput.search(/(\n\bSTR\b)/gmi) !== -1) { foundStatisticsData = true; }
     // Check for optional Datablocks marked by keywords for now
-    if(dataInput.search(/\nTACTICS\n/gmi) !== -1) { foundTacticsData = true; }
-    if(dataInput.search(/\nSPECIAL ABILITIES\n/gmi) !== -1) { foundSpecialAbilitiesData = true; }
-    if(dataInput.search(/\nECOLOGY\n/gmi) !== -1) { foundEcologyData = true; }
+    if(dataInput.search(/\nTACTICS\n/gmi) !== -1) { foundTacticsData = true; dataInputHasTactics = true; }
+    if(dataInput.search(/\nSPECIAL ABILITIES\n/gmi) !== -1) { foundSpecialAbilitiesData = true; dataInputHasSpecialAbilities = true; }
+    if(dataInput.search(/\nECOLOGY\n/gmi) !== -1) { foundEcologyData = true; dataInputHasEcology = true; }
     
     // 
     if( (foundDefenseData == false) || (foundOffenseData == false) || (foundStatisticsData == false) ) {
@@ -316,7 +319,7 @@ function convertStatBlock(input) {
     //splitOffenseeData(stringOffenseData);
     
     // Take Tactics Data and extract Stuff
-    if(foundTacticsData == true) {
+    if(foundTacticsData === true) {
         splitTacticsData(stringTacticsData);
     }
     
@@ -935,7 +938,7 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
 // Map General Data
 function mapGeneralData(formattedInput) {
     // Top of the Character Sheet
-    dataOutput.name = dataOutput.token.name = formattedInput.name;
+    dataOutput.name = dataOutput.token.name = formattedInput.name.replace(/^ | $/, "");
     
     // Token Data
     dataOutput.token.name = dataOutput.token.name = formattedInput.name;
@@ -1201,21 +1204,81 @@ function mapDefenseData (formattedInput) {
     dataOutput.data.traits.fastHealing = formattedInput.fast_healing;
     
     // Defensive Abilities
-    console.log("formattedInput.defensive_abilities: " + formattedInput.defensive_abilities);
-    // Split the abilities and generate an empty item for each of them
+    // The list is found in the Notes-Section, long-forms should be in the special abilities section
+    
+    // Immunities
+    console.log("Immunities: " + formattedInput.immunities);
+    
+    // Set Condition Immunities
+    let tempImmunities = formattedInput.immunities;
+    enumConditions.forEach( function (item, index) {
+        console.log("conditionItem: " + item);
+        if (tempImmunities.search(item) !== -1) {
+            dataOutput.data.traits.ci.value.push(item);
+            tempImmunities = tempImmunities.replace(item, "");
+        }
+    });
+    
+    // Set Damage Immunities
+    enumDamageTypes.forEach( function (item, index) {
+        console.log("damageItem: " + item);
+        if (tempImmunities.search(item) !== -1) {
+            dataOutput.data.traits.di.value.push(item);
+            tempImmunities = tempImmunities.replace(item, "");
+        }
+    });
+    
+    // If there is anything left in tempImmunities, treat it as a custom immunity
+    if (tempImmunities.search(/(\w+)/gi) !== -1) {
+        let tempCustomImmunity = tempImmunities.match(/(\w+)/gi).join(", ");
+        // Now way to find out if its damage or a condition, so set it to both
+        dataOutput.data.traits.di.custom = tempCustomImmunity;
+        dataOutput.data.traits.ci.custom = tempCustomImmunity;
+    }
+    
+    // Resistances
+    
+    console.log("ResistanceString: " + formattedInput.resistances);
+    
+    let tempResistances = formattedInput.resistances;
+    
+    enumDamageTypes.forEach( function (item, index) {
+        let tempResistanceRegEx = new RegExp("(\\b" + item + "\\b \\d+)", "ig");
+        if (tempResistances.search(tempResistanceRegEx) !== -1) {
+            
+            console.log("tempResistanceRegEx: " + tempResistanceRegEx);
+            let tempResistance = formattedInput.resistances.match(tempResistanceRegEx);
+            dataOutput.data.traits.eres += tempResistance + ", ";
+        }
+    });
+    
+    dataOutput.data.traits.eres = dataOutput.data.traits.eres.replace(/, $/,"");
+    
+    console.log("dataOutput.data.traits.eres: " + dataOutput.data.traits.eres);
+    
+    // Weaknesses / Vulnerabilities
+    console.log("Weaknesses: " + formattedInput.weaknesses);
+    
+    // Set DamageType Vulnerabilities
+    let tempWeaknesses = formattedInput.weaknesses;
+    enumDamageTypes.forEach( function (item, index) {
+        if (tempWeaknesses.search(item) !== -1) {
+            dataOutput.data.traits.dv.value.push(item);
+            tempWeaknesses = tempWeaknesses.replace(item, "");
+        }
+    });
+    
+    // If there is anything left in tempWeaknesses, treat it as a custom weakness
+    if (tempWeaknesses.search(/(\w+)/gi) !== -1) {
+        let tempCustomWeakness = tempWeaknesses.match(/(\w+)/gi).join(", ");
+        
+        dataOutput.data.traits.dv.custom = tempCustomWeakness;
+    }
     
     
     
-    //!!!!!!!!!!!!!!!!!!!!!1
     
-    
-    
-    
-    
-    
-    
-    
-    // Reset Max Dex Bonus
+    // Reset Max Dex Bonus for now
     dataOutput.data.attributes.maxDexBonus = 0;
 }
 
@@ -1272,19 +1335,29 @@ function mapNotesData() {
     let tempNotes = "";
     
     // H2 - TACTICS
-    let tempTacticsSection = "<section id='tactics'><h2>TACTICS</h2>";
-    if (formattedInput.tactics.before_combat !== "") {
-        tempTacticsSection += "<p><span style='font-weight: 900'>Before Combat:</span> " + formattedInput.tactics.before_combat + "</p>";
+    if (dataInputHasTactics === true) {
+        let tempTacticsSection = "<section id='tactics'><h2>TACTICS</h2>";
+        if (formattedInput.tactics.before_combat !== "") {
+            tempTacticsSection += "<p><span style='font-weight: 900'>Before Combat:</span> " + formattedInput.tactics.before_combat + "</p>";
+        }
+        if (formattedInput.tactics.during_combat !== "") {
+            tempTacticsSection += "<p><span style='font-weight: 900'>During Combat:</span> " + formattedInput.tactics.during_combat + "</p>";
+        }
+        if (formattedInput.tactics.morale !== "") {
+            tempTacticsSection += "<p><span style='font-weight: 900'>Morale:</span> " + formattedInput.tactics.morale + "</p>";
+        }
+        tempTacticsSection += "</section>";
+        tempNotes += tempTacticsSection;
     }
-    if (formattedInput.tactics.during_combat !== "") {
-        tempTacticsSection += "<p><span style='font-weight: 900'>During Combat:</span> " + formattedInput.tactics.during_combat + "</p>";
-    }
-    if (formattedInput.tactics.morale !== "") {
-        tempTacticsSection += "<p><span style='font-weight: 900'>Morale:</span> " + formattedInput.tactics.morale + "</p>";
-    }
-    tempTacticsSection += "</section>";
     
-    tempNotes += tempTacticsSection;
+    // H2 - DEFENSIVE ABILITIES
+    if (formattedInput.defensive_abilities !== "") {
+        let tempDefensiveAbilitiesSection = "<section id='defensiveAbilities'><h2>DEFENSIVE ABILITIES</h2>";
+        tempDefensiveAbilitiesSection += "<p>" + formattedInput.defensive_abilities + "</p>";
+        tempDefensiveAbilitiesSection += "</section>";
+        
+        tempNotes += tempDefensiveAbilitiesSection;
+    }
     
     // H2 - RAW STATBLOCK
     let tempStatblockSection = "<section id='statblock'><h2>IMPORTED RAW DATA</h2>";

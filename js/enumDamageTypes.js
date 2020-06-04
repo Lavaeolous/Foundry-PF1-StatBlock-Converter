@@ -5,6 +5,7 @@ export default [
           "cold",
           "fire",
           "electric",
+          "electricity",
           "sonic",
           "acid",
           "force",
