@@ -195,7 +195,7 @@ function convertStatBlock(input) {
     
     // Output the prelimenary analysis of the input
     statusOutput.innerHTML += "Input-Analysis:<br/>Mandatory: <ul>";
-    statusOutput.innerHTML += "<li>Offense-Data found: " + foundOffenseData + "</li>";
+    statusOutput.innerHTML += "<li>Offense-Data found: " + foundOffenseData + " (WIP, currently only read and not parsed)</li>";
     statusOutput.innerHTML += "<li>Defense-Data found: " + foundDefenseData + "</li>";
     statusOutput.innerHTML += "<li>Statistic-Data found: " + foundStatisticsData + "</li></ul><br/>";
     statusOutput.innerHTML += "Optional: <ul>";
@@ -542,6 +542,8 @@ function splitDefenseData(stringDefenseData) {
     
     stringDefenseData = stringDefenseData.replace(/^ | $|^\n*/,"");
     
+    console.log("stringDefenseData: " + stringDefenseData);
+    
     // Clean up the Input if there are extra linebreaks (often when copy and pasted from pdfs)
     // Remove linebreaks in parenthesis
     stringDefenseData = stringDefenseData.replace(/(\([^(.]+?)(?:\n)([^(.]+?\))+?/mi, "$1 $2");
@@ -722,6 +724,8 @@ function splitDefenseData(stringDefenseData) {
     
     // Check if there is a forth line
     /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance
+    
+    
     if(splitDefenseData[3]) {
         let splitResistances = splitDefenseData[3].split(/;/g);
 
