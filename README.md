@@ -12,6 +12,9 @@ Steps:
 6. Edit one of the Values in there (e.g. change a 6 into a 5, tab out of the field and change it back again) to trigger an item/sheet update
 
 Currently, the tool only parses the following data and generates equivalent Foundry Data and Items:
+
+![Status Image](/assets/images/status.png)
+
 *  Name
 *  CR
 *  XP
@@ -37,8 +40,8 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  CMD and CMB (WIP)
 
 
-\* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.
-\*\* Including the needed calculations
+\* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
+\*\* Including the needed calculations  
 \*\*\* Including changes to the token (e.g. size and vision)
 
 **Known Bugs:**
