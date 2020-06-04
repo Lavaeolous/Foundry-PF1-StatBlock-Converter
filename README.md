@@ -9,7 +9,7 @@ Steps:
 3. Download the JSON file
 4. Create a new NPC Actor in Foundry (with a placeholder name), right click on it and select "Import Data". Pick the JSON you generated.
 5. Open the Actor Sheet, navigate to the Permanent Buff section and open the Buff "Conversion Changes"
-6. Edit one of the Values in there (e.g. change a 6 into a 5, tab out of the field and change it back again) to trigger an item/sheet update
+6. **Edit one of the Values in there (e.g. change a 6 into a 5, tab out of the field and change it back again) to trigger an item/sheet update**
 
 Currently, the tool only parses the following data and generates equivalent Foundry Data and Items:
 
