@@ -1085,24 +1085,26 @@ function setConversionItem (formattedInput) {
     // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
     // and compare that to the hp.total from the input
     
-    console.log("+formattedInput.hp.race: " + +formattedInput.hp.race);
-    console.log("+formattedInput.hp.class: " + +formattedInput.hp.class);
-    console.log("+formattedInput.hit_dice.hd: " + +formattedInput.hit_dice.hd);
-    console.log("+getModifier(formattedInput.con): " + +getModifier(formattedInput.con));
+    console.log("+formattedInput.hp.race: " + formattedInput.hp.race);
+    console.log("+formattedInput.hp.class: " + formattedInput.hp.class);
+    console.log("+formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
+    console.log("+getModifier(formattedInput.con): " + getModifier(formattedInput.con));
     
     let calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
     console.log("calculatedHPTotal: " + calculatedHPTotal);
     
     if (+calculatedHPTotal !== +formattedInput.hp.total) {
         
-        let tempHPDifference = +formattedInput.hp.total - +calculatedHPTotal;
+        let tempHPDifference = formattedInput.hp.total - calculatedHPTotal;
         
         let hpChange = [
-            +tempHPDifference,
+            tempHPDifference.toString(),
             "misc",
             "mhp",
             "untyped"
         ];
+        
+        console.log("tempHPDifference: " + tempHPDifference);
         
         itemEntry.data.changes.push(hpChange);
     }
@@ -1116,7 +1118,7 @@ function setConversionItem (formattedInput) {
             
             // Special Treatment for Armor and Shield Boni
             if ( ( key.toLowerCase() == "armor" ) || ( key.toLowerCase() == "shield" ) ) {
-                acChange.push(+formattedInput.ac_bonus_types[key]);
+                acChange.push(formattedInput.ac_bonus_types[key].toString());
                 acChange.push("ac");
                 if ( key == "armor") {
                     acChange.push("aac");
@@ -1125,7 +1127,7 @@ function setConversionItem (formattedInput) {
                 }
                 acChange.push("base");
             } else {
-                acChange.push(+formattedInput.ac_bonus_types[key]);
+                acChange.push(formattedInput.ac_bonus_types[key].toString());
                 acChange.push("ac");
                 acChange.push("ac");
                 acChange.push(key);
@@ -1149,10 +1151,11 @@ function setConversionItem (formattedInput) {
         if ( ( formattedInput.creature_type.toLowerCase() === "undead" ) && ( enumSaveModifier[index] === "con" ) && ( formattedInput[enumSaveModifier[index]] === "-" ) ) {
             console.log("this is an undead without con");
             // Set the Change to 0, because thats handled automatically in the undead creature item
-            saveChange.push(0);
+            saveChange.push("0");
         } else {
-            console.log("+formattedInput[tempSaveString]: " + +formattedInput[tempSaveString]);
-            saveChange.push(+formattedInput[tempSaveString]-attrModifier);
+            console.log("+formattedInput[tempSaveString]: " + formattedInput[tempSaveString]);
+            let tempSave = formattedInput[tempSaveString]-attrModifier;
+            saveChange.push(tempSave.toString());
         }
         
         
@@ -1163,7 +1166,7 @@ function setConversionItem (formattedInput) {
         itemEntry.data.changes.push(saveChange);  
     });
     
-    itemEntry.data.active = true;
+    itemEntry.data.active = false;
     
     dataOutput.items.push(itemEntry);
 }
@@ -1200,6 +1203,8 @@ function mapDefenseData (formattedInput) {
     // Defensive Abilities
     console.log("formattedInput.defensive_abilities: " + formattedInput.defensive_abilities);
     // Split the abilities and generate an empty item for each of them
+    
+    
     
     //!!!!!!!!!!!!!!!!!!!!!1
     
