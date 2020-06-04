@@ -1266,6 +1266,7 @@ function mapStatisticData (formattedInput) {
 function mapNotesData() {
     let tempNotes = "";
     
+    // H2 - TACTICS
     let tempTacticsSection = "<section id='tactics'><h2>TACTICS</h2>";
     if (formattedInput.tactics.before_combat !== "") {
         tempTacticsSection += "<p><span style='font-weight: 900'>Before Combat:</span> " + formattedInput.tactics.before_combat + "</p>";
@@ -1280,6 +1281,13 @@ function mapNotesData() {
     
     tempNotes += tempTacticsSection;
     
+    // H2 - RAW STATBLOCK
+    let tempStatblockSection = "<section id='statblock'><h2>IMPORTED RAW DATA</h2>";
+    tempStatblockSection += "<p>" + dataInput + "</p></section>";
+    
+    tempNotes += tempStatblockSection;
+    
+    // WRITE EVERYTHING TO THE NOTES
     dataOutput.data.details.notes.value = tempNotes;
 }
 
