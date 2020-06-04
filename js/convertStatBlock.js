@@ -836,8 +836,12 @@ function splitStatisticsData(stringStatisticsData) {
      * !!! ERROR WHEN ATTRIBUTE IS —
      */
     
+    console.log("stringStatisticsData: " + stringStatisticsData);
+    
     // Attributes
-    let splitAttributes = stringStatisticsData.match(/(\bStr\b).*(\bCha\b [0-9-—]{1,2})/gmi)[0].split(/,/);
+    let splitAttributes = stringStatisticsData.match(/(\bStr\b)[\s\S]*(\bCha\b [0-9-—]{1,2})/gmi)[0].replace(/\n/,"").split(/,/);
+    
+    console.log("splitAttributes: " + splitAttributes);
     
     splitAttributes.forEach ( function (item, index) {
         let tempItem = item.replace(/^\s/,"").split(/\s/);
