@@ -56,3 +56,6 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  Parse Attacks, Spells, Ecology, Description (only for SRD-Content), Gear & Treasure, Special Abilities
 *  Give usable Feedback in the status bar (for now some comments are visible in the console)
 *  Sometime in the future make a module out of it, maybe
+
+**Contact**
+Primer#2220 on Discord
