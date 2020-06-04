@@ -1,6 +1,8 @@
 # Foundry-PF1-StatBlock-Converter
 Tool to parse Creature StatBlocks for the Pathfinder 1 GameSystem on FoundryVTT
 
+Link: https://lavaeolous.github.io/Foundry-PF1-StatBlock-Converter/index.html
+
 This Tool takes a Statblock as found on the srd, aon or in pdfs per copy and paste and tries to convert that to a usable json. The generated JSON can, if everything works as intended, be imported in Foundry. As this is a first draft, i guess most of the time it will not work :slight_smile: But maybe it's useful for some of you.
 
 Steps:
