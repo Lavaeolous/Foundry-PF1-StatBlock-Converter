@@ -9,9 +9,8 @@ Steps:
 1. Copy and Paste a Statblock into the left input field and click "Convert Stat Block"
 2. Visually inspect the Output on the right side. If nothing appears, check the console (F12), as in most of the cases there will be a part in the Statblock thats not formatted in a way thats readable for the converter
 3. Download the JSON file
-4. Create a new NPC Actor in Foundry (with a placeholder name), right click on it and select "Import Data". Pick the JSON you generated.
-5. Open the Actor Sheet, navigate to the Permanent Buff section and open the Buff "Conversion Changes"
-6. **Edit one of the Values in there (e.g. change a 6 into a 5, tab out of the field and change it back again) to trigger an item/sheet update**
+4. Create a new **NPC Actor** in Foundry (with a placeholder name), right click on it and select "Import Data". Pick the JSON you generated.
+5. Open the Actor Sheet, navigate to the Permanent Buff section and activate  the Buff "Conversion Changes"
 
 Currently, the tool only parses the following data and generates equivalent Foundry Data and Items:
 
