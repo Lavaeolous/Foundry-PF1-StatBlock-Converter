@@ -25,7 +25,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -141,7 +145,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -262,7 +270,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -383,7 +395,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -504,7 +520,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -620,7 +640,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 12,
         "hp": 12,
         "bab": "high",
@@ -741,7 +765,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 12,
         "hp": 12,
         "bab": "high",
@@ -862,7 +890,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -983,7 +1015,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -1104,7 +1140,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -1225,7 +1265,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -1346,7 +1390,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -1467,7 +1515,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -1583,7 +1635,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -1704,7 +1760,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -1820,7 +1880,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -1941,7 +2005,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -2062,7 +2130,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2183,7 +2255,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true  
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2304,7 +2380,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2425,7 +2505,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2541,7 +2625,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2662,7 +2750,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2778,7 +2870,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -2894,7 +2990,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -3015,7 +3115,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -3136,7 +3240,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -3252,7 +3360,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -3368,7 +3480,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -3477,7 +3593,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -3598,7 +3718,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -3719,7 +3843,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -3835,7 +3963,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -3956,7 +4088,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -4077,7 +4213,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -4198,7 +4338,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -4314,7 +4458,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -4435,7 +4583,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -4556,7 +4708,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -4677,7 +4833,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -4798,7 +4958,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -4919,7 +5083,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -5035,7 +5203,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -5156,7 +5328,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {        
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -5277,7 +5453,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -5398,7 +5578,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "high",
@@ -5519,7 +5703,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -5640,7 +5828,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 8,
         "hp": 8,
         "bab": "med",
@@ -5761,7 +5953,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 10,
         "hp": 10,
         "bab": "high",
@@ -5877,7 +6073,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",
@@ -5998,7 +6198,11 @@ export default {
           "heavyArmorFullSpeed": false
         },
         "classType": "base",
-        "levels": 1,
+        "levels": {
+            "value": 0,
+            "_deprecated": true
+        },
+        "level": 1,
         "hd": 6,
         "hp": 6,
         "bab": "low",

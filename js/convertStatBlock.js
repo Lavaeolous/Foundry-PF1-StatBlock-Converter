@@ -1033,7 +1033,7 @@ function setClassItem (classInput) {
         itemEntry.data.savingThrows.ref.value = "";
         itemEntry.data.savingThrows.will.value = "";
         
-        itemEntry.data.levels = classInput[classKey[i]].level;
+        itemEntry.data.level = classInput[classKey[i]].level;
         inputClassHD = classInput[classKey[i]].level;
         itemEntry.data.hp = +formattedInput.hp.class;
         //itemEntry.data.bab = "";
@@ -1073,7 +1073,7 @@ function setRacialHDItem (formattedInput) {
     itemEntry.data.savingThrows.will.value = "";
     //itemEntry.data.hd = "";
     
-    itemEntry.data.levels = +formattedInput.hit_dice.hd - inputClassHD;
+    itemEntry.data.level = +formattedInput.hit_dice.hd - inputClassHD;
     itemEntry.data.hp = +formattedInput.hp.race;
 
     //itemEntry.data.bab = "";
