@@ -63,11 +63,11 @@ export default {
         "climb" : 0,
         "craft" : {},
         "diplomacy" : 0,
-        "disableDevice" : 0,
+        "disable device" : 0,
         "disguise" : 0,
-        "escapeArtist" : 0,
+        "escape artist" : 0,
         "fly" : 0,
-        "handleAnimal" : 0,
+        "handle animal" : 0,
         "heal" : 0,
         "intimidate" : 0,
         "knowledge" : {
@@ -87,13 +87,13 @@ export default {
         "perform" : {},
         "profession" : {},
         "ride" : 0,
-        "senseMotive" : 0,
-        "sleightOfHand" : 0,
+        "sense motive" : 0,
+        "sleight of hand" : 0,
         "spellcraft" : 0,
         "stealth" : 0,
         "survival" : 0,
         "swim" : 0,
-        "useMagicDevice" : 0
+        "use magic device" : 0
     },
     "tactics": {
         "before_combat" : "",
