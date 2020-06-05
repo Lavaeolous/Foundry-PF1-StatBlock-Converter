@@ -1,6 +1,6 @@
 export default {
     "abberation" : {
-      "_id": "0i7PVCKBvKecTcsH",
+      "_id": "",
       "flags": {},
       "name": "Aberration",
       "type": "class",
@@ -109,7 +109,7 @@ export default {
       "empty": false
     },
     "animal" : {
-      "_id": "5TubAWCEpMVzYV7L",
+      "_id": "",
       "flags": {},
       "name": "Animal",
       "type": "class",
@@ -218,7 +218,7 @@ export default {
       "empty": false
     },
     "construct" : {
-      "_id": "qQpbL2UXErvoVAqP",
+      "_id": "",
       "flags": {},
       "name": "Construct",
       "type": "class",
@@ -346,7 +346,7 @@ export default {
       "empty": false
     },
     "dragon" : {
-      "_id": "XJEsHkGl75U3IaVU",
+      "_id": "",
       "flags": {},
       "name": "Dragon",
       "type": "class",
@@ -455,7 +455,7 @@ export default {
       "empty": false
     },
     "fey" : {
-      "_id": "SrdI2cIYCQijdZo3",
+      "_id": "",
       "flags": {},
       "name": "Fey",
       "type": "class",
@@ -564,7 +564,7 @@ export default {
       "empty": false
     },
     "humanoid" : {
-      "_id": "4INAim2AFpOCYrXl",
+      "_id": "",
       "flags": {},
       "name": "Humanoid",
       "type": "class",
@@ -673,7 +673,7 @@ export default {
       "empty": false
     },
     "magical beast" : {
-      "_id": "8idUAKCYAHoWh0UL",
+      "_id": "",
       "flags": {},
       "name": "Magical Beast",
       "type": "class",
@@ -782,7 +782,7 @@ export default {
       "empty": false
     },
     "monstrous humanoid" : {
-      "_id": "3AAJBfosTJ4il01h",
+      "_id": "",
       "flags": {},
       "name": "Monstrous Humanoid",
       "type": "class",
@@ -891,7 +891,7 @@ export default {
       "empty": false
     },
     "ooze" : {
-      "_id": "UxNgaenWHkidpdiD",
+      "_id": "",
       "flags": {},
       "name": "Ooze",
       "type": "class",
@@ -1000,7 +1000,7 @@ export default {
       "empty": false
     },
     "outsider" : {
-      "_id": "atVCUhiuoHi9ZlWA",
+      "_id": "",
       "flags": {},
       "name": "Outsider",
       "type": "class",
@@ -1109,7 +1109,7 @@ export default {
       "empty": false
     },
     "plant" : {
-      "_id": "9cB4XAsE2nZUOx2a",
+      "_id": "",
       "flags": {},
       "name": "Plant",
       "type": "class",
@@ -1218,7 +1218,7 @@ export default {
       "empty": false
     },
     "undead" : {
-      "_id": "pu5ulCcFSR7tMXti",
+      "_id": "",
       "flags": {},
       "name": "Undead",
       "type": "class",
@@ -1340,7 +1340,7 @@ export default {
       "empty": false
     },
     "vermin" : {
-      "_id": "hA1y6HlbW6iLYTm0",
+      "_id": "",
       "flags": {},
       "name": "Vermin",
       "type": "class",

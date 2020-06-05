@@ -5,6 +5,7 @@ import templateClassItem from "./templateClassItem.js"
 import templateRaceItem from "./templateRaceItem.js"
 import templateRacialHDItem from "./templateRacialHDItem.js"
 import templateConversionItem from "./templateConversionItem.js"
+import templateFeatItem from "./templateFeatItem.js"
 import enumRaces from "./enumRaces.js"
 import enumTypes from "./enumTypes.js"
 import enumSubtypes from "./enumSubtypes.js"
@@ -352,7 +353,6 @@ function splitGeneralData(stringGeneralData) {
     
     // CR
     let splitCR = splitGeneralData.match(/(1\/\d|\d+)/)[0];
-    console.log("splitCR: " + splitCR);
     
     // XP
     let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");    
@@ -387,23 +387,16 @@ function splitGeneralData(stringGeneralData) {
     // Special Case: (Medium)(?: \d+?)
     
     let regExClasses = new RegExp(enumClasses.join("|"), "gi");
-    console.log("regExClasses: " + regExClasses);
     let splitClasses = splitGeneralData.match(regExClasses);
-    console.log("splitClasses: " + splitClasses);
     // If there are classes, get them, their level and the race / gender as well
     if ( (splitClasses !== null) && (splitClasses !== "") ) {
         dataInputHasClasses = true;
         // Get Class(es)
         splitClasses.forEach( function(item, index) {
-            
-            console.log("item: " + item);
-            
             if (item.search(/Medium/i) !== -1) {
                 item = "medium";
             }
-            
-            console.log("item: " + item);
-            
+                        
             if ( item !== undefined ) {
                 // Check for className (first for classes with two words e.g. vampire hunter)
                 let classNameAndLevel = "";
@@ -412,12 +405,9 @@ function splitGeneralData(stringGeneralData) {
                 let classLevel = "";
 
                 // Get Classlevel and words in between class an level
-                console.log("item: " + item);
                 let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
 
                 classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
-
-                console.log("classNameAndLevel: " + classNameAndLevel);
                 
                 if (item.search(/Medium/i) !== -1) {
                     className = "Medium";
@@ -430,7 +420,6 @@ function splitGeneralData(stringGeneralData) {
 
                 // If it's an NPC Class, add Npc to the Name
                 // Because thats the notation used in the gameSystem
-                console.log("className: " + className);
                 if (className[0].search(/(adept)|(commoner)|(expert)|(warrior)|(aristocrat)/i) !== -1 ) {
                     className = className[0].concat("Npc");
                 }
@@ -451,7 +440,6 @@ function splitGeneralData(stringGeneralData) {
         if (splitGeneralData.split(regExGenderAndRace)[1]) {
         
             let stringGenderAndRace = splitGeneralData.split(regExGenderAndRace)[1];
-            console.log("stringGenderAndRace: " + stringGenderAndRace);
             
             // Get Gender
             let regExGender = new RegExp("(" + enumGender.join("|") + ")", "i");
@@ -563,9 +551,7 @@ function splitDefenseData(stringDefenseData) {
     console.log("parsing Defense Data");
     
     stringDefenseData = stringDefenseData.replace(/^ | $|^\n*/,"");
-    
-    console.log("stringDefenseData: " + stringDefenseData);
-    
+        
     // Clean up the Input if there are extra linebreaks (often when copy and pasted from pdfs)
     // Remove linebreaks in parenthesis
     stringDefenseData = stringDefenseData.replace(/(\([^(.]+?)(?:\n)([^(.]+?\))+?/mi, "$1 $2");
@@ -628,9 +614,6 @@ function splitDefenseData(stringDefenseData) {
         formattedInput.fast_healing = tempFastHealing[1];
     }
     
-    console.log("formattedInput.fast_healing: " + formattedInput.fast_healing);
-    console.log("formattedInput.regeneration: " + formattedInput.regeneration);
-    
     // Extract HitDie and separate DicePools containing number and size of the die as well as the bonus
     let splitHitDice = {};
     let splitHitDie = {
@@ -642,11 +625,9 @@ function splitDefenseData(stringDefenseData) {
     
     // Get different DicePools, e.g. XdY combinations, mostly for combinations of racial and class hitDice
     let hitDicePool = JSON.stringify(stringHitDice).match(/(\d+?d\d+)/gi);
-    console.log("hitDicePool: " + hitDicePool);
     
     // Find the Dicepool for class(es)
     if (dataInputHasClasses == true) {
-        console.log("Class, setting hp");
         let classKey = Object.keys(formattedInput.classes);
         let hitDicePoolKey = Object.keys(hitDicePool);
         
@@ -657,20 +638,15 @@ function splitDefenseData(stringDefenseData) {
             for (let j = 0; j < hitDicePoolKey.length; j++) {
                 let tempRegEx = new RegExp("(?:" + tempLevel + "d)(\\d+?)", "i");
                 if (hitDicePool[j].match(tempRegEx)) {
-                    console.log("Class, setting class hp");
                     // Set HP for classItem
                     let tempDiceSize = hitDicePool[j].match(tempRegEx)[1];
                     formattedInput.hp.class = Math.floor(+tempLevel * +getDiceAverage(tempDiceSize));
                     formattedInput.hp.race = 0;
                     inputHDTotal += +tempLevel;
                 } else {
-                    console.log("Class, setting racial hp");
                     // Set HP for RacialHDItem                    
                     let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
                     let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
-                    
-                    console.log("tempDiceSize: " + tempDiceSize);
-                    console.log("tempRacialHD: " + tempRacialHD);
                     
                     formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
                     inputHDTotal += +tempRacialHD;
@@ -679,7 +655,6 @@ function splitDefenseData(stringDefenseData) {
         }
 
     } else {
-        console.log("no Class, setting hp");
         // Set racialHD when no class is given
         let hitDicePoolKey = Object.keys(hitDicePool);
         for (let j = 0; j < hitDicePoolKey.length; j++) {
@@ -692,20 +667,13 @@ function splitDefenseData(stringDefenseData) {
         }
     }
     
-    console.log("formattedInput.hp.race: " + formattedInput.hp.race);
-    
     formattedInput.hit_dice.hd = inputHDTotal;
-    console.log("formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
-    
-    console.log("stringHitDice: " + stringHitDice);
-    
+        
     //let hitDiceBonusPool = JSON.stringify(stringHitDice).match(/[^d+\(](\d+)/gi);
     let hitDiceBonusPool = stringHitDice[0].replace(/(\d+d\d+)/gi,"").match(/\d+/g);
     
     let hitDiceBonus = 0;
-    
-    console.log("hitDiceBonusPool: " + hitDiceBonusPool);
-    
+        
     // Get the sum of all the additional bonus hp, denoted for example by "+XX" and / or "plus XX"
     if (hitDiceBonusPool !== null) {
         
@@ -717,9 +685,7 @@ function splitDefenseData(stringDefenseData) {
 
     formattedInput.hp.total = splitHPTotal;
     
-    // Extract Saves
-    console.log("splitDefenseData: " + JSON.stringify(splitDefenseData));
-    
+    // Extract Saves    
     let splitSaves;
     
     for (var i = 0; i < splitDefenseData.length; i++) {
@@ -728,9 +694,7 @@ function splitDefenseData(stringDefenseData) {
         }
     }
     
-    //let splitSaves = splitDefenseData[2].split(/,/);
-    console.log("splitSaves: " + splitSaves);
-    
+    //let splitSaves = splitDefenseData[2].split(/,/);    
     splitSaves.forEach( function (item, index) {
         if (this[index].match(/(Fort)|(fort)/)) {
             let splitFort = item.match(/(\+[\d]*)|(-[\d]*)/g)[0];
@@ -745,9 +709,7 @@ function splitDefenseData(stringDefenseData) {
     }, splitSaves);
     
     // Check if there is a forth line
-    /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance
-    
-    
+    /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance  
     if(splitDefenseData[3]) {
         let splitResistances = splitDefenseData[3].split(/;/g);
 
@@ -775,15 +737,7 @@ function splitDefenseData(stringDefenseData) {
             }
         }, splitResistances);
     }
-    
-    console.log("weaknesses: " + formattedInput.weaknesses);
-    console.log("immunities: " + formattedInput.immunities);
-    console.log("resistances: " + formattedInput.resistances);
-    console.log("defensive_abilities: " + formattedInput.defensive_abilities);
-    console.log("spell_resistance: " + formattedInput.spell_resistance);
-    
-    
-    
+
     console.log("done");
 }
 
@@ -795,10 +749,7 @@ function splitTacticsData(stringTacticsData) {
     
     let splitTacticsData = stringTacticsData.replace(/^ | $|^\n*/,"");
     
-    splitTacticsData = splitTacticsData.replace(/\n/gm," ");
-    
-    console.log("splitTacticsData: " + splitTacticsData);
-    
+    splitTacticsData = splitTacticsData.replace(/\n/gm," ");    
     // Check for Keywords "During Combat, Before Combat and Morale"
     if(splitTacticsData.search(/Before Combat/m) !== -1) {
         let splitTacticsBeforeCombat = splitTacticsData.match(/Before Combat .+?(?=Morale|During|Base Statistics|$)/);
@@ -840,9 +791,7 @@ function splitStatisticsData(stringStatisticsData) {
     
     // Attributes
     let splitAttributes = stringStatisticsData.match(/(\bStr\b)[\s\S]*(\bCha\b [0-9-—]{1,2})/gmi)[0].replace(/\n/,"").split(/,/);
-    
-    console.log("splitAttributes: " + splitAttributes);
-    
+        
     splitAttributes.forEach ( function (item, index) {
         let tempItem = item.replace(/^\s/,"").split(/\s/);
         let tempAttr = tempItem[0];
@@ -863,9 +812,45 @@ function splitStatisticsData(stringStatisticsData) {
     formattedInput.bab = stringStatisticsData.match(/(?:Base Atk[\s+-]*)([\d]*)/i)[1];
     formattedInput.cmb = stringStatisticsData.match(/(?:Cmb[\s+-]*)([\d]*)/i)[1];
     formattedInput.cmd = stringStatisticsData.match(/(?:CMD )(.*)/i)[1];
-    // Feats
     
-    // Skills
+    // Feats (String from "Feats" to next linebreak)
+    let splitFeats = stringStatisticsData.match(/(?:Feats )(.*)(?:\n+?)/gim)[0];
+    splitFeats = splitFeats.replace(/Feats /i, "");
+    splitFeats = splitFeats.replace(/,\s|;\s/g, ",");
+    splitFeats = splitFeats.split(/,/);
+    
+    formattedInput.feats = splitFeats;
+    
+    // Skills (String from "Skills" to next linebreak)
+    let splitSkills = stringStatisticsData.match(/(?:Skills )(.*)(?:\n+?)/gim)[0];
+    splitSkills = splitSkills.replace(/Skills /i, "");
+    splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
+    splitSkills = splitSkills.replace(/\n/, "");
+    splitSkills = splitSkills.split(/,/);
+    console.log("splitSkills: " + splitSkills);
+    
+    splitSkills.forEach (function (item, index) {
+        console.log("item: " + item);
+        
+        let skillTotal = item.match(/(-\d+|\d+)/)[0];
+        let skillName = item.replace(/( -.*| \+.*)/, "");
+        
+        console.log(skillName + ": " + skillTotal);
+        
+        // Cases with sublevels (Knowledge, Profession, Perform, Craft)
+        if (skillName.search(/\bcraft\b/i) !== -1) {
+            console.log("Craft Skill");
+        } else if (skillName.search(/\bknowledge\b/i) !== -1) {
+            console.log("Knowledge Skill");
+        } else if (skillName.search(/\bperform\b/i) !== -1) {
+            console.log("Perform Skill");
+        } else if (skillName.search(/\bprofession\b/i) !== -1) {
+            console.log("Profession Skill");
+        } else {
+            console.log("No Subtypes to this Skill");
+        }
+        
+    });
     
     // Racial Skill Modifiers
     
@@ -911,7 +896,6 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     }
     
     if( (dataInputHasPlayableRace == true) || (dataInputHasNonPlayableRace == true) ) {
-        console.log("parsing race");
         setRaceItem(formattedInput.race);
     }
     
@@ -995,9 +979,7 @@ function mapGeneralData(formattedInput) {
 // Map data.classes.class
 function setClassData (classInput) {
 
-    console.log("classInput: " + JSON.stringify(classInput));
     let classKey = Object.keys(classInput);
-    console.log("classKEy: " + classKey);
 
     let classEntries = {};
     
@@ -1005,9 +987,7 @@ function setClassData (classInput) {
         
         // Split Classes
         let classEntry = enumClassData[classKey[i].toLowerCase().replace(/npc/,"Npc")];
-        
-        console.log("classEntry: " + classEntry);
-        
+                
         let tempClassName = classKey[i];
 
         delete Object.assign(classEntry, {[tempClassName] : classEntry.classOrRacialHD }).classOrRacialHD;
@@ -1052,11 +1032,8 @@ function setRaceItem (raceInput) {
     if (dataInputHasNonPlayableRace == true) {
         itemEntry = templateRaceItem["default"];
         itemEntry.name = raceInput;
-        console.log("itemEntry: " + JSON.stringify(itemEntry));
     } else if (dataInputHasPlayableRace == true) {
         itemEntry = templateRaceItem[raceInput.toLowerCase()];
-        
-        console.log("itemEntry: " + JSON.stringify(itemEntry));
     } else {
         console.log("something went wrong parsing the race");
     }
@@ -1068,6 +1045,12 @@ function setRacialHDItem (formattedInput) {
 
     // Create Item for the Class starting from the template
     let itemEntry = templateRacialHDItem[formattedInput.creature_type.toLowerCase()];
+    
+    // Update the name to include Subtypes
+    itemEntry.name = formattedInput.creature_type + " (" + formattedInput.creature_subtype + ")";
+    console.log("itemEntry.name: " + itemEntry.name);
+    
+    // Set Saves
     itemEntry.data.savingThrows.fort.value = "";
     itemEntry.data.savingThrows.ref.value = "";
     itemEntry.data.savingThrows.will.value = "";
@@ -1092,13 +1075,7 @@ function setConversionItem (formattedInput) {
     // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
     // and compare that to the hp.total from the input
     
-    console.log("+formattedInput.hp.race: " + formattedInput.hp.race);
-    console.log("+formattedInput.hp.class: " + formattedInput.hp.class);
-    console.log("+formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
-    console.log("+getModifier(formattedInput.con): " + getModifier(formattedInput.con));
-    
     let calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
-    console.log("calculatedHPTotal: " + calculatedHPTotal);
     
     if (+calculatedHPTotal !== +formattedInput.hp.total) {
         
@@ -1110,9 +1087,7 @@ function setConversionItem (formattedInput) {
             "mhp",
             "untyped"
         ];
-        
-        console.log("tempHPDifference: " + tempHPDifference);
-        
+                
         itemEntry.data.changes.push(hpChange);
     }
 
@@ -1150,17 +1125,13 @@ function setConversionItem (formattedInput) {
         let tempSaveString = item + "_save";
                 
         let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]]);
-        
-        console.log("item: " + item + " - modifier: " +attrModifier);
-        
+                
         // Check for Undead without Constitution, because they handle Fort-Saves differently
-        console.log("enumSaveModifier: " + enumSaveModifier[index]);
         if ( ( formattedInput.creature_type.toLowerCase() === "undead" ) && ( enumSaveModifier[index] === "con" ) && ( formattedInput[enumSaveModifier[index]] === "-" ) ) {
             console.log("this is an undead without con");
             // Set the Change to 0, because thats handled automatically in the undead creature item
             saveChange.push("0");
         } else {
-            console.log("+formattedInput[tempSaveString]: " + formattedInput[tempSaveString]);
             let tempSave = formattedInput[tempSaveString]-attrModifier;
             saveChange.push(tempSave.toString());
         }
@@ -1174,6 +1145,17 @@ function setConversionItem (formattedInput) {
     });
     
     itemEntry.data.active = false;
+    
+    dataOutput.items.push(itemEntry);
+}
+
+// Create Items for Feats
+function setFeatItem (featInput) {
+    
+    let itemEntry = JSON.parse(JSON.stringify(templateFeatItem));
+    
+    // For now, just set the name of the Feat
+    itemEntry.name = featInput;
     
     dataOutput.items.push(itemEntry);
 }
@@ -1195,7 +1177,9 @@ function mapDefenseData (formattedInput) {
     dataOutput.data.attributes.savingThrows.ref.total = +formattedInput.ref_save;
     dataOutput.data.attributes.savingThrows.will.total = +formattedInput.will_save;
     
+    // SR
     dataOutput.data.attributes.sr.total = +formattedInput.spell_resistance;
+    dataOutput.data.attributes.sr.formula = formattedInput.spell_resistance;
     // !!! SR Formula
     
     // DR
@@ -1210,13 +1194,10 @@ function mapDefenseData (formattedInput) {
     // Defensive Abilities
     // The list is found in the Notes-Section, long-forms should be in the special abilities section
     
-    // Immunities
-    console.log("Immunities: " + formattedInput.immunities);
-    
+    // Immunities    
     // Set Condition Immunities
     let tempImmunities = formattedInput.immunities;
     enumConditions.forEach( function (item, index) {
-        console.log("conditionItem: " + item);
         if (tempImmunities.search(item) !== -1) {
             dataOutput.data.traits.ci.value.push(item);
             tempImmunities = tempImmunities.replace(item, "");
@@ -1225,7 +1206,6 @@ function mapDefenseData (formattedInput) {
     
     // Set Damage Immunities
     enumDamageTypes.forEach( function (item, index) {
-        console.log("damageItem: " + item);
         if (tempImmunities.search(item) !== -1) {
             dataOutput.data.traits.di.value.push(item);
             tempImmunities = tempImmunities.replace(item, "");
@@ -1240,29 +1220,20 @@ function mapDefenseData (formattedInput) {
         dataOutput.data.traits.ci.custom = tempCustomImmunity;
     }
     
-    // Resistances
-    
-    console.log("ResistanceString: " + formattedInput.resistances);
-    
+    // Resistances    
     let tempResistances = formattedInput.resistances;
     
     enumDamageTypes.forEach( function (item, index) {
         let tempResistanceRegEx = new RegExp("(\\b" + item + "\\b \\d+)", "ig");
         if (tempResistances.search(tempResistanceRegEx) !== -1) {
-            
-            console.log("tempResistanceRegEx: " + tempResistanceRegEx);
             let tempResistance = formattedInput.resistances.match(tempResistanceRegEx);
             dataOutput.data.traits.eres += tempResistance + ", ";
         }
     });
     
     dataOutput.data.traits.eres = dataOutput.data.traits.eres.replace(/, $/,"");
-    
-    console.log("dataOutput.data.traits.eres: " + dataOutput.data.traits.eres);
-    
-    // Weaknesses / Vulnerabilities
-    console.log("Weaknesses: " + formattedInput.weaknesses);
-    
+        
+    // Weaknesses / Vulnerabilities    
     // Set DamageType Vulnerabilities
     let tempWeaknesses = formattedInput.weaknesses;
     enumDamageTypes.forEach( function (item, index) {
@@ -1283,14 +1254,13 @@ function mapDefenseData (formattedInput) {
     
     
     // Reset Max Dex Bonus for now
-    dataOutput.data.attributes.maxDexBonus = 0;
+    // dataOutput.data.attributes.maxDexBonus = 0;
 }
 
 // Map Statistics to data.attributes
 function mapStatisticData (formattedInput) {
     
     // Abilities
-    
     let carryCapacity = 0;
     dataOutput.data.abilities.str.carryMultiplier = carrySizeModificators[formattedInput.size];
     dataOutput.data.abilities.str.carryBonus = 0;
@@ -1330,6 +1300,11 @@ function mapStatisticData (formattedInput) {
     dataOutput.data.attributes.bab.total = "+" + +formattedInput.bab;
     dataOutput.data.attributes.cmb.total = "+" + +formattedInput.cmb;
     dataOutput.data.attributes.cmd.total = formattedInput.cmd;
+    
+    // Feats
+    formattedInput.feats.forEach( function (item, index) {
+        setFeatItem(item);
+    });
     
     
 }

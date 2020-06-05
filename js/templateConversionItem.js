@@ -32,6 +32,6 @@ export default {
   },
   "sort": 100001,
   "flags": {},
-  "_id": "ZmOxqVVyMzgymhuE",
+  "_id": "",
   "img": "icons/svg/mystery-man.svg"
 }

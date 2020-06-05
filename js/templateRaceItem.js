@@ -1,6 +1,6 @@
 export default {
     "default": {
-        "_id": "z0SdU3CrZbcAxUJf",
+        "_id": "",
         "flags": {},
         "name": "",
         "type": "race",
@@ -43,7 +43,7 @@ export default {
       "empty": false
     },
     "aasimar": {
-        "_id": "z0SdU3CrZbcAxUJf",
+        "_id": "",
         "flags": {},
         "name": "Aasimar",
         "type": "race",
@@ -115,7 +115,7 @@ export default {
       "empty": false
     },
     "adaro": {
-      "_id": "4fuf69qUd7roW0Xl",
+      "_id": "",
       "flags": {},
       "name": "Adaro",
       "type": "race",
@@ -193,7 +193,7 @@ export default {
       "empty": false
     },
     "android": {
-      "_id": "wILMMTcJcXi7So8T",
+      "_id": "",
       "flags": {},
       "name": "Android",
       "type": "race",
@@ -273,7 +273,7 @@ export default {
       "empty": false
     },
     "aphorite": {
-      "_id": "nVGpPsrvBwlG0DkC",
+      "_id": "",
       "flags": {},
       "name": "Aphorite",
       "type": "race",
@@ -345,7 +345,7 @@ export default {
       "empty": false
     },
     "aquatic elf": {
-      "_id": "g2i66car8YWVOW2X",
+      "_id": "",
       "flags": {},
       "name": "Aquatic Elf",
       "type": "race",
@@ -431,7 +431,7 @@ export default {
       "empty": false
     },
     "astomoi": {
-      "_id": "wq03sxsfwcdUkNRg",
+      "_id": "",
       "flags": {},
       "name": "Astomoi",
       "type": "race",
@@ -503,7 +503,7 @@ export default {
       "empty": false
     },
     "caligni": {
-      "_id": "R8USwqGVzXEcjN78",
+      "_id": "",
       "flags": {},
       "name": "Caligni",
       "type": "race",
@@ -569,7 +569,7 @@ export default {
       "empty": false
     },
     "catfolk": {
-      "_id": "VKihNC5Pi46z3tXL",
+      "_id": "",
       "flags": {},
       "name": "Catfolk",
       "type": "race",
@@ -653,7 +653,7 @@ export default {
       "empty": false
     },
     "cecaelia": {
-      "_id": "WrHZv8b2cFVvpsNH",
+      "_id": "",
       "flags": {},
       "name": "Cecaelia",
       "type": "race",
@@ -725,7 +725,7 @@ export default {
       "empty": false
     },
     "changeling": {
-      "_id": "GZcudr8FWObwN7QY",
+      "_id": "",
       "flags": {},
       "name": "Changeling",
       "type": "race",
@@ -797,7 +797,7 @@ export default {
       "empty": false
     },
     "deep one hybrid": {
-      "_id": "5PuFgE7EXx4AQO9r",
+      "_id": "",
       "flags": {},
       "name": "Deep One Hybrid",
       "type": "race",
@@ -872,7 +872,7 @@ export default {
       "empty": false
     },
     "dhampir": {
-      "_id": "v64zkX9MrCNegPC9",
+      "_id": "",
       "flags": {},
       "name": "Dhampir",
       "type": "race",
@@ -950,7 +950,7 @@ export default {
       "empty": false
     },
     "drow": {
-      "_id": "IITbBRejjk4CowTX",
+      "_id": "",
       "flags": {},
       "name": "Drow",
       "type": "race",
@@ -1028,7 +1028,7 @@ export default {
       "empty": false
     },
     "drow noble": {
-      "_id": "k5WIhEqy6mKpIs2j",
+      "_id": "",
       "flags": {},
       "name": "Drow Noble",
       "type": "race",
@@ -1118,7 +1118,7 @@ export default {
       "empty": false
     },
     "duergar": {
-      "_id": "FNE55SHlEsLzDZCJ",
+      "_id": "",
       "flags": {},
       "name": "Duergar",
       "type": "race",
@@ -1190,7 +1190,7 @@ export default {
       "empty": false
     },
     "duskwalker": {
-      "_id": "kTMNWKxHNFhSe8YW",
+      "_id": "",
       "flags": {},
       "name": "Duskwalker",
       "type": "race",
@@ -1273,7 +1273,7 @@ export default {
       "empty": false
     },
     "dwarf": {
-      "_id": "86uzkavw82HZ6253",
+      "_id": "",
       "flags": {},
       "name": "Dwarf",
       "type": "race",
@@ -1370,7 +1370,7 @@ export default {
       "empty": false
     },
     "elf": {
-      "_id": "1aqyVOu6iqiTQfZS",
+      "_id": "",
       "flags": {},
       "name": "Elf",
       "type": "race",
@@ -1453,7 +1453,7 @@ export default {
       "empty": false
     },
     "fetchling": {
-      "_id": "QJZS2wNdwBhbWAqR",
+      "_id": "",
       "flags": {},
       "name": "Fetchling",
       "type": "race",
@@ -1531,7 +1531,7 @@ export default {
       "empty": false
     },
     "ganzi": {
-      "_id": "PC9ByeZPQUd3BNyr",
+      "_id": "",
       "flags": {},
       "name": "Ganzi",
       "type": "race",
@@ -1609,7 +1609,7 @@ export default {
       "empty": false
     },
     "gathlain": {
-      "_id": "CZJakEc2GicANKXt",
+      "_id": "",
       "flags": {},
       "name": "Gathlain",
       "type": "race",
@@ -1677,7 +1677,7 @@ export default {
       "empty": false
     },
     "ghoran": {
-      "_id": "S1Zg4o11nJWilOvG",
+      "_id": "",
       "flags": {},
       "name": "Ghoran",
       "type": "race",
@@ -1751,7 +1751,7 @@ export default {
       "empty": false
     },
     "gillmen": {
-      "_id": "48LJJ1ENopdppAp2",
+      "_id": "",
       "flags": {
         "core": {
           "sheetClass": ""
@@ -1827,7 +1827,7 @@ export default {
       "empty": false
     },
     "gnoll": {
-      "_id": "K7OnMI9LjXPkTPjA",
+      "_id": "",
       "flags": {},
       "name": "Gnoll",
       "type": "race",
@@ -1893,7 +1893,7 @@ export default {
       "empty": false
     },
     "gnome": {
-      "_id": "3yBxWGfJGaLW5MEv",
+      "_id": "",
       "flags": {},
       "name": "Gnome",
       "type": "race",
@@ -1981,7 +1981,7 @@ export default {
       "empty": false
     },
     "goblin": {
-      "_id": "5a5grp3UjKlUty5V",
+      "_id": "",
       "flags": {},
       "name": "Goblin",
       "type": "race",
@@ -2059,7 +2059,7 @@ export default {
       "empty": false
     },
     "green martian": {
-      "_id": "bCb5klkk0KtocMoI",
+      "_id": "",
       "flags": {},
       "name": "Green Martian",
       "type": "race",
@@ -2127,7 +2127,7 @@ export default {
       "empty": false
     },
     "grindylow": {
-      "_id": "gG1ZyKtYIsUEtDGr",
+      "_id": "",
       "flags": {},
       "name": "Grindylow",
       "type": "race",
@@ -2211,7 +2211,7 @@ export default {
       "empty": false
     },
     "grippli": {
-      "_id": "QcB9gMajetfZwTW0",
+      "_id": "",
       "flags": {},
       "name": "Grippli",
       "type": "race",
@@ -2283,7 +2283,7 @@ export default {
       "empty": false
     },
     "half-elf": {
-      "_id": "zlIrxRFBQlsJrgwI",
+      "_id": "",
       "flags": {},
       "name": "Half-Elf",
       "type": "race",
@@ -2346,7 +2346,7 @@ export default {
       "empty": false
     },
     "halfling": {
-      "_id": "9OmDAF9sX4sxDTqy",
+      "_id": "",
       "flags": {},
       "name": "Halfling",
       "type": "race",
@@ -2442,7 +2442,7 @@ export default {
       "empty": false
     },
     "half-orc": {
-      "_id": "ywN0J5q8t2jWLQ5j",
+      "_id": "",
       "flags": {},
       "name": "Half-Orc",
       "type": "race",
@@ -2499,7 +2499,7 @@ export default {
       "empty": false
     },
     "hobgoblin": {
-      "_id": "p5NhOPGtwLzkNNGK",
+      "_id": "",
       "flags": {},
       "name": "Hobgoblin",
       "type": "race",
@@ -2565,7 +2565,7 @@ export default {
       "empty": false
     },
     "human": {
-      "_id": "ncH14qyqmeGnzxzu",
+      "_id": "",
       "flags": {},
       "name": "Human",
       "type": "race",
@@ -2612,7 +2612,7 @@ export default {
       "empty": false
     },
     "ifrit": {
-      "_id": "qJ16EaJyIO3GgHDC",
+      "_id": "",
       "flags": {},
       "name": "Ifrit",
       "type": "race",
@@ -2678,7 +2678,7 @@ export default {
       "empty": false
     },
     "kasatha": {
-      "_id": "5hrg83LFB0dFRCth",
+      "_id": "",
       "flags": {},
       "name": "Kasatha",
       "type": "race",
@@ -2744,7 +2744,7 @@ export default {
       "empty": false
     },
     "kitsune": {
-      "_id": "cc2AlJavDx16UCpg",
+      "_id": "",
       "flags": {},
       "name": "Kitsune",
       "type": "race",
@@ -2819,7 +2819,7 @@ export default {
       "empty": false
     },
     "kobold": {
-      "_id": "Q0vbdxTM1BAmV4pT",
+      "_id": "",
       "flags": {},
       "name": "Kobold",
       "type": "race",
@@ -2897,7 +2897,7 @@ export default {
       "empty": false
     },
     "kuru": {
-      "_id": "U9MqhzzoxYsHo5vL",
+      "_id": "",
       "flags": {},
       "name": "Kuru",
       "type": "race",
@@ -2963,7 +2963,7 @@ export default {
       "empty": false
     },
     "lashunta female": {
-      "_id": "W4R3aO8EY7ODxhGM",
+      "_id": "",
       "flags": {},
       "name": "Lashunta (Female)",
       "type": "race",
@@ -3029,7 +3029,7 @@ export default {
       "empty": false
     },
     "lashunta male": {
-      "_id": "1Vvc6qgcZSg2g6uj",
+      "_id": "",
       "flags": {},
       "name": "Lashunta (Male)",
       "type": "race",
@@ -3095,7 +3095,7 @@ export default {
       "empty": false
     },
     "lizardfolk": {
-      "_id": "s83A4dI5o4UCJDEj",
+      "_id": "",
       "flags": {},
       "name": "Lizardfolk",
       "type": "race",
@@ -3161,7 +3161,7 @@ export default {
       "empty": false
     },
     "locathah": {
-      "_id": "YGeUWQOz3sOGc3Qp",
+      "_id": "",
       "flags": {},
       "name": "Locathah",
       "type": "race",
@@ -3233,7 +3233,7 @@ export default {
       "empty": false
     },
     "merfolk": {
-      "_id": "7Xmh1G2FdisWYjTN",
+      "_id": "",
       "flags": {},
       "name": "Merfolk",
       "type": "race",
@@ -3305,7 +3305,7 @@ export default {
       "empty": false
     },
     "monkey goblin": {
-      "_id": "KJpvO6hCkt28HoBi",
+      "_id": "",
       "flags": {},
       "name": "Monkey Goblin",
       "type": "race",
@@ -3389,7 +3389,7 @@ export default {
       "empty": false
     },
     "munavri": {
-      "_id": "RWCUeRx381eSRnKH",
+      "_id": "",
       "flags": {},
       "name": "Munavri",
       "type": "race",
@@ -3473,7 +3473,7 @@ export default {
       "empty": false
     },
     "nagaji": {
-      "_id": "BjI5dF2KwEl0uNqX",
+      "_id": "",
       "flags": {},
       "name": "Nagaji",
       "type": "race",
@@ -3562,7 +3562,7 @@ export default {
       "empty": false
     },
     "naiad": {
-      "_id": "zQhaZjJWyBBXZXSP",
+      "_id": "",
       "flags": {},
       "name": "Naiad",
       "type": "race",
@@ -3640,7 +3640,7 @@ export default {
       "empty": false
     },
     "ogre": {
-      "_id": "V569ZVRJEuA4NPab",
+      "_id": "",
       "flags": {},
       "name": "Ogre",
       "type": "race",
@@ -3718,7 +3718,7 @@ export default {
       "empty": false
     },
     "orang-pendak": {
-      "_id": "gwHtJg5JQogxmx8i",
+      "_id": "",
       "flags": {},
       "name": "Orang-Pendak",
       "type": "race",
@@ -3800,7 +3800,7 @@ export default {
       "empty": false
     },
     "orc": {
-      "_id": "3PStlmHrWWIaK37E",
+      "_id": "",
       "flags": {},
       "name": "Orc",
       "type": "race",
@@ -3872,7 +3872,7 @@ export default {
       "empty": false
     },
     "oread": {
-      "_id": "Q6hIdApT7XmJ2n2I",
+      "_id": "",
       "flags": {},
       "name": "Oread",
       "type": "race",
@@ -3938,7 +3938,7 @@ export default {
       "empty": false
     },
     "ratfolk": {
-      "_id": "FkS078OniT3zGH5f",
+      "_id": "",
       "flags": {},
       "name": "Ratfolk",
       "type": "race",
@@ -4022,7 +4022,7 @@ export default {
       "empty": false
     },
     "reborn samsaran": {
-      "_id": "iZka6P5HFcpPYx4u",
+      "_id": "",
       "flags": {},
       "name": "Reborn Samsaran",
       "type": "race",
@@ -4088,7 +4088,7 @@ export default {
       "empty": false
     },
     "reptoid": {
-      "_id": "pR3SYjypyssbTx1q",
+      "_id": "",
       "flags": {},
       "name": "Reptoid",
       "type": "race",
@@ -4159,7 +4159,7 @@ export default {
       "empty": false
     },
     "rougarou": {
-      "_id": "JXGI5NsNky9bkzRm",
+      "_id": "",
       "flags": {},
       "name": "Rougarou",
       "type": "race",
@@ -4225,7 +4225,7 @@ export default {
       "empty": false
     },
     "sahuagin": {
-      "_id": "6Y3Ep9D5pLNoRPLH",
+      "_id": "",
       "flags": {},
       "name": "Sahuagin",
       "type": "race",
@@ -4297,7 +4297,7 @@ export default {
       "empty": false
     },
     "samsaran": {
-      "_id": "4P7nLdGioDs4sQmA",
+      "_id": "",
       "flags": {},
       "name": "Samsaran",
       "type": "race",
@@ -4363,7 +4363,7 @@ export default {
       "empty": false
     },
     "shabti": {
-      "_id": "Ne9qcE9ax9VEflsr",
+      "_id": "",
       "flags": {},
       "name": "Shabti",
       "type": "race",
@@ -4423,7 +4423,7 @@ export default {
       "empty": false
     },
     "skinwalker": {
-      "_id": "Xl6FGkVyneEVYJ0Q",
+      "_id": "",
       "flags": {},
       "name": "Skinwalker",
       "type": "race",
@@ -4489,7 +4489,7 @@ export default {
       "empty": false
     },
     "strix": {
-      "_id": "ACAZp8AQjAZfgu5U",
+      "_id": "",
       "flags": {},
       "name": "Strix",
       "type": "race",
@@ -4565,7 +4565,7 @@ export default {
       "empty": false
     },
     "suli": {
-      "_id": "7wgEhfsKYCtN4MD6",
+      "_id": "",
       "flags": {},
       "name": "Suli",
       "type": "race",
@@ -4643,7 +4643,7 @@ export default {
       "empty": false
     },
     "svirfneblin": {
-      "_id": "c7jTF099oTph5fhE",
+      "_id": "",
       "flags": {},
       "name": "Svirfneblin",
       "type": "race",
@@ -4751,7 +4751,7 @@ export default {
       "empty": false
     },
     "sylph": {
-      "_id": "rGyKf73eCyK5vPeM",
+      "_id": "",
       "flags": {},
       "name": "Sylph",
       "type": "race",
@@ -4817,7 +4817,7 @@ export default {
       "empty": false
     },
     "syrinx": {
-      "_id": "RK0AMouip28595Hm",
+      "_id": "",
       "flags": {},
       "name": "Syrinx",
       "type": "race",
@@ -4893,7 +4893,7 @@ export default {
       "empty": false
     },
     "tengu": {
-      "_id": "4BB3ujMMfqN5cLqs",
+      "_id": "",
       "flags": {},
       "name": "Tengu",
       "type": "race",
@@ -4977,7 +4977,7 @@ export default {
       "empty": false
     },
     "tiefling": {
-      "_id": "qLG6VeZoSgwaTErc",
+      "_id": "",
       "flags": {},
       "name": "Tiefling",
       "type": "race",
@@ -5055,7 +5055,7 @@ export default {
       "empty": false
     },
     "triaxian": {
-      "_id": "iH8AZbhb7qTh8mOL",
+      "_id": "",
       "flags": {},
       "name": "Triaxian",
       "type": "race",
@@ -5127,7 +5127,7 @@ export default {
       "empty": false
     },
     "triton": {
-      "_id": "NQJqaRnFKglGgg1Q",
+      "_id": "",
       "flags": {},
       "name": "Triton",
       "type": "race",
@@ -5199,7 +5199,7 @@ export default {
       "empty": false
     },
     "trox": {
-      "_id": "N9HEp03m6hHymmPR",
+      "_id": "",
       "flags": {},
       "name": "Trox",
       "type": "race",
@@ -5267,7 +5267,7 @@ export default {
       "empty": false
     },
     "undine": {
-      "_id": "0TvKo7vNQyyzd918",
+      "_id": "",
       "flags": {},
       "name": "Undine",
       "type": "race",
@@ -5333,7 +5333,7 @@ export default {
       "empty": false
     },
     "vanara": {
-      "_id": "ratENEXENn0C0C2l",
+      "_id": "",
       "flags": {},
       "name": "Vanara",
       "type": "race",
@@ -5411,7 +5411,7 @@ export default {
       "empty": false
     },
     "vine leshy": {
-      "_id": "82lQm8pFfFfuUmqT",
+      "_id": "",
       "flags": {},
       "name": "Vine Leshy",
       "type": "race",
@@ -5489,7 +5489,7 @@ export default {
       "empty": false
     },
     "vishkanya": {
-      "_id": "DRIa2aL5M2fnC1YL",
+      "_id": "",
       "flags": {},
       "name": "Vishkanya",
       "type": "race",
@@ -5579,7 +5579,7 @@ export default {
       "empty": false
     },
     "wayang": {
-      "_id": "OJlifAKQ899OSZGs",
+      "_id": "",
       "flags": {},
       "name": "Wayang",
       "type": "race",
@@ -5663,7 +5663,7 @@ export default {
       "empty": false
     },
     "wyrwood": {
-      "_id": "yTFzh0WRMjXdAJDC",
+      "_id": "",
       "flags": {},
       "name": "Wyrwood",
       "type": "race",
@@ -5725,7 +5725,7 @@ export default {
       "empty": false
     },
     "yaddithian": {
-      "_id": "4sEhVQa4Fgb566o9",
+      "_id": "",
       "flags": {},
       "name": "Yaddithian",
       "type": "race",
@@ -5859,7 +5859,7 @@ export default {
       "empty": false
     },
     "wyvaran": {
-      "_id": "Yp6NbmPYm759pTgy",
+      "_id": "",
       "flags": {},
       "name": "Wyvaran",
       "type": "race",

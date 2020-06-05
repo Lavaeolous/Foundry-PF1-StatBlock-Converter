@@ -978,7 +978,7 @@ export default {
       "world": "rappan-athuk",
       "system": "pf1",
       "coreVersion": "0.6.0",
-      "systemVersion": 0.551
+      "systemVersion": 0.56
     }
   },
   "token": {

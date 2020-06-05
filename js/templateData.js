@@ -55,6 +55,7 @@ export default {
     "int": 0,
     "wis": 0,
     "cha": 0,
+    "feats": [],
     "skills": {
         "acrobatics" : 0,
         "appraise" : 0,

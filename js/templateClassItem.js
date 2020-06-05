@@ -1,6 +1,6 @@
 export default {
     "adeptNpc": {
-        "_id": "IiVaZTQ20FXBlgzr",
+        "_id": "",
       "flags": {},
       "name": "Adept (NPC)",
       "type": "class",
@@ -120,7 +120,7 @@ export default {
       "empty": false
     },
     "alchemist": {
-      "_id": "nPRUOBUrTTSVf9Kd",
+      "_id": "",
       "flags": {},
       "name": "Alchemist",
       "type": "class",
@@ -245,7 +245,7 @@ export default {
       "empty": false
     },
     "antipaladin": {
-      "_id": "fDxvlCo1WjrwJYD3",
+      "_id": "",
       "flags": {},
       "name": "Antipaladin",
       "type": "class",
@@ -370,7 +370,7 @@ export default {
       "empty": false
     },
     "arcanist": {
-      "_id": "vJT3vUG4LQFye6OY",
+      "_id": "",
       "flags": {},
       "name": "Arcanist",
       "type": "class",
@@ -495,7 +495,7 @@ export default {
       "empty": false
     },
     "aristocratNpc": {
-      "_id": "1k0iyGtZr3gJVQiy",
+      "_id": "",
       "flags": {},
       "name": "Aristocrat (NPC)",
       "type": "class",
@@ -615,7 +615,7 @@ export default {
       "empty": false
     },
     "barbarian": {
-      "_id": "mmhnfeJEkM1xXgQZ",
+      "_id": "",
       "flags": {},
       "name": "Barbarian",
       "type": "class",
@@ -740,7 +740,7 @@ export default {
       "empty": false
     },
     "barbarianUC": {
-      "_id": "k5CZ2DOlnS7GKhUS",
+      "_id": "",
       "flags": {},
       "name": "Barbarian (Unchained)",
       "type": "class",
@@ -865,7 +865,7 @@ export default {
       "empty": false
     },
     "bard": {
-      "_id": "yHG2MBtdctQ0CsEc",
+      "_id": "",
       "flags": {},
       "name": "Bard",
       "type": "class",
@@ -990,7 +990,7 @@ export default {
       "empty": false
     },
     "bloodrager": {
-      "_id": "z02KLQ9ZYhwkqZVq",
+      "_id": "",
       "flags": {},
       "name": "Bloodrager",
       "type": "class",
@@ -1115,7 +1115,7 @@ export default {
       "empty": false
     },
     "brawler": {
-      "_id": "CRonVf4nL2JI3r1p",
+      "_id": "",
       "flags": {},
       "name": "Brawler",
       "type": "class",
@@ -1240,7 +1240,7 @@ export default {
       "empty": false
     },
     "cavalier": {
-      "_id": "r5jafwOSrtsrNP88",
+      "_id": "",
       "flags": {},
       "name": "Cavalier",
       "type": "class",
@@ -1365,7 +1365,7 @@ export default {
       "empty": false
     },
     "cleric": {
-      "_id": "PGiXrsb5iW5A2ZsS",
+      "_id": "",
       "flags": {},
       "name": "Cleric",
       "type": "class",
@@ -1490,7 +1490,7 @@ export default {
       "empty": false
     },
     "commonerNpc": {
-      "_id": "IX3UbxTVR9ZCE70J",
+      "_id": "",
       "flags": {},
       "name": "Commoner (NPC)",
       "type": "class",
@@ -1610,7 +1610,7 @@ export default {
       "empty": false
     },
     "druid": {
-      "_id": "lMYiwPyl0sbvS5h8",
+      "_id": "",
       "flags": {},
       "name": "Druid",
       "type": "class",
@@ -1735,7 +1735,7 @@ export default {
       "empty": false
     },
     "expertNpc": {
-      "_id": "7sXfPUkr4Sla9Zir",
+      "_id": "",
       "flags": {},
       "name": "Expert (NPC)",
       "type": "class",
@@ -1855,7 +1855,7 @@ export default {
       "empty": false
     },
     "fighter": {
-      "_id": "DSF0fwCt6zznQXAN",
+      "_id": "",
       "flags": {},
       "name": "Fighter",
       "type": "class",
@@ -1980,7 +1980,7 @@ export default {
       "empty": false
     },
     "gunslinger": {
-      "_id": "6Yhds9QIXfqRwkdI",
+      "_id": "",
       "flags": {},
       "name": "Gunslinger",
       "type": "class",
@@ -2105,7 +2105,7 @@ export default {
       "empty": false
     },
     "hunter": {
-      "_id": "ZdIbwPXaViq3Hogp",
+      "_id": "",
       "flags": {},
       "name": "Hunter",
       "type": "class",
@@ -2230,7 +2230,7 @@ export default {
       "empty": false
     },
     "inquisitor": {
-      "_id": "CcbkrVCkkf3ZzmcT",
+      "_id": "",
       "flags": {},
       "name": "Inquisitor",
       "type": "class",
@@ -2355,7 +2355,7 @@ export default {
       "empty": false
     },
     "investigator": {
-      "_id": "2d07IOR5VdtQ7bxG",
+      "_id": "",
       "flags": {},
       "name": "Investigator",
       "type": "class",
@@ -2480,7 +2480,7 @@ export default {
       "empty": false
     },
     "kineticist": {
-      "_id": "CiJlRbVKODMEYcrc",
+      "_id": "",
       "flags": {},
       "name": "Kineticist",
       "type": "class",
@@ -2600,7 +2600,7 @@ export default {
       "empty": false
     },
     "magus": {
-      "_id": "WMO1zlk1SpxlYKHg",
+      "_id": "",
       "flags": {},
       "name": "Magus",
       "type": "class",
@@ -2725,7 +2725,7 @@ export default {
       "empty": false
     },
     "medium": {
-      "_id": "IqgpQD6AXW2FSkME",
+      "_id": "",
       "flags": {},
       "name": "Medium",
       "type": "class",
@@ -2845,7 +2845,7 @@ export default {
       "empty": false
     },
     "mesmerist": {
-      "_id": "YQ0Vtyr91i3XFMAQ",
+      "_id": "",
       "flags": {},
       "name": "Mesmerist",
       "type": "class",
@@ -2965,7 +2965,7 @@ export default {
       "empty": false
     },
     "monk": {
-      "_id": "CFEMvwWO5cMYRMGz",
+      "_id": "",
       "flags": {},
       "name": "Monk",
       "type": "class",
@@ -3090,7 +3090,7 @@ export default {
       "empty": false
     },
     "monkUC": {
-      "_id": "SInAJmjX5QFm1UjF",
+      "_id": "",
       "flags": {},
       "name": "Monk (Unchained)",
       "type": "class",
@@ -3215,7 +3215,7 @@ export default {
       "empty": false
     },
     "ninja": {
-      "_id": "1zJ6IzecUoiIRGGc",
+      "_id": "",
       "flags": {},
       "name": "Ninja",
       "type": "class",
@@ -3335,7 +3335,7 @@ export default {
       "empty": false
     },
     "occultist": {
-      "_id": "Kv8yG5fFEi3fwsDB",
+      "_id": "",
       "flags": {},
       "name": "Occultist",
       "type": "class",
@@ -3455,7 +3455,7 @@ export default {
       "empty": false
     },
     "omdura": {
-      "_id": "gXr6RVZkduc9CXsJ",
+      "_id": "",
       "flags": {},
       "name": "Omdura",
       "type": "class",
@@ -3568,7 +3568,7 @@ export default {
       "empty": false
     },
     "oracle": {
-      "_id": "2ksdFziFav4t6G2G",
+      "_id": "",
       "flags": {},
       "name": "Oracle",
       "type": "class",
@@ -3693,7 +3693,7 @@ export default {
       "empty": false
     },
     "paladin": {
-      "_id": "wSzQejeLmwXhbaY2",
+      "_id": "",
       "flags": {},
       "name": "Paladin",
       "type": "class",
@@ -3818,7 +3818,7 @@ export default {
       "empty": false
     },
     "psychic": {
-      "_id": "0c4Z2P8OGCEvlrT7",
+      "_id": "",
       "flags": {},
       "name": "Psychic",
       "type": "class",
@@ -3938,7 +3938,7 @@ export default {
       "empty": false
     },
     "ranger": {
-      "_id": "vqkGgyqSsV9T6mrz",
+      "_id": "",
       "flags": {},
       "name": "Ranger",
       "type": "class",
@@ -4063,7 +4063,7 @@ export default {
       "empty": false
     },
     "rogue": {
-      "_id": "WgUBsOaEsBxs8UFH",
+      "_id": "",
       "flags": {},
       "name": "Rogue",
       "type": "class",
@@ -4188,7 +4188,7 @@ export default {
       "empty": false
     },
     "rogueUC": {
-      "_id": "y8MUXFYJs4pPbyPD",
+      "_id": "",
       "flags": {},
       "name": "Rogue (Unchained)",
       "type": "class",
@@ -4313,7 +4313,7 @@ export default {
       "empty": false
     },
     "samurai": {
-      "_id": "GBQcYa5aS1CseuPN",
+      "_id": "",
       "flags": {},
       "name": "Samurai",
       "type": "class",
@@ -4433,7 +4433,7 @@ export default {
       "empty": false
     },
     "shaman": {
-      "_id": "1blNkui80B7E5Pwc",
+      "_id": "",
       "flags": {},
       "name": "Shaman",
       "type": "class",
@@ -4558,7 +4558,7 @@ export default {
       "empty": false
     },
     "shifter": {
-      "_id": "xA5teJxPngJMkfVt",
+      "_id": "",
       "flags": {},
       "name": "Shifter",
       "type": "class",
@@ -4683,7 +4683,7 @@ export default {
       "empty": false
     },
     "skald": {
-      "_id": "if5zzrfhuGJ88LCv",
+      "_id": "",
       "flags": {},
       "name": "Skald",
       "type": "class",
@@ -4808,7 +4808,7 @@ export default {
       "empty": false
     },
     "slayer": {
-      "_id": "VcdWxMIWOC87leYc",
+      "_id": "",
       "flags": {},
       "name": "Slayer",
       "type": "class",
@@ -4933,7 +4933,7 @@ export default {
       "empty": false
     },
     "sorcerer": {
-      "_id": "FpC8vrhwbmFEnUlB",
+      "_id": "",
       "flags": {},
       "name": "Sorcerer",
       "type": "class",
@@ -5058,7 +5058,7 @@ export default {
       "empty": false
     },
     "spiritualist": {
-      "_id": "ilAUeh6ycmr8yjfB",
+      "_id": "",
       "flags": {},
       "name": "Spiritualist",
       "type": "class",
@@ -5178,7 +5178,7 @@ export default {
       "empty": false
     },
     "summoner": {
-      "_id": "WwQKmptqM6IWA9eD",
+      "_id": "",
       "flags": {},
       "name": "Summoner",
       "type": "class",
@@ -5303,7 +5303,7 @@ export default {
       "empty": false
     },
     "summonerUC": {
-      "_id": "Bu31DtsH979zBOSy",
+      "_id": "",
       "flags": {},
       "name": "Summoner (Unchained)",
       "type": "class",
@@ -5428,7 +5428,7 @@ export default {
       "empty": false
     },
     "swashbuckler": {
-      "_id": "AgGhSFMhYtalMMMZ",
+      "_id": "",
       "flags": {},
       "name": "Swashbuckler",
       "type": "class",
@@ -5553,7 +5553,7 @@ export default {
       "empty": false
     },
     "vampire hunter": {
-      "_id": "BS1mytcBbGRpkwij",
+      "_id": "",
       "flags": {},
       "name": "Vampire Hunter",
       "type": "class",
@@ -5678,7 +5678,7 @@ export default {
       "empty": false
     },
     "vigilante": {
-      "_id": "52jpFRFhJQQIDdsN",
+      "_id": "",
       "flags": {},
       "name": "Vigilante",
       "type": "class",
@@ -5803,7 +5803,7 @@ export default {
       "empty": false
     },
     "warpriest": {
-      "_id": "ro3pSr9mg4XQuKBh",
+      "_id": "",
       "flags": {},
       "name": "Warpriest",
       "type": "class",
@@ -5928,7 +5928,7 @@ export default {
       "empty": false
     },
     "warriorNpc": {
-      "_id": "DoC9axkaC1xZepAL",
+      "_id": "",
       "flags": {},
       "name": "Warrior (NPC)",
       "type": "class",
@@ -6048,7 +6048,7 @@ export default {
       "empty": false
     },
     "witch": {
-      "_id": "UqF45qE8awuQ5vRD",
+      "_id": "",
       "flags": {},
       "name": "Witch",
       "type": "class",
@@ -6173,7 +6173,7 @@ export default {
       "empty": false
     },
     "wizard": {
-      "_id": "eOjLuXnRSKCMl5mR",
+      "_id": "",
       "flags": {},
       "name": "Wizard",
       "type": "class",
