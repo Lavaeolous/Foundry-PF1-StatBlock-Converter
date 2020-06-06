@@ -39,11 +39,14 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  Attributes Str, Dex, Con, Int, Wis, Cha
 *  BAB
 *  CMD and CMB (WIP)
+*  Feats ****
+*  Skills
 
 
 \* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
 \*\* Including the needed calculations  
 \*\*\* Including changes to the token (e.g. size and vision)
+\*\*\*\* Creates empty Items for now
 
 **Known Bugs:**
 *  Not all Statblocks are equally formatted. As long as its reasonably well formed (as in the default one included), it should work
@@ -53,7 +56,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 **To Do:**
 *  Bug Fixing
-*  Finish the mapping of statistics to the foundry-json (including Feats, Skills, Racial Skill Modifiers, Languages, Special Qualities, Gear)
+*  Finish the mapping of statistics to the foundry-json (including Languages, Special Qualities, Gear)
 *  Parse Attacks, Spells, Ecology, Description (only for SRD-Content), Gear & Treasure, Special Abilities
 *  Give usable Feedback in the status bar (for now some comments are visible in the console)
 *  Sometime in the future make a module out of it, maybe

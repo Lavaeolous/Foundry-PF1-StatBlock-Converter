@@ -6,6 +6,7 @@ import templateRaceItem from "./templateRaceItem.js"
 import templateRacialHDItem from "./templateRacialHDItem.js"
 import templateConversionItem from "./templateConversionItem.js"
 import templateFeatItem from "./templateFeatItem.js"
+import templateSkills from "./templateSkills.js"
 import enumRaces from "./enumRaces.js"
 import enumTypes from "./enumTypes.js"
 import enumSubtypes from "./enumSubtypes.js"
@@ -14,6 +15,7 @@ import enumClassData from "./enumClassData.js"
 import enumBonusTypes from "./enumBonusTypes.js"
 import enumConditions from "./enumConditions.js"
 import enumDamageTypes from "./enumDamageTypes.js"
+import enumSkills from "./enumSkills.js"
 
 
 /*
@@ -88,19 +90,17 @@ var enumTokenSize = {
   "Colossal": { w: 6, h: 6, scale: 1 },
 };
 
-
 var enumSaves = [
     "fort",
     "ref",
     "will"
 ];
+
 var enumSaveModifier = [
     "con",
     "dex",
     "wis"
 ];
-    
-
 
 // Get HTML Elements
 var outputTextArea = document.getElementById("output");
@@ -110,7 +110,6 @@ var statusOutput = document.getElementById("statusOutput");
 window.init = init;
 window.convertStatBlock = convertStatBlock;
 window.saveJSON = saveJSON;
-
 
 // Initilization
 function init() {
@@ -126,7 +125,6 @@ function init() {
     
     dataTemplate = JSON.parse(JSON.stringify(templateActor));
 }
-
 
 
 /**
@@ -822,32 +820,24 @@ function splitStatisticsData(stringStatisticsData) {
     formattedInput.feats = splitFeats;
     
     // Skills (String from "Skills" to next linebreak)
-    let splitSkills = stringStatisticsData.match(/(?:Skills )(.*)(?:\n+?)/gim)[0];
-    splitSkills = splitSkills.replace(/Skills /i, "");
+    let splitSkills = stringStatisticsData.match(/(?:Skills\s*)(.*)(?:\n+?)/gim)[0];
+    splitSkills = splitSkills.replace(/Skills\s*/i, "");
     splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
     splitSkills = splitSkills.replace(/\n/, "");
     splitSkills = splitSkills.split(/,/);
-    console.log("splitSkills: " + splitSkills);
     
     splitSkills.forEach (function (item, index) {
-        console.log("item: " + item);
         
         let skillTotal = item.match(/(-\d+|\d+)/)[0];
-        let skillName = item.replace(/( -.*| \+.*)/, "");
-        
-        console.log(skillName + ": " + skillTotal);
-        
+        let skillName = item.replace(/(^\s*|\s*-.*|\s*\+.*)/g, "");
+                
         // Cases with sublevels (Knowledge, Profession, Perform, Craft)
-        if (skillName.search(/\bcraft\b/i) !== -1) {
-            console.log("Craft Skill");
-        } else if (skillName.search(/\bknowledge\b/i) !== -1) {
-            console.log("Knowledge Skill");
-        } else if (skillName.search(/\bperform\b/i) !== -1) {
-            console.log("Perform Skill");
-        } else if (skillName.search(/\bprofession\b/i) !== -1) {
-            console.log("Profession Skill");
+        if (skillName.search(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i) !== -1) {
+            let skillSubtype = skillName.match(/\(([^)]+)\)/)[1];
+            let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/, "");
+            formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
         } else {
-            console.log("No Subtypes to this Skill");
+            formattedInput.skills[skillName.toLocaleLowerCase()] = +skillTotal;
         }
         
     });
@@ -1302,9 +1292,74 @@ function mapStatisticData (formattedInput) {
     dataOutput.data.attributes.cmd.total = formattedInput.cmd;
     
     // Feats
-    formattedInput.feats.forEach( function (item, index) {
+    formattedInput.feats.forEach ( function (item, index) {
         setFeatItem(item);
     });
+    
+    // Skills
+    let skillKeys = Object.keys(formattedInput.skills);
+    
+    for (let i = 0; i < skillKeys.length; i++) {
+        
+        let skillKey = skillKeys[i];
+                
+        // Skills with Sublevels
+        if (skillKey.match(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i)) {
+            
+            let skillSubKeys = Object.keys(formattedInput.skills[skillKey]);
+            
+            // Get the Sublevel Keys
+            for (let j = 0; j < skillSubKeys.length; j++) {
+                let skillSubKey = skillSubKeys[j];
+                
+                // Set the skills
+                let tempAttrShort = enumSkills[skillKey][skillSubKey];
+                            
+                // Check if the Skill is a classSkill in any of the items
+                let searchString = '"' + tempAttrShort + '":true';
+                let tempClassSkillModifier = 0;
+
+                if (JSON.stringify(dataOutput.items).search(searchString) !== -1) {
+                    console.log(skillSubKey + " is a classSkill");
+                    tempClassSkillModifier = 3;
+                }
+
+                let tempAttr = templateSkills[tempAttrShort].ability;
+                let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+
+                // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe - ClassSkillBonus?)
+                if (formattedInput.skills[skillKey] !== 0) {
+                    dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey] - +tempAttrModifier - +tempClassSkillModifier;
+                    dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey];
+                }
+      
+            }
+            
+        } else {
+            // Skill without a sublevel
+            let tempAttrShort = enumSkills[skillKey];
+            
+            // Check if the Skill is a classSkill in any of the items
+            let searchString = '"' + tempAttrShort + '":true';
+            let tempClassSkillModifier = 0;
+            
+            if (JSON.stringify(dataOutput.items).search(searchString) !== -1) {
+                //console.log(skillKey + " is a classSkill");
+                tempClassSkillModifier = 3;
+            }
+            
+            let tempAttr = templateSkills[tempAttrShort].ability;
+            let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+            
+            // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe - ClassSkillBonus?)
+            if (formattedInput.skills[skillKey] !== 0) {
+                dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey] - +tempAttrModifier - +tempClassSkillModifier;
+                dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey];
+            }
+
+        }
+        
+    }
     
     
 }
