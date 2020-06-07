@@ -36,41 +36,45 @@
             <div class="oneHalf">
                 <label class="statBlockInputLabel">Input</label>
                 <textarea class="statBlockInput" id="input" form="statBlockInputForm" placeholder="Paste Statblock here">
-Flesh Golem CR 7
-Source Pathfinder RPG Bestiary pg. 160
-XP 3,200
-N Large construct
-Init –1; Senses darkvision 60 ft., low-light vision; Perception +0
+Hellfire Ignis CR 3
+Source Cheliax, the Infernal Empire pg. 62
+XP 800
+NE Small fey (fire)
+Init +5; Senses low-light vision; Perception +8
 Defense
-AC 20, touch 8, flat-footed 20; (–1 Dex, +12 natural, –1 size)
-hp 79 (9d10+30)
-Fort +3, Ref +2, Will +3
-DR 5/adamantine; Immune construct traits, magic
+AC 16, touch 16, flat-footed 11 (+5 Dex, +1 size)
+hp 27 (5d6+10)
+Fort +3, Ref +9, Will +4
+DR 5/cold iron; Immune fire
+Weaknesses vulnerable to cold
 Offense
 Speed 30 ft.
-Melee 2 slams +13 (2d8+5)
-Space 10 ft., Reach 10 ft.
-Special Attacks berserk
+Melee bite +8 (1d4+2), 2 claws +8 (1d3+2 plus burn)
+Special Attacks burn (1d3, DC 14), molten flesh
+Spell-Like Abilities (CL 3rd; concentration +3)
+At will—flare (DC 10), sparkAPG (DC 10)
+3/day—pyrotechnics (DC 12)
 Statistics
-Str 20, Dex 9, Con —, Int —, Wis 11, Cha 1
-Base Atk +9; CMB +15; CMD 24
-Languages none
+Str 14, Dex 20, Con 15, Int 8, Wis 11, Cha 11
+Base Atk +2; CMB +3; CMD 18
+Feats Combat Reflexes, Step Up, Weapon Finesse
+Skills Acrobatics +13, Escape Artist +10, Intimidate +5, Perception +8, Stealth +17, Survival +3
+Languages Common, Sylvan
+SQ brimstone essence
 Ecology
-Environment any
-Organization solitary or gang (2–4)
-Treasure none
+Environment any forests or plains
+Organization solitary, gang (2–5), or crew (4–8 plus 1 advanced leader)
+Treasure standard
 Special Abilities
-Berserk (Ex) When a flesh golem enters combat, there is a cumulative 1% chance each round that its elemental spirit breaks free and the golem goes berserk. The uncontrolled golem goes on a rampage, attacking the nearest living creature or smashing some object smaller than itself if no creature is within reach, then moving on to spread more destruction. The golem’s creator, if within 60 feet, can try to regain control by speaking firmly and persuasively to the golem, which requires a DC 19 Charisma check. It takes 1 minute of inactivity by the golem to reset the golem’s berserk chance to 0%.
+Brimstone Essence (Ex) A hellfire ignis is the product of infernal energies coalescing with the First World’s influence and thus gives off a faint, constant odor of brimstone. A hellfire ignis can suppress this odor as a swift action for up to 1 minute. Otherwise, the odor imposes a –2 penalty on Stealth checks the ignis attempts in areas devoid of brimstone.
 
-Immunity to Magic (Ex) A flesh golem is immune to any spell or spell-like ability that allows spell resistance. In addition, certain spells and effects function differently against the creature, as noted below.
-A magical attack that deals cold or fire damage slows a flesh golem (as the slow spell) for 2d6 rounds (no save).
-A magical attack that deals electricity damage breaks any slow effect on the golem and heals 1 point of damage for every 3 points of damage the attack would otherwise deal. If the amount of healing would cause the golem to exceed its full normal hit points, it gains any excess as temporary hit points. A flesh golem gets no saving throw against attacks that deal electricity damage.
+Molten Flesh (Ex) Three times per day as a standard action, a hellfire ignis can tear off a chunk of its molten flesh and hurl it as a ranged attack at an opponent within 20 feet. This attack deals 1d3 points of bludgeoning damage plus the effects of the hellfire ignis’s burn special attack.
 Description
-A flesh golem is a ghoulish collection of stolen humanoid body parts, stitched together into a single composite form. Its cadaverous flesh has a sickly green or yellowish tint. A flesh golem wears whatever clothing its creator desires, usually just a ragged pair of trousers. It has no possessions and no weapons. A flesh golem stands 8 feet tall and weighs 500 pounds.
+Hellfire ignises roam the rural areas of Cheliax, committing acts of arson and leaving brush, forest, and structures ablaze in their wake. Cruel and sadistic pyromaniacs, hellfire ignises are corrupted versions of fey that once represented both the destructive and rejuvenating properties of fire within nature. Unlike their untainted kin, hellfire ignises see fire as merely a tool for destruction and revel in the raw power of its hungering flames.
 
-A flesh golem cannot speak, although it can emit a hoarse roar of sorts. It walks and moves with a stiff-jointed gait, as if not in complete control of its body.
+Unlike many fey creatures, hellfire ignises are surprisingly attracted to urban areas. The prevalence of wooden tenements, dense populations, and unpatrolled sewers through which they can travel unseen make towns tempting targets for the inveterate arsonists. There is a bounty on the heads of hellfire ignises in many cities and towns in Cheliax, with rewards reaching as much as 400 gp per specimen in some areas. Greedy hunters from Egorian and other cities have been known to travel far into the heart of the Barrowood and Whisperwood, hoping to carry a large collection of ignis heads back for a larger bounty in town.
 
-Although most flesh golems are mindless, there are persistent rumors of unusual golems who somehow retain the memories of a previous life. The head (and thus brain) of such flesh golems must be just the right combination of fresh and (in its previous life) strong-willed, and even then luck and chance during the golem’s creation seem just as important in retaining the creature’s mind. Certainly most who construct flesh golems prefer mindless slaves over free-willed creations, and as a result intelligent flesh golems are rare indeed.
+Despite their name and infernal origins, hellfire ignises have no allegiances to Hell or those who serve it. That said, many experienced pyromancersfind that the corrupted fey make excellent familiars. They tend to be more versatile than fire elementals and less sinister than imps, filling a specific niche between the two more commonly seen familiars. A spellcaster who takes a hellfire ignis as a familiar must be ever watchful that it keeps its arsonist spirit in check, however, as the mischievous fey have been known to set fire to their masters’ workshops, libraries, and homes not out of spite or malice, but because they often contain so many combustible tools and decorations. A 7th-level spellcaster can gain a hellfire ignis as a familiar if she has the Improved Familiar feat.
                 </textarea>
                 <form onsubmit="return false" onClick="convertStatBlock(input)" id="statBlockInputForm">
                     <input type="submit" class="submitButton" value="Convert Stat Block"/>

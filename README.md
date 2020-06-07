@@ -41,12 +41,14 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  CMD and CMB (WIP)
 *  Feats ****
 *  Skills
+*  Languages
 
 
 \* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
 \*\* Including the needed calculations  
 \*\*\* Including changes to the token (e.g. size and vision)
 \*\*\*\* Creates empty Items for now
+
 
 **Known Bugs:**
 *  Not all Statblocks are equally formatted. As long as its reasonably well formed (as in the default one included), it should work
@@ -63,3 +65,12 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 **Contact**
 Primer#2220 on Discord
+
+
+**Change Log**
+2020_06_07:
+*  Added support for language parsing
+*  Added support for feat parsing (these get saved as named but empty items in the character sheet)
+*  Added support for skill parsing (ranks are autocalculated to match the given total in the statblock depending on attribute modifiers and class skill boni)
+*  Reworked calculation of saving throws to use the class or racialHD progression
+*  
