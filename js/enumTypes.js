@@ -1,5 +1,5 @@
 export default [
-    "Abberation",
+    "Aberration",
     "Animal",
     "Construct",
     "Dragon",

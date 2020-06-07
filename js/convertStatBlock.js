@@ -476,7 +476,10 @@ function splitGeneralData(stringGeneralData) {
     
     
     // Creature Type and Subtype(s)
+    console.log(new RegExp(enumTypes.join('|')));
     let splitType = splitGeneralData.match(new RegExp(enumTypes.join("|"), "i"))[0];
+    
+    
     
     // Subtypes
     let splitSubtypes = "";
@@ -634,7 +637,7 @@ function splitDefenseData(stringDefenseData) {
             let tempLevel = formattedInput.classes[classKey[i]].level;
             
             for (let j = 0; j < hitDicePoolKey.length; j++) {
-                let tempRegEx = new RegExp("(?:" + tempLevel + "d)(\\d+?)", "i");
+                let tempRegEx = new RegExp("(?:" + tempLevel + "d)(\\d+)", "i");
                 if (hitDicePool[j].match(tempRegEx)) {
                     // Set HP for classItem
                     let tempDiceSize = hitDicePool[j].match(tempRegEx)[1];
@@ -643,8 +646,8 @@ function splitDefenseData(stringDefenseData) {
                     inputHDTotal += +tempLevel;
                 } else {
                     // Set HP for RacialHDItem                    
-                    let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
-                    let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
+                    let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+)/)[1];
+                    let tempRacialHD = hitDicePool[j].match(/(\d+)(?:d)/)[1];
                     
                     formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
                     inputHDTotal += +tempRacialHD;
@@ -658,8 +661,12 @@ function splitDefenseData(stringDefenseData) {
         for (let j = 0; j < hitDicePoolKey.length; j++) {
             
             // Set HP for RacialHDItem        
-            let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+?)/)[1];
-            let tempRacialHD = hitDicePool[j].match(/(\d+?)(?:d)/)[1];
+            let tempDiceSize = hitDicePool[j].match(/(?:d)(\d+)/)[1];
+            let tempRacialHD = hitDicePool[j].match(/(\d+)(?:d)/)[1];
+            
+            console.log("tempDiceSize: " + tempDiceSize);
+            console.log("tempRacialHD: " + tempRacialHD);
+            
             formattedInput.hp.race = Math.floor(tempRacialHD * getDiceAverage(tempDiceSize));
             inputHDTotal += +tempRacialHD;
         }
@@ -694,15 +701,15 @@ function splitDefenseData(stringDefenseData) {
     
     //let splitSaves = splitDefenseData[2].split(/,/);    
     splitSaves.forEach( function (item, index) {
-        if (this[index].match(/(Fort)|(fort)/)) {
+        if (this[index].match(/(fort)/i)) {
             let splitFort = item.match(/(\+[\d]*)|(-[\d]*)/g)[0];
-            formattedInput.fort_save = splitFort.replace(/\+/,"");
-        } else if (this[index].match(/(Ref)|(ref)/)) {
+            formattedInput.fort_save.total = splitFort.replace(/\+/,"");
+        } else if (this[index].match(/(ref)/i)) {
             let splitRef = item.match(/(\+[\d]*)|(-[\d]*)/g)[0];
-            formattedInput.ref_save = splitRef.replace(/\+/,"");
-        } else if (this[index].match(/(Will)|(will)/)) {
+            formattedInput.ref_save.total = splitRef.replace(/\+/,"");
+        } else if (this[index].match(/(will)/i)) {
             let splitWill = item.match(/(\+[\d]*)|(-[\d]*)/g)[0];
-            formattedInput.will_save = splitWill.replace(/\+/,"");
+            formattedInput.will_save.total = splitWill.replace(/\+/,"");
         }
     }, splitSaves);
     
@@ -812,35 +819,39 @@ function splitStatisticsData(stringStatisticsData) {
     formattedInput.cmd = stringStatisticsData.match(/(?:CMD )(.*)/i)[1];
     
     // Feats (String from "Feats" to next linebreak)
-    let splitFeats = stringStatisticsData.match(/(?:Feats )(.*)(?:\n+?)/gim)[0];
-    splitFeats = splitFeats.replace(/Feats /i, "");
-    splitFeats = splitFeats.replace(/,\s|;\s/g, ",");
-    splitFeats = splitFeats.split(/,/);
-    
-    formattedInput.feats = splitFeats;
+    if (stringStatisticsData.search(/(?:Feats )/) !== -1) {
+        let splitFeats = stringStatisticsData.match(/(?:Feats )(.*)(?:\n+?)/gim)[0];
+        splitFeats = splitFeats.replace(/Feats /i, "");
+        splitFeats = splitFeats.replace(/,\s|;\s/g, ",");
+        splitFeats = splitFeats.split(/,/);
+
+        formattedInput.feats = splitFeats;
+    }
     
     // Skills (String from "Skills" to next linebreak)
-    let splitSkills = stringStatisticsData.match(/(?:Skills\s*)(.*)(?:\n+?)/gim)[0];
-    splitSkills = splitSkills.replace(/Skills\s*/i, "");
-    splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
-    splitSkills = splitSkills.replace(/\n/, "");
-    splitSkills = splitSkills.split(/,/);
-    
-    splitSkills.forEach (function (item, index) {
-        
-        let skillTotal = item.match(/(-\d+|\d+)/)[0];
-        let skillName = item.replace(/(^\s*|\s*-.*|\s*\+.*)/g, "");
-                
-        // Cases with sublevels (Knowledge, Profession, Perform, Craft)
-        if (skillName.search(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i) !== -1) {
-            let skillSubtype = skillName.match(/\(([^)]+)\)/)[1];
-            let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/, "");
-            formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
-        } else {
-            formattedInput.skills[skillName.toLocaleLowerCase()] = +skillTotal;
-        }
-        
-    });
+    if (stringStatisticsData.search(/(?:Skills )/) !== -1) {
+        let splitSkills = stringStatisticsData.match(/(?:Skills\s*)(.*)(?:\n+?)/gim)[0];
+        splitSkills = splitSkills.replace(/Skills\s*/i, "");
+        splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
+        splitSkills = splitSkills.replace(/\n/, "");
+        splitSkills = splitSkills.split(/,/);
+
+        splitSkills.forEach (function (item, index) {
+
+            let skillTotal = item.match(/(-\d+|\d+)/)[0];
+            let skillName = item.replace(/(^\s*|\s*-.*|\s*\+.*)/g, "");
+
+            // Cases with sublevels (Knowledge, Profession, Perform, Craft)
+            if (skillName.search(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i) !== -1) {
+                let skillSubtype = skillName.match(/\(([^)]+)\)/)[1];
+                let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/, "");
+                formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
+            } else {
+                formattedInput.skills[skillName.toLocaleLowerCase()] = +skillTotal;
+            }
+
+        });
+    }
     
     // Racial Skill Modifiers
     
@@ -917,6 +928,12 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
 function mapGeneralData(formattedInput) {
     // Top of the Character Sheet
     dataOutput.name = dataOutput.token.name = formattedInput.name.replace(/^ | $/, "");
+    
+    // Changes for Undead Creatures
+    if (formattedInput.creature_type === "undead") {
+        dataOutput.data.attributes.hpAbility = "cha";
+        dataOutput.data.attributes.savingThrows.fort.ability = "cha";
+    }
     
     // Token Data
     dataOutput.token.name = dataOutput.token.name = formattedInput.name;
@@ -999,15 +1016,28 @@ function setClassItem (classInput) {
     for (var i=0; i < classKey.length; i++) {
         // Create Item for the Class starting from the template
         let itemEntry = templateClassItem[classKey[i].toLowerCase().replace(/npc/,"Npc")];
-        itemEntry.data.savingThrows.fort.value = "";
-        itemEntry.data.savingThrows.ref.value = "";
-        itemEntry.data.savingThrows.will.value = "";
         
         itemEntry.data.level = classInput[classKey[i]].level;
         inputClassHD = classInput[classKey[i]].level;
         itemEntry.data.hp = +formattedInput.hp.class;
-        //itemEntry.data.bab = "";
-        //itemEntry.data.skillsPerLevel = "";
+        
+        // "low"-progression: floor(@level / 3)
+        // "high"-progression: 2 + floor(@level / 2)
+        let saveKey = Object.keys(itemEntry.data.savingThrows);
+        console.log("saveKey: " + saveKey);
+
+        for (var i=0; i < saveKey.length; i++) {
+            if (itemEntry.data.savingThrows[saveKey[i]].value == "low") {
+                console.log("low save");
+                formattedInput[saveKey[i]+"_save"].class = Math.floor(itemEntry.data.level / 3);            
+            } else if (itemEntry.data.savingThrows[saveKey[i]].value == "high") {
+                console.log("high save");
+                formattedInput[saveKey[i]+"_save"].class = 2 + Math.floor(itemEntry.data.level / 2);
+            } else {
+                console.log("save none");
+                formattedInput[saveKey[i]+"_save"].class = "";
+            }
+        }
 
         dataOutput.items.push(itemEntry);
     }
@@ -1036,18 +1066,42 @@ function setRacialHDItem (formattedInput) {
     // Create Item for the Class starting from the template
     let itemEntry = templateRacialHDItem[formattedInput.creature_type.toLowerCase()];
     
-    // Update the name to include Subtypes
-    itemEntry.name = formattedInput.creature_type + " (" + formattedInput.creature_subtype + ")";
-    console.log("itemEntry.name: " + itemEntry.name);
-    
-    // Set Saves
-    itemEntry.data.savingThrows.fort.value = "";
-    itemEntry.data.savingThrows.ref.value = "";
-    itemEntry.data.savingThrows.will.value = "";
-    //itemEntry.data.hd = "";
-    
     itemEntry.data.level = +formattedInput.hit_dice.hd - inputClassHD;
     itemEntry.data.hp = +formattedInput.hp.race;
+    
+    // Update the name to include Subtypes
+    if (formattedInput.creature_subtype !== "") {
+        itemEntry.name = formattedInput.creature_type + " (" + formattedInput.creature_subtype + ")";
+    }
+    
+    // Set Saves
+    console.log(itemEntry);
+    // "low"-progression: floor(@level / 3)
+    // "high"-progression: 2 + floor(@level / 2)
+    
+    let saveKey = Object.keys(itemEntry.data.savingThrows);
+    console.log("saveKey: " + saveKey);
+    
+    for (var i=0; i < saveKey.length; i++) {
+        if (itemEntry.data.savingThrows[saveKey[i]].value == "low") {
+            console.log("low save");
+            formattedInput[saveKey[i]+"_save"].racial = Math.floor(itemEntry.data.level / 3);            
+        } else if (itemEntry.data.savingThrows[saveKey[i]].value == "high") {
+            console.log("high save");
+            formattedInput[saveKey[i]+"_save"].racial = 2 + Math.floor(itemEntry.data.level / 2);
+        } else {
+            console.log("save none");
+            formattedInput[saveKey[i]+"_save"].racial = "";
+        }
+    }
+    
+    
+    //itemEntry.data.savingThrows.fort.value = "";
+    //itemEntry.data.savingThrows.ref.value = "";
+    //itemEntry.data.savingThrows.will.value = "";
+    //itemEntry.data.hd = "";
+    
+    
 
     //itemEntry.data.bab = "";
     //itemEntry.data.skillsPerLevel = "";
@@ -1064,8 +1118,19 @@ function setConversionItem (formattedInput) {
     // Add Changes to HP if needed
     // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
     // and compare that to the hp.total from the input
+    let calculatedHPTotal = 0;
+    if (formattedInput.con === "-") {
+        calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(10));
+    } else {
+        calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
+    }
     
-    let calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
+    console.log("formattedInput.hp.race: " + formattedInput.hp.race);
+    console.log("formattedInput.hp.class: " + formattedInput.hp.class);
+    console.log("formattedInput.hit_dice.hd: " + formattedInput.hit_dice.hd);
+    console.log("formattedInput.con: " + formattedInput.con);
+    console.log("getModifier(formattedInput.con): " + getModifier(formattedInput.con));
+    console.log("calculatedHPTotal: " + calculatedHPTotal);
     
     if (+calculatedHPTotal !== +formattedInput.hp.total) {
         
@@ -1109,21 +1174,27 @@ function setConversionItem (formattedInput) {
         }
     }
     
-    // Add SavingThrow Values in Changes, decreased by the corresponding attribute modifiers    
+    // Add SavingThrow Values in Changes, decreased by the corresponding attribute modifiers
+    // and the values derived from the saving throw progression of racialHD and class
+    // "low"-progression: floor(@level / 3)
+    // "high"-progression: 2 + floor(@level / 2)
     enumSaves.forEach( function (item, index) {
         let saveChange = [];
         let tempSaveString = item + "_save";
-                
-        let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]]);
-                
-        // Check for Undead without Constitution, because they handle Fort-Saves differently
-        if ( ( formattedInput.creature_type.toLowerCase() === "undead" ) && ( enumSaveModifier[index] === "con" ) && ( formattedInput[enumSaveModifier[index]] === "-" ) ) {
-            console.log("this is an undead without con");
-            // Set the Change to 0, because thats handled automatically in the undead creature item
-            saveChange.push("0");
+        
+        if (item === "fort" && formattedInput.con == "-") {
+            let tempSaveChange = +formattedInput[tempSaveString].total - +formattedInput[tempSaveString].racial - +formattedInput[tempSaveString].class;
+            saveChange.push(tempSaveChange.toString());
         } else {
-            let tempSave = formattedInput[tempSaveString]-attrModifier;
-            saveChange.push(tempSave.toString());
+            let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]]);
+            
+            console.log("attrModifier: " + attrModifier);
+            console.log("formattedInput[tempSaveString].total: " + formattedInput[tempSaveString].total);
+            console.log("formattedInput[tempSaveString].racial: " + formattedInput[tempSaveString].racial);
+            console.log("formattedInput[tempSaveString].class: " + formattedInput[tempSaveString].class);
+            
+            let tempSaveChange = +formattedInput[tempSaveString].total - +formattedInput[tempSaveString].racial - +formattedInput[tempSaveString].class - +attrModifier;
+            saveChange.push(tempSaveChange.toString());
         }
         
         
@@ -1163,9 +1234,9 @@ function mapDefenseData (formattedInput) {
     dataOutput.data.attributes.naturalAC = +formattedInput.ac_bonus_types.natural;
     dataOutput.data.attributes.acNotes = formattedInput.acNotes;
     
-    dataOutput.data.attributes.savingThrows.fort.total = +formattedInput.fort_save;
-    dataOutput.data.attributes.savingThrows.ref.total = +formattedInput.ref_save;
-    dataOutput.data.attributes.savingThrows.will.total = +formattedInput.will_save;
+    dataOutput.data.attributes.savingThrows.fort.total = +formattedInput.fort_save.total;
+    dataOutput.data.attributes.savingThrows.ref.total = +formattedInput.ref_save.total;
+    dataOutput.data.attributes.savingThrows.will.total = +formattedInput.will_save.total;
     
     // SR
     dataOutput.data.attributes.sr.total = +formattedInput.spell_resistance;

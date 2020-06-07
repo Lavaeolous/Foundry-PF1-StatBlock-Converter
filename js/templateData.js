@@ -28,9 +28,21 @@ export default {
     "touch": 0,
     "flat_footed" : 0,
     "ac_bonus_types" : {},
-    "fort_save": 0,
-    "ref_save": 0,
-    "will_save": 0,
+    "fort_save": {
+        "total": 0,
+        "racial": 0,
+        "class": 0
+    },
+    "ref_save": {
+        "total": 0,
+        "racial": 0,
+        "class": 0
+    },
+    "will_save": {
+        "total": 0,
+        "racial": 0,
+        "class": 0
+    },
     "defensive_abilities": "",
     "immunities": "",
     "resistances": "",

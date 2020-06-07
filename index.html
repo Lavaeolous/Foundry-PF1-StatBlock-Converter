@@ -36,43 +36,41 @@
             <div class="oneHalf">
                 <label class="statBlockInputLabel">Input</label>
                 <textarea class="statBlockInput" id="input" form="statBlockInputForm" placeholder="Paste Statblock here">
-Night Hag CR 9
-Source Pathfinder RPG Bestiary pg. 215
-XP 6,400
-NE Medium outsider (evil, extraplanar)
-Init +4; Senses darkvision 60 ft.; Perception +16
+Flesh Golem CR 7
+Source Pathfinder RPG Bestiary pg. 160
+XP 3,200
+N Large construct
+Init –1; Senses darkvision 60 ft., low-light vision; Perception +0
 Defense
-AC 25, touch 14, flat-footed 21 (+4 Dex, +11 natural)
-hp 92 (8d10+48)
-Fort +14, Ref +8, Will +11
-DR 10/cold iron and magic; Immune charm, cold, fear, fire, sleep; SR 24
+AC 20, touch 8, flat-footed 20; (–1 Dex, +12 natural, –1 size)
+hp 79 (9d10+30)
+Fort +3, Ref +2, Will +3
+DR 5/adamantine; Immune construct traits, magic
 Offense
 Speed 30 ft.
-Melee 2 claws +13 (1d4+5), bite +13 (2d6+5 plus disease)
-Special Attacks dream haunting
-Spell-Like Abilities (CL 8th)
-Constant—detect chaos, detect evil, detect good, detect law, detect magic
-At will—deep slumber (DC 16), invisibility, magic missile, ray of enfeeblement (DC 14)
-At will (with heartstone)—etherealness, soul bind
+Melee 2 slams +13 (2d8+5)
+Space 10 ft., Reach 10 ft.
+Special Attacks berserk
 Statistics
-Str 21, Dex 19, Con 22, Int 18, Wis 16, Cha 17
-Base Atk +8; CMB +13; CMD 27
-Feats Alertness, Combat Casting, Deceitful, Mounted Combat
-Skills Bluff +16, Diplomacy +11, Disguise +16, Intimidate +14, Knowledge (arcana) +12, Knowledge (planes) +15, Perception +16, Ride +15, Sense Motive +16, Spellcraft +15
-Languages Abyssal, Celestial, Common, Infernal
-SQ change shape (any humanoid, alter self), heartstone
+Str 20, Dex 9, Con —, Int —, Wis 11, Cha 1
+Base Atk +9; CMB +15; CMD 24
+Languages none
 Ecology
-Environment any evil-aligned plane
-Organization solitary, mounted (1 and 1 nightmare), or coven (3 hags of any type)
-Treasure standard
+Environment any
+Organization solitary or gang (2–4)
+Treasure none
 Special Abilities
-Disease (Su) Demon Fever: Bite—injury; save Fort DC 20; onset immediate; frequency 1/day; effect 1d6 Con damage (target must save a 2nd time or 1 point of the damage is drain instead); cure 2 consecutive saves. The save DC is Constitution-based.
+Berserk (Ex) When a flesh golem enters combat, there is a cumulative 1% chance each round that its elemental spirit breaks free and the golem goes berserk. The uncontrolled golem goes on a rampage, attacking the nearest living creature or smashing some object smaller than itself if no creature is within reach, then moving on to spread more destruction. The golem’s creator, if within 60 feet, can try to regain control by speaking firmly and persuasively to the golem, which requires a DC 19 Charisma check. It takes 1 minute of inactivity by the golem to reset the golem’s berserk chance to 0%.
 
-Dream Haunting (Su) A night hag can visit the dreams of chaotic or evil targets by using a special periapt known as a heartstone to become ethereal, then hovering over the creature. Once it does so, it rides on the victim’s back until dawn. The sleeper suffers tormenting dreams and takes 1 point of Constitution drain upon awakening. Only another ethereal being can stop these nocturnal intrusions by confronting and defeating the night hag.
-
-Heartstone (Su) All night hags carry a heartstone—a special gemstone worth at least 1,800 gp that is worn as a periapt. A heartstone’s magic is fueled by the hag’s spirit and proximity—once separated from its owner (or upon the hag’s death), a heartstone retains its magic for only 24 hours before becoming a nonmagical gem again. The heartstone instantly cures any disease contracted by the holder. In addition, a heartstone provides a +2 resistance bonus on all saving throws (this bonus is included in the statistics block above). A night hag that loses this charm can no longer use etherealness or soul bind until it finds a replacement gemstone.
+Immunity to Magic (Ex) A flesh golem is immune to any spell or spell-like ability that allows spell resistance. In addition, certain spells and effects function differently against the creature, as noted below.
+A magical attack that deals cold or fire damage slows a flesh golem (as the slow spell) for 2d6 rounds (no save).
+A magical attack that deals electricity damage breaks any slow effect on the golem and heals 1 point of damage for every 3 points of damage the attack would otherwise deal. If the amount of healing would cause the golem to exceed its full normal hit points, it gains any excess as temporary hit points. A flesh golem gets no saving throw against attacks that deal electricity damage.
 Description
-Terrifying murderesses and greedy soul brokers, night hags prey upon mortals while they’re most vulnerable. Preferring to kill their prey slowly, haunting their dreams night after night, these hags trap the tormented souls of their victims within dark gems so they might be sold in the infernal markets of the outer planes. Night hags vary widely in appearance, standing between 5-1/2 and 7 feet tall, and weighing from 150 to 300 pounds.
+A flesh golem is a ghoulish collection of stolen humanoid body parts, stitched together into a single composite form. Its cadaverous flesh has a sickly green or yellowish tint. A flesh golem wears whatever clothing its creator desires, usually just a ragged pair of trousers. It has no possessions and no weapons. A flesh golem stands 8 feet tall and weighs 500 pounds.
+
+A flesh golem cannot speak, although it can emit a hoarse roar of sorts. It walks and moves with a stiff-jointed gait, as if not in complete control of its body.
+
+Although most flesh golems are mindless, there are persistent rumors of unusual golems who somehow retain the memories of a previous life. The head (and thus brain) of such flesh golems must be just the right combination of fresh and (in its previous life) strong-willed, and even then luck and chance during the golem’s creation seem just as important in retaining the creature’s mind. Certainly most who construct flesh golems prefer mindless slaves over free-willed creations, and as a result intelligent flesh golems are rare indeed.
                 </textarea>
                 <form onsubmit="return false" onClick="convertStatBlock(input)" id="statBlockInputForm">
                     <input type="submit" class="submitButton" value="Convert Stat Block"/>

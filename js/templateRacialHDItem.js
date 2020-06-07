@@ -1,5 +1,5 @@
 export default {
-    "abberation" : {
+    "aberration" : {
       "_id": "",
       "flags": {},
       "name": "Aberration",
@@ -239,12 +239,6 @@ export default {
           ],
           [
             "-(@abilities.con.mod * @attributes.hd.total)",
-            "misc",
-            "mhp",
-            "untyped"
-          ],
-          [
-            "10",
             "misc",
             "mhp",
             "untyped"
@@ -1230,20 +1224,7 @@ export default {
           "unidentified": ""
         },
         "tags": [],
-        "changes": [
-          [
-            "(@abilities.cha.mod - @abilities.con.mod) * @attributes.hd.total",
-            "misc",
-            "mhp",
-            "untyped"
-          ],
-          [
-            "(@abilities.cha.mod - @abilities.con.mod)",
-            "savingThrows",
-            "fort",
-            "untyped"
-          ]
-        ],
+        "changes": [],
         "changeFlags": {
           "loseDexToAC": false,
           "noStr": false,
