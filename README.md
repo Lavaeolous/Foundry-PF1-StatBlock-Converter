@@ -40,7 +40,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  BAB
 *  CMD and CMB (WIP)
 *  Feats ****
-*  Skills
+*  Skills **
 *  Languages
 
 
@@ -73,4 +73,16 @@ Primer#2220 on Discord
 *  Added support for feat parsing (these get saved as named but empty items in the character sheet)
 *  Added support for skill parsing (ranks are autocalculated to match the given total in the statblock depending on attribute modifiers and class skill boni)
 *  Reworked calculation of saving throws to use the class or racialHD progression
-*  
+
+
+**List of statblocks used for testing (e.g. working more or less)**
+*  Aberration [Daughter of Shub-Niggurath](https://www.d20pfsrd.com/bestiary/monster-listings/aberrations/daughter-of-shub-niggurath)
+*  Animal [Armadillo](https://www.d20pfsrd.com/bestiary/monster-listings/animals/armadillo/)
+*  Dragon [Jabberwock](https://www.d20pfsrd.com/bestiary/monster-listings/dragons/jabberwock/)
+*  Fey [Hellfire Ignis](https://www.aonprd.com/MonsterDisplay.aspx?ItemName=Hellfire%20Ignis)
+*  Humanoid [Duergar](https://www.d20pfsrd.com/bestiary/monster-listings/humanoids/duergar/)
+*  Magical Beasts - [Manticore](https://www.d20pfsrd.com/bestiary/monster-listings/magical-beasts/manticore) - Racial Modifiers not yet supported
+*  Monstrous Humanoids - [Lamia Matriarch](https://www.aonprd.com/MonsterDisplay.aspx?ItemName=Lamia%20Matriarch)
+*  Outsider - [Night Hag](https://www.aonprd.com/MonsterDisplay.aspx?ItemName=Night%20Hag)
+*  Constructs - [Flesh Golem](https://www.aonprd.com/MonsterDisplay.aspx?ItemName=Flesh%20Golem)
+*  Oozes - [Black Pudding](https://www.d20pfsrd.com/bestiary/monster-listings/oozes/pudding-black/)

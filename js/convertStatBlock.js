@@ -810,17 +810,34 @@ function splitStatisticsData(stringStatisticsData) {
         splitSkills = splitSkills.replace(/Skills\s*/i, "");
         splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
         splitSkills = splitSkills.replace(/\n/, "");
+        
+        let splitRacialModifiers = "";
+        if (splitSkills.search(/racial modifiers/i) !== -1) {
+            splitRacialModifiers = splitSkills.split(/racial modifiers /i)[1];
+            splitSkills = splitSkills.split(/racial modifiers /i)[0].replace(/,$| $/,"");
+        }
+        
         splitSkills = splitSkills.split(/,/);
+        console.log("splitSkills: " + JSON.stringify(splitSkills));
 
         splitSkills.forEach (function (item, index) {
 
+            console.log("item: " + item);
             let skillTotal = item.match(/(-\d+|\d+)/)[0];
-            let skillName = item.replace(/(^\s*|\s*-.*|\s*\+.*)/g, "");
+            let skillName = item.replace(/(^\s*|\s*-[\d].*|\s*\+.*)/g, "");
 
             // Cases with sublevels (Knowledge, Profession, Perform, Craft)
             if (skillName.search(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i) !== -1) {
-                let skillSubtype = skillName.match(/\(([^)]+)\)/)[1];
-                let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/, "");
+                console.log("skillName: " + skillName);
+                let skillSubtype = skillName.match(/\(([^)]+)\)/)[1].replace(/^ | $/g,"");
+                
+                console.log("skillSubtype: " + skillSubtype);
+                
+                let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/g, "");
+                tempSkillName = tempSkillName.replace(/^ | $/g, "");
+                
+                console.log("tempSkillName: " + tempSkillName);
+                
                 formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
             } else {
                 formattedInput.skills[skillName.toLocaleLowerCase()] = +skillTotal;
@@ -1319,10 +1336,13 @@ function mapStatisticData (formattedInput) {
     
     // Skills
     let skillKeys = Object.keys(formattedInput.skills);
+    console.log("formattedInput.skills: " + JSON.stringify(formattedInput.skills));
     
     for (let i = 0; i < skillKeys.length; i++) {
         
         let skillKey = skillKeys[i];
+        
+        console.log("skillKey: " + skillKey);
                 
         // Skills with Sublevels
         if (skillKey.match(/\bcraft\b|\bperform\b|\bprofession\b|\bknowledge\b/i)) {
@@ -1333,31 +1353,92 @@ function mapStatisticData (formattedInput) {
             for (let j = 0; j < skillSubKeys.length; j++) {
                 let skillSubKey = skillSubKeys[j];
                 
+                console.log("skillKey: " + skillKey);
+                console.log("skillSubKey: " + skillSubKey);
+                
+                
                 // Set the skills
-                let tempAttrShort = enumSkills[skillKey][skillSubKey];
-                            
-                // Check if the Skill is a classSkill in any of the items
-                let searchString = '"' + tempAttrShort + '":true';
-                let tempClassSkillModifier = 0;
-
-                if (JSON.stringify(dataOutput.items).search(searchString) !== -1) {
-                    console.log(skillSubKey + " is a classSkill");
-                    tempClassSkillModifier = 3;
+                let tempAttrShort = "";
+                if (skillKey === "knowledge") {
+                    
+                    console.log("JSON.stringify(skillSubKeys): " + JSON.stringify(enumSkills[skillKey]));
+                    
+                    if (JSON.stringify(enumSkills[skillKey]).search(skillSubKey) === -1) {
+                        // if its not a valid knowledge subskill
+                        console.log("not a valid subkill of knowledge");
+                        tempAttrShort = "createCustomSkill";
+                    } else {
+                        // if its a valid knowledge subskill
+                        tempAttrShort = enumSkills[skillKey][skillSubKey];
+                    }
+                    
+                } else {
+                    tempAttrShort = enumSkills[skillKey];
                 }
+                
+                console.log("tempAttrShort: " + tempAttrShort);
+                
+                if (tempAttrShort !== "createCustomSkill") {
+                    // Check if the Skill is a classSkill in any of the items
+                    let searchString = '"' + tempAttrShort + '":true';
+                    let tempClassSkillModifier = 0;
 
-                let tempAttr = templateSkills[tempAttrShort].ability;
-                let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+                    if (JSON.stringify(dataOutput.items).search(searchString) !== -1) {
+                        console.log(skillSubKey + " is a classSkill");
+                        tempClassSkillModifier = 3;
+                    }
 
-                // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe - ClassSkillBonus?)
-                if (formattedInput.skills[skillKey] !== 0) {
-                    dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey] - +tempAttrModifier - +tempClassSkillModifier;
-                    dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey];
+                    console.log("tempAttrShort: " + tempAttrShort);
+                    let tempAttr = templateSkills[tempAttrShort].ability;
+                    let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+
+                    // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe ClassSkillBonus)
+                    if (formattedInput.skills[skillKey] !== 0) {
+                        dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey] - +tempAttrModifier - +tempClassSkillModifier;
+                        dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey];
+                    }
+                } else {
+                    //Create a custom skill
+                    console.log("create a custom skill");
+                    
+                    let templateCustomSkill = {
+                        "custom": {
+                            "name": "custom",
+                            "ability": "int",
+                            "rank": 4,
+                            "notes": "",
+                            "mod": 4,
+                            "rt": false,
+                            "cs": false,
+                            "acp": false,
+                            "background": false,
+                            "custom": true,
+                            "value": null
+                        }
+                    };
+                    
+                    
+                    let customSkillName = skillKey + " (" + skillSubKey + ")";
+                    
+                    dataOutput.data.skills[customSkillName] = JSON.parse(JSON.stringify(templateCustomSkill));
+                    dataOutput.data.skills[customSkillName].name = customSkillName;
+                    dataOutput.data.skills[customSkillName].ability = "int";
+                    dataOutput.data.skills[customSkillName].rank = +formattedInput.skills[skillKey][skillSubKey];
+                    dataOutput.data.skills[customSkillName].notes = "CHECK IF CORRECT";
+                    dataOutput.data.skills[customSkillName].mod = +formattedInput.skills[skillKey][skillSubKey];
+                    dataOutput.data.skills[customSkillName].rt = false;
+                    dataOutput.data.skills[customSkillName].cs = false;
+                    dataOutput.data.skills[customSkillName].acp = false;
+                    dataOutput.data.skills[customSkillName].background = false;
+                    dataOutput.data.skills[customSkillName].custom = true;
+                    dataOutput.data.skills[customSkillName].value = null;
                 }
       
             }
             
         } else {
             // Skill without a sublevel
+            console.log("skillKey:" + skillKey);
             let tempAttrShort = enumSkills[skillKey];
             
             // Check if the Skill is a classSkill in any of the items
@@ -1386,21 +1467,24 @@ function mapStatisticData (formattedInput) {
     let tempKnownLanguages = [];
     let tempUnknownLanguages = "";
     
-    formattedInput.languages.forEach ( function (item, index) {
-        console.log("item: " + item.toLowerCase());
-        console.log("JSON.stringify(enumLanguages): " + JSON.stringify(enumLanguages));
-        
+    console.log("formattedInput.languages: " + formattedInput.languages);
+    
+    if (formattedInput.languages) {
+        formattedInput.languages.forEach ( function (item, index) {
+            console.log("item: " + item.toLowerCase());
+            console.log("JSON.stringify(enumLanguages): " + JSON.stringify(enumLanguages));
 
-        if (JSON.stringify(enumLanguages).search(item.toLowerCase()) !== -1) {
-            console.log("pushing " + item + " onto value");
-            tempKnownLanguages.push(item.toLowerCase());
-            console.log("tempKnownLanguages: " + tempKnownLanguages);
-        } else {
-            tempUnknownLanguages += item + ", ";
-        }
-        
-        
-    });
+
+            if (JSON.stringify(enumLanguages).search(item.toLowerCase()) !== -1) {
+                console.log("pushing " + item + " onto value");
+                tempKnownLanguages.push(item.toLowerCase());
+                console.log("tempKnownLanguages: " + tempKnownLanguages);
+            } else {
+                tempUnknownLanguages += item + ", ";
+            }
+
+        });
+    }
     
     dataOutput.data.traits.languages.value = tempKnownLanguages;
     dataOutput.data.traits.languages.custom = tempUnknownLanguages.replace(/, $/,"");
