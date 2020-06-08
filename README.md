@@ -25,7 +25,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 [1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
 [2]: Including the needed calculations  
-[3]: Including changes to the token (e.g. size and vision)
+[3]: Including changes to the token (e.g. size and vision)  
 [4]: Creates empty Items for now
 
 
