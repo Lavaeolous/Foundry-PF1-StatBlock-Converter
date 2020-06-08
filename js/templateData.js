@@ -61,6 +61,7 @@ export default {
     "reach": 0,
     "offensive_abilities": "",
     "spell_like_abilities": "",
+    "special_qualities": [],
     "str": 0,
     "dex": 0,
     "con": 0,

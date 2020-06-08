@@ -137,7 +137,7 @@ function init() {
 // Start Converting the statBlock
 function convertStatBlock(input) {
     
-    try{
+    //try{
     
     init();
     
@@ -331,11 +331,11 @@ function convertStatBlock(input) {
     // Map SchemaData to TemplateData
     mapInputToTemplateFoundryVTT(formattedInput);
     
-    }
+    //}
     
-    catch(err) {
-        statusOutput.innerHTML += "<br/><div style='color:red'>" + err.name + ": " + err.message + "</div>";
-    }
+    //catch(err) {
+    //    statusOutput.innerHTML += "<br/><div style='color:red'>" + err.name + ": " + err.message + "</div>";
+    //}
     
 }
 
@@ -829,11 +829,42 @@ function splitStatisticsData(stringStatisticsData) {
             splitRacialModifiers = splitSkills.split(/racial modifiers /i)[1];
             splitSkills = splitSkills.split(/racial modifiers /i)[0].replace(/,$| $/,"");
         }
+                
+        // Check if there are Skills where multiple subtypes are in parenthesis
+        if (splitSkills.search(/\(([^)]+)\)/) !== -1) {
+            let tempSkillMultiples = splitSkills.match(/(\b\w*\b \([a-zA-Z0-9,; ]+\) [+-]\d+)/g);
+            splitSkills = splitSkills.replace(/(\b\w*\b \([a-zA-Z0-9,;]+\) [+-]\d+),/g, "");
+            
+            console.log("tempSkillMultiples: " + tempSkillMultiples);
+            
+            tempSkillMultiples.forEach ( function (item, index) {
+                console.log("item: " + item);
+                let tempSkillName = item.match(/(\b[a-zA-Z]+\b)(?: \(.*\))/)[1];
+                let tempSkillModifier = item.match(/\-\d+|\+\d+/);
+                let tempSubtypes = item.match(/\(([^)]+)\)/)[0].replace(/[()]/g, "").split(/,|;/g);
+                console.log("tempSkillName: " + tempSkillName);
+                console.log("tempSubtypes: " + tempSubtypes);
+                console.log("tempSkillModifier: " + tempSkillModifier);
+                
+                tempSubtypes.forEach( function (tempSubtype) {
+                    console.log("subtype: " + tempSubtype);
+                    console.log("tempSkillName: " + tempSkillName);
+                    splitSkills += ", " + tempSkillName + " (" + tempSubtype + ") " + tempSkillModifier;
+                })
+                                
+            });
+            
+        }
+        //let tempSkillName = tempSkillMultiples
+        
+        
         
         splitSkills = splitSkills.split(/,/);
 
         splitSkills.forEach (function (item, index) {
 
+            console.log("item: " + item);
+            
             let skillTotal = item.match(/(-\d+|\d+)/)[0];
             let skillName = item.replace(/(^\s*|\s*-[\d].*|\s*\+.*)/g, "");
 
@@ -853,7 +884,7 @@ function splitStatisticsData(stringStatisticsData) {
     // Racial Skill Modifiers
     
     // Languages
-    if (stringStatisticsData.search(/(?:Languages )/) !== -1) {
+    if (stringStatisticsData.search(/(\bLanguages\b )/) !== -1) {
         let splitLanguages = stringStatisticsData.match(/(?:Languages )(.*)(?:\n+?)/gim)[0].replace(/\n/gm,"");
         splitLanguages = splitLanguages.replace(/Languages /i, "");
         splitLanguages = splitLanguages.replace(/,\s|;\s/g, ",");
@@ -863,6 +894,20 @@ function splitStatisticsData(stringStatisticsData) {
     }
     
     // Special Qualities
+    if (stringStatisticsData.search(/(\bSQ\b )/gm) !== -1) {
+        let splitSQ = stringStatisticsData.match(/(?:\bSQ\b )(.*)(?:\n+?)/gim)[0].replace(/\n/gm,"");
+        splitSQ = splitSQ.replace(/\bSQ\b /, "");
+        
+        let tempSQs = [];
+        if (splitSQ.search(/,|;/g) !== -1) {
+            tempSQs = splitSQ.split(/,|;/g);
+        } else {
+            tempSQs[0] = splitSQ;
+        }
+        
+        console.log("tempSQ: " + tempSQs);
+        formattedInput.special_qualities = tempSQs;
+    }
     
     // Gear
     
@@ -1513,6 +1558,20 @@ function mapNotesData() {
         tempDefensiveAbilitiesSection += "</section>";
         
         tempNotes += tempDefensiveAbilitiesSection;
+    }
+    
+    // H2 - SPECIAL QUALITIES
+    console.log("formattedInput.special_qualities: " + formattedInput.special_qualities);
+    if (formattedInput.special_qualities !== "") {
+        let tempSpecialQualities = "<section id='defensiveAbilities'><h2>SPECIAL QUALITIES</h2>";
+        tempSpecialQualities += "<p>";
+        formattedInput.special_qualities.forEach ( function (item) {
+            tempSpecialQualities += item + ", ";
+        })
+        tempSpecialQualities += "</p>";
+        tempSpecialQualities += "</section>";
+        
+        tempNotes += tempSpecialQualities;
     }
     
     // H2 - RAW STATBLOCK
