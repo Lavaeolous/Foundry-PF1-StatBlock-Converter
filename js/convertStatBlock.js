@@ -708,33 +708,62 @@ function splitDefenseData(stringDefenseData) {
     }, splitSaves);
     
     // Check if there is a forth line
-    /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance  
+    /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance 
+    
+    console.log("splitDefense: " + JSON.stringify(splitDefenseData));
+    /*
     if(splitDefenseData[3]) {
+        
+        console.log("splitDefenseData[3]: " + splitDefenseData[3]);
         let splitResistances = splitDefenseData[3].split(/;/g);
+        console.log("splitResistances: " + splitResistances);
         
         splitResistances.forEach( function (item, index) {
+            console.log("item: " + item);
             if (this[index].match(/(\bDR\b)/gmi)) {
                 let splitDRValue = item.match(/\d+/)[0];
                 let splitDRType = item.match(/(?:\/)([\w\s]*)/)[1];
                 formattedInput.damage_reduction.dr_value = splitDRValue;
                 formattedInput.damage_reduction.dr_type = splitDRType;
             } else if (this[index].match(/\bImmune\b|\bImmunities\b/mi)) {
-                let splitImmunities = item.replace(/\bImmune\b|(Immunities)/gmi,"").replace(/^ *| *$|^\n*/g,"");
+                let splitImmunities = item.replace(/\bImmune\b|(Immunities)/gmi,"").replace(/^ *| *$|^\n*?/g,"");
                 formattedInput.immunities = splitImmunities;
             } else if (this[index].match(/\bResist\b|\bResistances\b/mi)) {
-                let splitResistances = item.replace(/\bResist\b|\bResistances\b/mi,"").replace(/^ *| *$|^\n*/g,"");
+                let splitResistances = item.replace(/\bResist\b|\bResistances\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
                 formattedInput.resistances = splitResistances;
             } else if (this[index].match(/\bWeaknesses\b|\bWeakness\b/mi)) {
-                let splitWeaknesses = item.replace(/\bWeaknesses\b|\bWeakness\b/mi,"").replace(/^ *| *$|^\n*/g,"");
+                console.log("item: " + item);
+                let splitWeaknesses = item.replace(/\bWeaknesses\b|\bWeakness\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
+                console.log("splitWeakness: " + splitWeaknesses);
                 formattedInput.weaknesses = splitWeaknesses;
             } else if (this[index].match(/\bSR\b/mi)) {
-                let splitSR = item.replace(/\bSR\b/mi,"").replace(/^ *| *$|^\n*/g,"");
+                let splitSR = item.replace(/\bSR\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
                 formattedInput.spell_resistance = splitSR;
             } else if (this[index].match(/\bDefensive Abilities\b/mi)) {
-                let splitDefensiveAbilities = item.replace(/\bDefensive Abilities\b/mi,"").replace(/^ *| *$|^\n*/g,"");
+                let splitDefensiveAbilities = item.replace(/\bDefensive Abilities\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
                 formattedInput.defensive_abilities = splitDefensiveAbilities;
             }
         }, splitResistances);
+    }
+    */
+    
+    // REWORK
+    let searchableDefenseData = JSON.stringify(splitDefenseData);
+    
+    // Damage Reduction
+    if (searchableDefenseData.search(/\bDR\b/) !== -1) {
+        let splitDRValue = searchableDefenseData.match(/(?:\bDR\b )(\d+)/)[0].replace(/\bDR\b /, "");
+        let splitDRType = searchableDefenseData.match(/(?:\bDR\b \d+\/)([\w\s]*)/)[1];
+        formattedInput.damage_reduction.dr_value = splitDRValue;
+        formattedInput.damage_reduction.dr_type = splitDRType;
+    }
+    
+    // Damage Reduction
+    if (searchableDefenseData.search(/\bImmune\b|(Immunities)/i) !== -1) {
+        //
+        //let splitDRValue = searchableDefenseData.match(/(?:\bDR\b )(\d+)/)[0].replace(/\bDR\b /, "");
+        //let splitDRType = searchableDefenseData.match(/(?:\bDR\b \d+\/)([\w\s]*)/)[1];
+
     }
 
     console.log("done");
@@ -1338,6 +1367,9 @@ function mapDefenseData (formattedInput) {
     // Weaknesses / Vulnerabilities    
     // Set DamageType Vulnerabilities
     let tempWeaknesses = formattedInput.weaknesses;
+    
+    console.log("tempWeaknesses: " + tempWeaknesses);
+    
     enumDamageTypes.forEach( function (item, index) {
         if (tempWeaknesses.search(item) !== -1) {
             dataOutput.data.traits.dv.value.push(item);
