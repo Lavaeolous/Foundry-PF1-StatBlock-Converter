@@ -509,7 +509,7 @@ function splitGeneralData(stringGeneralData) {
     let splitSenses = "";
     // Senses
     if (splitGeneralData.search(/\bSenses\b/gmi) !== -1) {
-        splitSenses = splitGeneralData.match(/(?:\bSenses\b )(.*?)(?:\n|$)/igm)[0].replace(/\bSenses\b /,"");
+        splitSenses = splitGeneralData.match(/(?:\bSenses\b )(.*?)(?:\n|$|\sAura)/igm)[0].replace(/\bSenses\b | \bAura\b/g,"");
     }
     console.log("splitGeneralData: " + JSON.stringify(splitGeneralData));
     console.log("splitSenses: " + splitSenses);
@@ -519,6 +519,8 @@ function splitGeneralData(stringGeneralData) {
     if (splitGeneralData.search(/\bAura\b/igm) !== -1) {
         splitAura = splitGeneralData.match(/(?:Aura )(.*?)(?:;|\n|$)/igm)[0].replace("Aura ","");
     }
+    
+    console.log("Aura: " + splitAura);
     
     // Save the found entries into formattedInput
     formattedInput.name = splitName;
@@ -748,7 +750,8 @@ function splitDefenseData(stringDefenseData) {
     */
     
     // REWORK
-    let searchableDefenseData = JSON.stringify(splitDefenseData);
+    let searchableDefenseData = JSON.stringify(stringDefenseData).replace(/\\n/g, ";").replace(/Offense;|Offenses/i, "");
+    console.log("searchableDefenseData: " + searchableDefenseData);
     
     // Damage Reduction
     if (searchableDefenseData.search(/\bDR\b/) !== -1) {
@@ -758,12 +761,43 @@ function splitDefenseData(stringDefenseData) {
         formattedInput.damage_reduction.dr_type = splitDRType;
     }
     
-    // Damage Reduction
-    if (searchableDefenseData.search(/\bImmune\b|(Immunities)/i) !== -1) {
-        //
-        //let splitDRValue = searchableDefenseData.match(/(?:\bDR\b )(\d+)/)[0].replace(/\bDR\b /, "");
-        //let splitDRType = searchableDefenseData.match(/(?:\bDR\b \d+\/)([\w\s]*)/)[1];
-
+    // Immunities
+    if (searchableDefenseData.search(/\bImmune\b|\bImmunities\b/i) !== -1) {
+        let splitImmunities = searchableDefenseData.match(/(?:\bImmune\b |\bImmunities\b )(.*?)(?:;)/i)[0].replace(/\bimmune\b |\bimmunities\b /i, "");
+        console.log("splitImmunities: " + splitImmunities);
+        formattedInput.immunities = splitImmunities;
+    }
+    
+    // Resistances
+    if (searchableDefenseData.search(/\bResist\b|\bResistances\b/i) !== -1) {
+        let splitResistances = searchableDefenseData.match(/(?:\bResist\b |\bResistance\b )(.*?)(?:;)/i)[0].replace(/\bResist\b |\bResistances\b /i, "");
+        console.log("splitResistances: " + splitResistances);
+        formattedInput.resistances = splitResistances;
+    }
+    
+    // Weaknesses
+    if (searchableDefenseData.search(/\bWeakness\b|\bWeaknesses\b/i) !== -1) {
+        let splitWeaknesses = searchableDefenseData.match(/(?:\bWeakness\b |\bWeaknesses\b )(.*?)(?:;)/i)[0].replace(/\bWeakness\b |\bWeaknesses\b /i, "");
+        // Remove the phrase "Vulnerable to" if thats there
+        splitWeaknesses = splitWeaknesses.replace(/vulnerable to | and /gi, "")
+        formattedInput.weaknesses = splitWeaknesses;
+    }
+    
+    // Spell Resistance
+    if (searchableDefenseData.search(/\bSR\b/i) !== -1) {
+        let splitSR = searchableDefenseData.match(/(?:\bSR\b )(.*?)(?:;)/i)[0].replace(/\bSR\b /i, "");
+        splitSR = splitSR.replace(/;|,| |\n/g, "");
+        console.log("splitSR: " + splitSR);
+        formattedInput.spell_resistance = splitSR;
+    }
+    
+    // Defensive Abilities
+    // Spell Resistance
+    if (searchableDefenseData.search(/\bDefensive Abilities\b/i) !== -1) {
+        let splitDefensiveAbilities = searchableDefenseData.match(/(?:\bDefensive Abilities\b )(.*?)(?:;)/i)[0].replace(/\bDefensive Abilities\b /i, "");
+        splitDefensiveAbilities = splitDefensiveAbilities.replace(/;|,|\n/g, ",").replace(/,\s+$|,$/g, "");
+        console.log("splitDefensiveAbilities: " + splitDefensiveAbilities);
+        formattedInput.defensive_abilities = splitDefensiveAbilities;
     }
 
     console.log("done");
@@ -1328,6 +1362,7 @@ function mapDefenseData (formattedInput) {
     // Immunities    
     // Set Condition Immunities
     let tempImmunities = formattedInput.immunities;
+    tempImmunities = tempImmunities.replace(/Electricity/gi, "electric");
     enumConditions.forEach( function (item, index) {
         if (tempImmunities.search(item) !== -1) {
             dataOutput.data.traits.ci.value.push(item);
@@ -1345,15 +1380,22 @@ function mapDefenseData (formattedInput) {
     
     // If there is anything left in tempImmunities, treat it as a custom immunity
     if (tempImmunities.search(/(\w+)/gi) !== -1) {
-        let tempCustomImmunity = tempImmunities.match(/(\w+)/gi).join(", ");
-        // Now way to find out if its damage or a condition, so set it to both
-        dataOutput.data.traits.di.custom = tempCustomImmunity;
-        dataOutput.data.traits.ci.custom = tempCustomImmunity;
+        //ability damage, ability drain, charm effects, compulsion effects, , death effects, , energy drain, petrification, and ;
+        
+        // Remove empty fields
+        tempImmunities = tempImmunities.replace(/, , |, /g, ",")
+        tempImmunities = tempImmunities.replace(/\band\b/g, "")
+        tempImmunities = tempImmunities.replace(/;$/g, "")
+        tempImmunities = tempImmunities.replace(/, $/g, "");
+        
+        // Now way to find out if its damage or a condition, so set it just to condition
+        dataOutput.data.traits.ci.custom = tempImmunities;
     }
     
     // Resistances    
     let tempResistances = formattedInput.resistances;
-    
+    tempResistances = tempResistances.replace(/Electricity/gi, "electric");
+    console.log("tempResistances: " + tempResistances);
     enumDamageTypes.forEach( function (item, index) {
         let tempResistanceRegEx = new RegExp("(\\b" + item + "\\b \\d+)", "ig");
         if (tempResistances.search(tempResistanceRegEx) !== -1) {
@@ -1367,7 +1409,7 @@ function mapDefenseData (formattedInput) {
     // Weaknesses / Vulnerabilities    
     // Set DamageType Vulnerabilities
     let tempWeaknesses = formattedInput.weaknesses;
-    
+    tempWeaknesses = tempWeaknesses.replace(/Electricity/gi, "electric");
     console.log("tempWeaknesses: " + tempWeaknesses);
     
     enumDamageTypes.forEach( function (item, index) {
