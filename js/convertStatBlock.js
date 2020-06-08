@@ -830,29 +830,37 @@ function splitStatisticsData(stringStatisticsData) {
             splitSkills = splitSkills.split(/racial modifiers /i)[0].replace(/,$| $/,"");
         }
                 
-        // Check if there are Skills where multiple subtypes are in parenthesis
+        // Check if there are Skills with additional info in parenthesis
         if (splitSkills.search(/\(([^)]+)\)/) !== -1) {
-            let tempSkillMultiples = splitSkills.match(/(\b\w*\b \([a-zA-Z0-9,; ]+\) [+-]\d+)/g);
-            splitSkills = splitSkills.replace(/(\b\w*\b \([a-zA-Z0-9,;]+\) [+-]\d+),/g, "");
             
-            console.log("tempSkillMultiples: " + tempSkillMultiples);
-            
-            tempSkillMultiples.forEach ( function (item, index) {
-                console.log("item: " + item);
-                let tempSkillName = item.match(/(\b[a-zA-Z]+\b)(?: \(.*\))/)[1];
-                let tempSkillModifier = item.match(/\-\d+|\+\d+/);
-                let tempSubtypes = item.match(/\(([^)]+)\)/)[0].replace(/[()]/g, "").split(/,|;/g);
-                console.log("tempSkillName: " + tempSkillName);
-                console.log("tempSubtypes: " + tempSubtypes);
-                console.log("tempSkillModifier: " + tempSkillModifier);
-                
-                tempSubtypes.forEach( function (tempSubtype) {
-                    console.log("subtype: " + tempSubtype);
+            // If the parenthesis are followed by a modifier, the info in parenthesis is a subset of the skill
+            if (splitSkills.search(/(\b\w*\b \([a-zA-Z0-9,; ]+\) [+-]\d+)/g) !== -1) {
+                let tempSkillMultiples = splitSkills.match(/(\b\w*\b \([a-zA-Z0-9,; ]+\) [+-]\d+)/g);
+                splitSkills = splitSkills.replace(/(\b\w*\b \([a-zA-Z0-9,;]+\) [+-]\d+),/g, "");
+
+                console.log("tempSkillMultiples: " + tempSkillMultiples);
+
+                tempSkillMultiples.forEach ( function (item, index) {
+                    console.log("item: " + item);
+                    let tempSkillName = item.match(/(\b[a-zA-Z]+\b)(?: \(.*\))/)[1];
+                    let tempSkillModifier = item.match(/\-\d+|\+\d+/);
+                    let tempSubtypes = item.match(/\(([^)]+)\)/)[0].replace(/[()]/g, "").split(/,|;/g);
                     console.log("tempSkillName: " + tempSkillName);
-                    splitSkills += ", " + tempSkillName + " (" + tempSubtype + ") " + tempSkillModifier;
-                })
-                                
-            });
+                    console.log("tempSubtypes: " + tempSubtypes);
+                    console.log("tempSkillModifier: " + tempSkillModifier);
+
+                    tempSubtypes.forEach( function (tempSubtype) {
+                        console.log("subtype: " + tempSubtype);
+                        console.log("tempSkillName: " + tempSkillName);
+                        splitSkills += ", " + tempSkillName + " (" + tempSubtype + ") " + tempSkillModifier;
+                    })
+
+                });
+            } else if (splitSkills.search(/(\b\w*\b [+-]\d+ \([+-]\d+[a-zA-Z0-9,; ]+\))/) !== -1) {
+                console.log("context Modifier");
+                
+                // !!!! ADD SUPPORT FOR CONTEXT MODIFIER HERE
+            }
             
         }
         //let tempSkillName = tempSkillMultiples
@@ -1198,7 +1206,7 @@ function setConversionItem (formattedInput) {
                 } else {
                     acChange.push("sac");
                 }
-                acChange.push("base");
+                acChange.push("untyped");
             } else {
                 acChange.push(formattedInput.ac_bonus_types[key].toString());
                 acChange.push("ac");
@@ -1398,6 +1406,9 @@ function mapStatisticData (formattedInput) {
     });
     
     // Skills
+    
+    console.log("formattedInput.skills: " + JSON.stringify(formattedInput.skills));
+    
     let skillKeys = Object.keys(formattedInput.skills);
     
     for (let i = 0; i < skillKeys.length; i++) {
@@ -1415,7 +1426,9 @@ function mapStatisticData (formattedInput) {
                 
                 // Set the skills
                 let tempAttrShort = "";
-                if (skillKey === "knowledge") {
+                if (skillKey == "knowledge") {
+                    
+                    console.log("knowledge skill");
                         
                     if (JSON.stringify(enumSkills[skillKey]).search(skillSubKey) === -1) {
                         // if its not a valid knowledge subskill
@@ -1442,7 +1455,8 @@ function mapStatisticData (formattedInput) {
                     let tempAttrModifier = getModifier(formattedInput[tempAttr]);
 
                     // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe ClassSkillBonus)
-                    if (formattedInput.skills[skillKey] !== 0) {
+                    if (formattedInput.skills[skillKey][skillSubKey] !== 0) {
+                        console.log("setting skill rank and mod");
                         dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey] - +tempAttrModifier - +tempClassSkillModifier;
                         dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey];
                     }
