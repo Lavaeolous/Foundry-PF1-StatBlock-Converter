@@ -1582,6 +1582,9 @@ async function saveJSON(output) {
 
 function writeToDisk(content, filename) {
     saveAs(content, filename);
+    
+    // Quick Fix - Reload the page after saving the JSON
+    location = location;
 }
 
 /*
