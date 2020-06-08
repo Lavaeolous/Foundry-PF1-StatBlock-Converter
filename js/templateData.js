@@ -55,7 +55,29 @@ export default {
     },
     "regeneration": "",
     "fast_healing": "",
-    "speed": 0,
+    "speed": {
+        "land": {
+          "base": 30,
+          "total": 30
+        },
+        "climb": {
+          "base": 0,
+          "total": 0
+        },
+        "swim": {
+          "base": 0,
+          "total": 0
+        },
+        "burrow": {
+          "base": 0,
+          "total": 0
+        },
+        "fly": {
+          "base": 0,
+          "total": 0,
+          "maneuverability": "average"
+        }
+    },
     "melee": "",
     "ranged": "",
     "space": 0,

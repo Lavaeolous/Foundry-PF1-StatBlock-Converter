@@ -317,7 +317,7 @@ function convertStatBlock(input) {
     splitDefenseData(stringDefenseData);
         
     // Take Offense Data and extract 
-    //splitOffenseeData(stringOffenseData);
+    splitOffenseData(stringOffenseData);
     
     // Take Tactics Data and extract Stuff
     if(foundTacticsData === true) {
@@ -758,6 +758,44 @@ function splitDefenseData(stringDefenseData) {
 }
 
 // NEW FUNCTION FOR THE OFFENSE BLOCK
+function splitOffenseData(stringOffenseData) {
+    console.log("parsing Offense Data");
+    
+    let splitOffenseData = stringOffenseData.replace(/^ | $|^\n*/,"");
+    
+    console.log("splitOffenseData: " + splitOffenseData);
+    
+    // Speed
+    let splitSpeed = splitOffenseData.match(/(?:\bSpeed\b )(.*)(?:\n|$)/i)[1];
+    
+    let landSpeed = splitSpeed.match(/\d+/);
+    
+    // Check for other Speeds
+    if (splitSpeed.search(/,/g) !== -1) {
+        let splitSpeeds = splitSpeed.replace(/, /g, ",").replace(/\d+ ft.,/, "").split(/,/g);
+        console.log("splitSpeeds: " + splitSpeeds);
+        
+        splitSpeeds.forEach ( function (item, index) {
+            console.log("item: " + item);
+            let speedType = item.match(/\b\w*\b/);
+            let speedSpeed = item.match(/\d+/);
+            console.log("speedType: " + speedType);
+            console.log("speedSpeed: " + speedSpeed);
+            formattedInput.speed[speedType].base = speedSpeed;
+            
+            if (item.search(/fly/) !== -1) {
+                let flyManeuverability = item.match(/(?:\((.+)\))/)[1];
+                console.log("maneuverability: " + flyManeuverability);
+                formattedInput.speed.fly.maneuverability = flyManeuverability;
+            }
+        });
+    }
+     
+    console.log("splitSpeed: " + splitSpeed);
+    
+    formattedInput.speed.land.base = landSpeed;
+                                            
+}
 
 // Split Tactics Data and extract Tactics
 function splitTacticsData(stringTacticsData) {
@@ -794,10 +832,9 @@ function splitTacticsData(stringTacticsData) {
     console.log("done");
 }
 
-// NEW FUNCTION FOR THE STATISTICS
+// Split Statistics
 function splitStatisticsData(stringStatisticsData) {
     console.log("parsing Statistics Data");
-        
     console.log("stringStatisticsData: " + stringStatisticsData);
     
     // Attributes
@@ -980,6 +1017,9 @@ function mapInputToTemplateFoundryVTT(formattedInput) {
     
     // Map defenseData
     mapDefenseData(formattedInput);
+    
+    // Map OffenseData
+    mapOffenseData(formattedInput);
     
     // Map statisticData
     mapStatisticData(formattedInput);
@@ -1207,16 +1247,22 @@ function setConversionItem (formattedInput) {
     // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
     // and compare that to the hp.total from the input
     let calculatedHPTotal = 0;
-    if (formattedInput.con === "-") {
+    if (formattedInput.con.total === "-") {
+        console.log("calculating hp total for con = - ");
         calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(10));
     } else {
         calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con.total));
     }
     
+    console.log("calculatedHPTotal: " + calculatedHPTotal);
+    console.log("formattedInput.hp.total: " + formattedInput.hp.total);
+    
     if (+calculatedHPTotal !== +formattedInput.hp.total) {
 
         let tempHPDifference = +formattedInput.hp.total - +calculatedHPTotal;
 
+        console.log("tempHPDifference: " + tempHPDifference);
+        
         let hpChange = [
             tempHPDifference.toString(),
             "misc",
@@ -1278,7 +1324,7 @@ function setConversionItem (formattedInput) {
         let saveChange = [];
         let tempSaveString = item + "_save";
         
-        if (item === "fort" && formattedInput.con == "-") {
+        if (item === "fort" && formattedInput.con.total === "-") {
             let tempSaveChange = +formattedInput[tempSaveString].total - +formattedInput[tempSaveString].racial - +formattedInput[tempSaveString].class;
             saveChange.push(tempSaveChange.toString());
         } else {
@@ -1416,6 +1462,25 @@ function mapDefenseData (formattedInput) {
     
     // Reset Max Dex Bonus for now
     // dataOutput.data.attributes.maxDexBonus = 0;
+}
+
+// Map Offense Data
+function mapOffenseData (formattedInput) {
+    
+    // Speed(s)
+    console.log("formattedInput.speed: " + JSON.stringify(formattedInput.speed));
+    let speedKeys = Object.keys(formattedInput.speed);
+    
+    for (var i = 0; i < speedKeys.length; i++) {
+        dataOutput.data.attributes.speed[speedKeys[i]].base = +formattedInput.speed[speedKeys[i]].base;
+        dataOutput.data.attributes.speed[speedKeys[i]].total = +formattedInput.speed[speedKeys[i]].base;
+        if (speedKeys[i] === "fly") {
+            dataOutput.data.attributes.speed.fly.maneuverability = formattedInput.speed.fly.maneuverability.toLowerCase();
+        }
+    }
+    
+    console.log("outputSpeeds: " + JSON.stringify(dataOutput.data.attributes.speed));
+    
 }
 
 // Map Statistics to data.attributes
