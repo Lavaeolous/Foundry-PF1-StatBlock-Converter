@@ -27,7 +27,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  Type (Subtype) *
 *  Init
 *  Senses ***
-*  Aura
+*  Aura (but there is no field for that in the character sheet)
 *  AC (AC, Touch and Flat-Footed) **
 *  HP **
 *  Hit Dice **
@@ -42,6 +42,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  Feats ****
 *  Skills **
 *  Languages
+*  Special Qualities
 
 
 \* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
@@ -68,6 +69,11 @@ Primer#2220 on Discord
 
 
 **Change Log**
+2020_06_08:
+*  Reworked the skill separation to support subSkills, e.g. Perform (Sing) +3
+*  Reworked the parsing of defensive stats to be line-independent
+*  Included Changes from Race into the calculation of HP, AC, Abilities and Skills
+
 2020_06_07:
 *  Added support for language parsing
 *  Added support for feat parsing (these get saved as named but empty items in the character sheet)
