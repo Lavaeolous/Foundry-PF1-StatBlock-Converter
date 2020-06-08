@@ -27,6 +27,7 @@ export default {
     "ac": 0,
     "touch": 0,
     "flat_footed" : 0,
+    "ac_race_bonus": 0,
     "ac_bonus_types" : {},
     "fort_save": {
         "total": 0,
@@ -62,51 +63,165 @@ export default {
     "offensive_abilities": "",
     "spell_like_abilities": "",
     "special_qualities": [],
-    "str": 0,
-    "dex": 0,
-    "con": 0,
-    "int": 0,
-    "wis": 0,
-    "cha": 0,
+    "str": {
+        "total": 0,
+        "race": 0
+    },
+    "dex": {
+        "total": 0,
+        "race": 0
+    },
+    "con": {
+        "total": 0,
+        "race": 0
+    },
+    "int": {
+        "total": 0,
+        "race": 0
+    },
+    "wis": {
+        "total": 0,
+        "race": 0
+    },
+    "cha": {
+        "total": 0,
+        "race": 0
+    },
     "feats": [],
     "skills": {
-        "acrobatics" : 0,
-        "appraise" : 0,
-        "bluff" : 0,
-        "climb" : 0,
-        "craft" : {},
-        "diplomacy" : 0,
-        "disable device" : 0,
-        "disguise" : 0,
-        "escape artist" : 0,
-        "fly" : 0,
-        "handle animal" : 0,
-        "heal" : 0,
-        "intimidate" : 0,
-        "knowledge" : {
-            "arcana" : 0,
-            "dungeoneering" : 0,
-            "engineering" : 0,
-            "geography" : 0,
-            "history" : 0,
-            "local" : 0,
-            "nature" : 0,
-            "nobility" : 0,
-            "planes" : 0,
-            "religion" : 0
+        "acrobatics" : {
+            "total": 0,
+            "race": 0
         },
-        "linguistics" : 0,
-        "perception" : 0,
+        "appraise" : {
+            "total": 0,
+            "race": 0
+        },
+        "bluff" : {
+            "total": 0,
+            "race": 0
+        },
+        "climb" : {
+            "total": 0,
+            "race": 0
+        },
+        "craft" : {},
+        "diplomacy" : {
+            "total": 0,
+            "race": 0
+        },
+        "disable device" : {
+            "total": 0,
+            "race": 0
+        },
+        "disguise" : {
+            "total": 0,
+            "race": 0
+        },
+        "escape artist" : {
+            "total": 0,
+            "race": 0
+        },
+        "fly" : {
+            "total": 0,
+            "race": 0
+        },
+        "handle animal" : {
+            "total": 0,
+            "race": 0
+        },
+        "heal" : {
+            "total": 0,
+            "race": 0
+        },
+        "intimidate" : {
+            "total": 0,
+            "race": 0
+        },
+        "knowledge" : {
+            "arcana" : {
+                "total": 0,
+                "race": 0
+            },
+            "dungeoneering" : {
+                "total": 0,
+                "race": 0
+            },
+            "engineering" : {
+                "total": 0,
+                "race": 0
+            },
+            "geography" : {
+                "total": 0,
+                "race": 0
+            },
+            "history" : {
+                "total": 0,
+                "race": 0
+            },
+            "local" : {
+                "total": 0,
+                "race": 0
+            },
+            "nature" : {
+                "total": 0,
+                "race": 0
+            },
+            "nobility" : {
+                "total": 0,
+                "race": 0
+            },
+            "planes" : {
+                "total": 0,
+                "race": 0
+            },
+            "religion" : {
+                "total": 0,
+                "race": 0
+            }
+        },
+        "linguistics" : {
+            "total": 0,
+            "race": 0
+        },
+        "perception" : {
+            "total": 0,
+            "race": 0
+        },
         "perform" : {},
         "profession" : {},
-        "ride" : 0,
-        "sense motive" : 0,
-        "sleight of hand" : 0,
-        "spellcraft" : 0,
-        "stealth" : 0,
-        "survival" : 0,
-        "swim" : 0,
-        "use magic device" : 0
+        "ride" : {
+            "total": 0,
+            "race": 0
+        },
+        "sense motive" : {
+            "total": 0,
+            "race": 0
+        },
+        "sleight of hand" : {
+            "total": 0,
+            "race": 0
+        },
+        "spellcraft" : {
+            "total": 0,
+            "race": 0
+        },
+        "stealth" : {
+            "total": 0,
+            "race": 0
+        },
+        "survival" : {
+            "total": 0,
+            "race": 0
+        },
+        "swim" : {
+            "total": 0,
+            "race": 0
+        },
+        "use magic device" : {
+            "total": 0,
+            "race": 0
+        }
     },
     "tactics": {
         "before_combat" : "",

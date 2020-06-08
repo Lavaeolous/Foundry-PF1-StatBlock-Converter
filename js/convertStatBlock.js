@@ -511,17 +511,13 @@ function splitGeneralData(stringGeneralData) {
     if (splitGeneralData.search(/\bSenses\b/gmi) !== -1) {
         splitSenses = splitGeneralData.match(/(?:\bSenses\b )(.*?)(?:\n|$|\sAura)/igm)[0].replace(/\bSenses\b | \bAura\b/g,"");
     }
-    console.log("splitGeneralData: " + JSON.stringify(splitGeneralData));
-    console.log("splitSenses: " + splitSenses);
     
     // Aura
     let splitAura = "";
     if (splitGeneralData.search(/\bAura\b/igm) !== -1) {
         splitAura = splitGeneralData.match(/(?:Aura )(.*?)(?:;|\n|$)/igm)[0].replace("Aura ","");
     }
-    
-    console.log("Aura: " + splitAura);
-    
+        
     // Save the found entries into formattedInput
     formattedInput.name = splitName;
     formattedInput.cr = splitCR;
@@ -712,46 +708,8 @@ function splitDefenseData(stringDefenseData) {
     // Check if there is a forth line
     /// then extract Damage Reduction, Resistances, Immunities, Weaknesses and Spell Resistance 
     
-    console.log("splitDefense: " + JSON.stringify(splitDefenseData));
-    /*
-    if(splitDefenseData[3]) {
-        
-        console.log("splitDefenseData[3]: " + splitDefenseData[3]);
-        let splitResistances = splitDefenseData[3].split(/;/g);
-        console.log("splitResistances: " + splitResistances);
-        
-        splitResistances.forEach( function (item, index) {
-            console.log("item: " + item);
-            if (this[index].match(/(\bDR\b)/gmi)) {
-                let splitDRValue = item.match(/\d+/)[0];
-                let splitDRType = item.match(/(?:\/)([\w\s]*)/)[1];
-                formattedInput.damage_reduction.dr_value = splitDRValue;
-                formattedInput.damage_reduction.dr_type = splitDRType;
-            } else if (this[index].match(/\bImmune\b|\bImmunities\b/mi)) {
-                let splitImmunities = item.replace(/\bImmune\b|(Immunities)/gmi,"").replace(/^ *| *$|^\n*?/g,"");
-                formattedInput.immunities = splitImmunities;
-            } else if (this[index].match(/\bResist\b|\bResistances\b/mi)) {
-                let splitResistances = item.replace(/\bResist\b|\bResistances\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
-                formattedInput.resistances = splitResistances;
-            } else if (this[index].match(/\bWeaknesses\b|\bWeakness\b/mi)) {
-                console.log("item: " + item);
-                let splitWeaknesses = item.replace(/\bWeaknesses\b|\bWeakness\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
-                console.log("splitWeakness: " + splitWeaknesses);
-                formattedInput.weaknesses = splitWeaknesses;
-            } else if (this[index].match(/\bSR\b/mi)) {
-                let splitSR = item.replace(/\bSR\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
-                formattedInput.spell_resistance = splitSR;
-            } else if (this[index].match(/\bDefensive Abilities\b/mi)) {
-                let splitDefensiveAbilities = item.replace(/\bDefensive Abilities\b/mi,"").replace(/^ *| *$|^\n*?/g,"");
-                formattedInput.defensive_abilities = splitDefensiveAbilities;
-            }
-        }, splitResistances);
-    }
-    */
-    
-    // REWORK
+    // REWORKED
     let searchableDefenseData = JSON.stringify(stringDefenseData).replace(/\\n/g, ";").replace(/Offense;|Offenses/i, "");
-    console.log("searchableDefenseData: " + searchableDefenseData);
     
     // Damage Reduction
     if (searchableDefenseData.search(/\bDR\b/) !== -1) {
@@ -764,14 +722,12 @@ function splitDefenseData(stringDefenseData) {
     // Immunities
     if (searchableDefenseData.search(/\bImmune\b|\bImmunities\b/i) !== -1) {
         let splitImmunities = searchableDefenseData.match(/(?:\bImmune\b |\bImmunities\b )(.*?)(?:;)/i)[0].replace(/\bimmune\b |\bimmunities\b /i, "");
-        console.log("splitImmunities: " + splitImmunities);
         formattedInput.immunities = splitImmunities;
     }
     
     // Resistances
     if (searchableDefenseData.search(/\bResist\b|\bResistances\b/i) !== -1) {
         let splitResistances = searchableDefenseData.match(/(?:\bResist\b |\bResistance\b )(.*?)(?:;)/i)[0].replace(/\bResist\b |\bResistances\b /i, "");
-        console.log("splitResistances: " + splitResistances);
         formattedInput.resistances = splitResistances;
     }
     
@@ -787,7 +743,6 @@ function splitDefenseData(stringDefenseData) {
     if (searchableDefenseData.search(/\bSR\b/i) !== -1) {
         let splitSR = searchableDefenseData.match(/(?:\bSR\b )(.*?)(?:;)/i)[0].replace(/\bSR\b /i, "");
         splitSR = splitSR.replace(/;|,| |\n/g, "");
-        console.log("splitSR: " + splitSR);
         formattedInput.spell_resistance = splitSR;
     }
     
@@ -796,7 +751,6 @@ function splitDefenseData(stringDefenseData) {
     if (searchableDefenseData.search(/\bDefensive Abilities\b/i) !== -1) {
         let splitDefensiveAbilities = searchableDefenseData.match(/(?:\bDefensive Abilities\b )(.*?)(?:;)/i)[0].replace(/\bDefensive Abilities\b /i, "");
         splitDefensiveAbilities = splitDefensiveAbilities.replace(/;|,|\n/g, ",").replace(/,\s+$|,$/g, "");
-        console.log("splitDefensiveAbilities: " + splitDefensiveAbilities);
         formattedInput.defensive_abilities = splitDefensiveAbilities;
     }
 
@@ -857,9 +811,9 @@ function splitStatisticsData(stringStatisticsData) {
         // Check if the Item is -, e.g. for Undead (Con) or Oozes (Int)
         if ( ( tempValue === "—" ) || ( tempValue === "-" ) ) {
             // Set the attribute to "-" to work with it later on
-            formattedInput[tempAttr.toLowerCase()] = "-";
+            formattedInput[tempAttr.toLowerCase()].total = "-";
         } else {
-            formattedInput[tempAttr.toLowerCase()] = +tempValue;
+            formattedInput[tempAttr.toLowerCase()].total = +tempValue;
         }
             
     })
@@ -904,20 +858,12 @@ function splitStatisticsData(stringStatisticsData) {
                 let tempSkillMultiples = splitSkills.match(/(\b\w*\b \([a-zA-Z0-9,; ]+\) [+-]\d+)/g);
                 splitSkills = splitSkills.replace(/(\b\w*\b \([a-zA-Z0-9,;]+\) [+-]\d+),/g, "");
 
-                console.log("tempSkillMultiples: " + tempSkillMultiples);
-
                 tempSkillMultiples.forEach ( function (item, index) {
-                    console.log("item: " + item);
                     let tempSkillName = item.match(/(\b[a-zA-Z]+\b)(?: \(.*\))/)[1];
                     let tempSkillModifier = item.match(/\-\d+|\+\d+/);
                     let tempSubtypes = item.match(/\(([^)]+)\)/)[0].replace(/[()]/g, "").split(/,|;/g);
-                    console.log("tempSkillName: " + tempSkillName);
-                    console.log("tempSubtypes: " + tempSubtypes);
-                    console.log("tempSkillModifier: " + tempSkillModifier);
 
                     tempSubtypes.forEach( function (tempSubtype) {
-                        console.log("subtype: " + tempSubtype);
-                        console.log("tempSkillName: " + tempSkillName);
                         splitSkills += ", " + tempSkillName + " (" + tempSubtype + ") " + tempSkillModifier;
                     })
 
@@ -936,8 +882,6 @@ function splitStatisticsData(stringStatisticsData) {
         splitSkills = splitSkills.split(/,/);
 
         splitSkills.forEach (function (item, index) {
-
-            console.log("item: " + item);
             
             let skillTotal = item.match(/(-\d+|\d+)/)[0];
             let skillName = item.replace(/(^\s*|\s*-[\d].*|\s*\+.*)/g, "");
@@ -947,9 +891,14 @@ function splitStatisticsData(stringStatisticsData) {
                 let skillSubtype = skillName.match(/\(([^)]+)\)/)[1].replace(/^ | $/g,"");
                 let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/g, "");
                 tempSkillName = tempSkillName.replace(/^ | $/g, "");
-                formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
+                if (skillName.search(/\bKnowledge\b/i) !== -1) {
+                    formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()].total = +skillTotal;
+                } else {
+                    formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
+                }
+                
             } else {
-                formattedInput.skills[skillName.toLocaleLowerCase()] = +skillTotal;
+                formattedInput.skills[skillName.toLocaleLowerCase()].total = +skillTotal;
             }
 
         });
@@ -979,7 +928,6 @@ function splitStatisticsData(stringStatisticsData) {
             tempSQs[0] = splitSQ;
         }
         
-        console.log("tempSQ: " + tempSQs);
         formattedInput.special_qualities = tempSQs;
     }
     
@@ -1072,7 +1020,7 @@ function mapGeneralData(formattedInput) {
     dataOutput.data.details.alignment = formattedInput.alignment;
     
     // Attributes
-    dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex);
+    dataOutput.data.attributes.init.value = formattedInput.initiative - getModifier(formattedInput.dex.total);
     dataOutput.data.attributes.init.total = formattedInput.initiative;
     
     // Size and Size-Related Stuff
@@ -1177,6 +1125,43 @@ function setRaceItem (raceInput) {
     } else {
         console.log("something went wrong parsing the race");
     }
+    
+    let raceChanges = itemEntry.data.changes;
+    
+    raceChanges.forEach ( function (item, index) {
+        
+        // Set Changes for Abilities
+        if (item[1] == "ability") {
+            formattedInput[item[2]].race = item[0];
+        } else if (item[1] == "skill") {
+            // Else check if its a change to skills
+            let skillShort = item[2].replace(/skill./,"");
+            
+            for (var key in enumSkills) {
+                if (enumSkills[key] === skillShort) {
+                    if (key === "knowledge") {
+                        formattedInput.skills.knowledge[key].race = item[0];
+                    } else {
+                        formattedInput.skills[key].race = item[0];
+                    }
+                }
+            }  
+        } else if (item[1] == "ac") {
+            // Else if change to ac (e.g. Adaro)
+            /*
+                [
+                "2",
+                "ac",
+                "nac",
+                "base"
+              ]
+              */
+            formattedInput.ac_race_bonus = item[0];
+        }
+        
+        
+    });
+    
     dataOutput.items.push(itemEntry);
 }
 
@@ -1225,12 +1210,13 @@ function setConversionItem (formattedInput) {
     if (formattedInput.con === "-") {
         calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(10));
     } else {
-        calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con));
+        calculatedHPTotal = +formattedInput.hp.race + +formattedInput.hp.class + (+formattedInput.hit_dice.hd * +getModifier(formattedInput.con.total));
     }
     
     if (+calculatedHPTotal !== +formattedInput.hp.total) {
-        
-        let tempHPDifference = formattedInput.hp.total - calculatedHPTotal;
+
+        let tempHPDifference = +formattedInput.hp.total - +calculatedHPTotal;
+
         let hpChange = [
             tempHPDifference.toString(),
             "misc",
@@ -1242,7 +1228,7 @@ function setConversionItem (formattedInput) {
     }
     
     // Add Changes to Init if needed
-    let calculatedInitTotal = +getModifier(formattedInput.dex);
+    let calculatedInitTotal = +getModifier(formattedInput.dex.total);
     if (calculatedInitTotal !== formattedInput.initiative) {
         let tempInitDifference = +formattedInput.initiative - +calculatedInitTotal;
         
@@ -1296,7 +1282,7 @@ function setConversionItem (formattedInput) {
             let tempSaveChange = +formattedInput[tempSaveString].total - +formattedInput[tempSaveString].racial - +formattedInput[tempSaveString].class;
             saveChange.push(tempSaveChange.toString());
         } else {
-            let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]]);
+            let attrModifier = +getModifier(formattedInput[enumSaveModifier[index]].total);
             
             let tempSaveChange = +formattedInput[tempSaveString].total - +formattedInput[tempSaveString].racial - +formattedInput[tempSaveString].class - +attrModifier;
             saveChange.push(tempSaveChange.toString());
@@ -1335,7 +1321,7 @@ function mapDefenseData (formattedInput) {
     dataOutput.data.attributes.ac.normal.total = +formattedInput.ac;
     dataOutput.data.attributes.ac.touch.total = +formattedInput.touch;
     dataOutput.data.attributes.ac.flatFooted.total = +formattedInput.flat_footed;
-    dataOutput.data.attributes.naturalAC = +formattedInput.ac_bonus_types.natural;
+    dataOutput.data.attributes.naturalAC = +formattedInput.ac_bonus_types.natural - +formattedInput.ac_race_bonus;
     dataOutput.data.attributes.acNotes = formattedInput.acNotes;
     
     dataOutput.data.attributes.savingThrows.fort.total = +formattedInput.fort_save.total;
@@ -1395,11 +1381,11 @@ function mapDefenseData (formattedInput) {
     // Resistances    
     let tempResistances = formattedInput.resistances;
     tempResistances = tempResistances.replace(/Electricity/gi, "electric");
-    console.log("tempResistances: " + tempResistances);
+
     enumDamageTypes.forEach( function (item, index) {
         let tempResistanceRegEx = new RegExp("(\\b" + item + "\\b \\d+)", "ig");
         if (tempResistances.search(tempResistanceRegEx) !== -1) {
-            let tempResistance = formattedInput.resistances.match(tempResistanceRegEx);
+            let tempResistance = tempResistances.match(tempResistanceRegEx);
             dataOutput.data.traits.eres += tempResistance + ", ";
         }
     });
@@ -1410,7 +1396,6 @@ function mapDefenseData (formattedInput) {
     // Set DamageType Vulnerabilities
     let tempWeaknesses = formattedInput.weaknesses;
     tempWeaknesses = tempWeaknesses.replace(/Electricity/gi, "electric");
-    console.log("tempWeaknesses: " + tempWeaknesses);
     
     enumDamageTypes.forEach( function (item, index) {
         if (tempWeaknesses.search(item) !== -1) {
@@ -1443,9 +1428,9 @@ function mapStatisticData (formattedInput) {
     
     enumAttributes.forEach ( function (item, index) {
         if (formattedInput[item] !== "-") {
-            dataOutput.data.abilities[item].total = +formattedInput[item];
-            dataOutput.data.abilities[item].value = +formattedInput[item];
-            dataOutput.data.abilities[item].mod = getModifier(formattedInput[item]);
+            dataOutput.data.abilities[item].total = +formattedInput[item].total - +formattedInput[item].race;
+            dataOutput.data.abilities[item].value = +formattedInput[item].total - +formattedInput[item].race;
+            dataOutput.data.abilities[item].mod = getModifier(formattedInput[item].total);
             
             if (item.toLowerCase() === "str") {
                 carryCapacity = getEncumbrance(formattedInput[item]) * dataOutput.data.abilities.str.carryMultiplier;
@@ -1483,9 +1468,6 @@ function mapStatisticData (formattedInput) {
     });
     
     // Skills
-    
-    console.log("formattedInput.skills: " + JSON.stringify(formattedInput.skills));
-    
     let skillKeys = Object.keys(formattedInput.skills);
     
     for (let i = 0; i < skillKeys.length; i++) {
@@ -1504,9 +1486,7 @@ function mapStatisticData (formattedInput) {
                 // Set the skills
                 let tempAttrShort = "";
                 if (skillKey == "knowledge") {
-                    
-                    console.log("knowledge skill");
-                        
+                                            
                     if (JSON.stringify(enumSkills[skillKey]).search(skillSubKey) === -1) {
                         // if its not a valid knowledge subskill
                         tempAttrShort = "createCustomSkill";
@@ -1529,13 +1509,57 @@ function mapStatisticData (formattedInput) {
                     }
 
                     let tempAttr = templateSkills[tempAttrShort].ability;
-                    let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+                    let tempAttrModifier = getModifier(formattedInput[tempAttr].total);
 
                     // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe ClassSkillBonus)
-                    if (formattedInput.skills[skillKey][skillSubKey] !== 0) {
-                        console.log("setting skill rank and mod");
-                        dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey] - +tempAttrModifier - +tempClassSkillModifier;
-                        dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey];
+                    
+                    if (skillKey == "knowledge") {
+                        if (formattedInput.skills[skillKey][skillSubKey].total !== 0) {
+                            dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey][skillSubKey].total -+formattedInput.skills[skillKey][skillSubKey].race - +tempAttrModifier - +tempClassSkillModifier;
+                            dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey][skillSubKey].total;
+                        }
+                    } else if (formattedInput.skills[skillKey][skillSubKey] !== 0) {
+
+                        // Get length of subSkills in this skillKey
+                        let subSkillTotal = formattedInput.skills[skillKey][skillSubKey];
+                        let tempSkillKeys = Object.keys(formattedInput.skills[skillKey]);
+                        
+                        console.log("tempSkillKeys: " + tempSkillKeys);
+                        
+                        let templateSubSkill =  {
+                            "name": "",
+                            "ability": "",
+                            "rank": 0,
+                            "notes": "",
+                            "mod": 0,
+                            "rt": false,
+                            "acp": false,
+                            "cs": false,
+                            "value": null
+                        }
+                            
+                        tempSkillKeys.forEach ( function (item, index) {
+                            if (item === skillSubKey) {
+
+                                
+                                let tempSubAttrShort = tempAttrShort + (+index+1);
+                                
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort] = JSON.parse(JSON.stringify(templateSubSkill));
+                                
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].name = item;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].ability = dataOutput.data.skills[tempAttrShort].ability;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].rank = +subSkillTotal - +tempAttrModifier - +tempClassSkillModifier;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].notes = "";
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].mod = +subSkillTotal;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].rt = dataOutput.data.skills[tempAttrShort].rt;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].acp = dataOutput.data.skills[tempAttrShort].acp;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].cs = dataOutput.data.skills[tempAttrShort].cs;
+                                dataOutput.data.skills[tempAttrShort].subSkills[tempSubAttrShort].value = dataOutput.data.skills[tempAttrShort].value;
+                                
+                            }
+                            
+                        });
+  
                     }
                 } else {
                     //Create a custom skill                    
@@ -1587,12 +1611,14 @@ function mapStatisticData (formattedInput) {
             }
             
             let tempAttr = templateSkills[tempAttrShort].ability;
-            let tempAttrModifier = getModifier(formattedInput[tempAttr]);
+            let tempAttrModifier = getModifier(formattedInput[tempAttr].total);
             
             // Calculate the Rank (e.g. Total - Attribute-Modifier, maybe - ClassSkillBonus?)
-            if (formattedInput.skills[skillKey] !== 0) {
-                dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey] - +tempAttrModifier - +tempClassSkillModifier;
-                dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey];
+            if (formattedInput.skills[skillKey].total !== 0) {
+                
+                dataOutput.data.skills[tempAttrShort].rank = +formattedInput.skills[skillKey].total - +formattedInput.skills[skillKey].race - +tempAttrModifier - +tempClassSkillModifier;
+
+                dataOutput.data.skills[tempAttrShort].mod = formattedInput.skills[skillKey].total - +formattedInput.skills[skillKey].race;
             }
 
         }
@@ -1652,7 +1678,6 @@ function mapNotesData() {
     }
     
     // H2 - SPECIAL QUALITIES
-    console.log("formattedInput.special_qualities: " + formattedInput.special_qualities);
     if (formattedInput.special_qualities !== "") {
         let tempSpecialQualities = "<section id='defensiveAbilities'><h2>SPECIAL QUALITIES</h2>";
         tempSpecialQualities += "<p>";
