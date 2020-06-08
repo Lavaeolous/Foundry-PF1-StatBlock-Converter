@@ -351,6 +351,7 @@ function splitGeneralData(stringGeneralData) {
     // Separate Name and Challenge Rating
     
     let splitGeneralData = stringGeneralData.replace(/\n/gm,"");
+    splitGeneralData = splitGeneralData.replace(/defense$|defenses$/i,"");
         
     // Name (every char until "CR" is found)
     let splitName = splitGeneralData.match(/.+?(?=CR)/)[0];
@@ -508,8 +509,10 @@ function splitGeneralData(stringGeneralData) {
     let splitSenses = "";
     // Senses
     if (splitGeneralData.search(/\bSenses\b/gmi) !== -1) {
-        splitSenses = splitGeneralData.match(/(?:Senses )(.*?)(?:;|\n|$)/igm)[0].replace("Senses ","");
+        splitSenses = splitGeneralData.match(/(?:\bSenses\b )(.*?)(?:\n|$)/igm)[0].replace(/\bSenses\b /,"");
     }
+    console.log("splitGeneralData: " + JSON.stringify(splitGeneralData));
+    console.log("splitSenses: " + splitSenses);
     
     // Aura
     let splitAura = "";
