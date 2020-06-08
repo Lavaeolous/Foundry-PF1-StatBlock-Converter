@@ -1582,6 +1582,7 @@ function mapNotesData() {
         formattedInput.special_qualities.forEach ( function (item) {
             tempSpecialQualities += item + ", ";
         })
+        tempSpecialQualities = tempSpecialQualities.replace(/, $/,"");
         tempSpecialQualities += "</p>";
         tempSpecialQualities += "</section>";
         
