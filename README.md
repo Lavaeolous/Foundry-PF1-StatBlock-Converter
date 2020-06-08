@@ -16,39 +16,17 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 ![Status Image](/assets/images/status.png)
 
-*  Name
-*  CR
-*  XP
-*  Gender
-*  Race*
-*  Class(es) *
-*  Alignment
-*  Size ***
-*  Type (Subtype) *
-*  Init
-*  Senses ***
-*  Aura (but there is no field for that in the character sheet)
-*  AC (AC, Touch and Flat-Footed) **
-*  HP **
-*  Hit Dice **
-*  Saves **
-*  Defensive Abilities * (WIP)
-*  Immunities, Resistances, Weaknesses (WIP)
-*  Damage and Spell Resistance
-*  Tactics (Before Combat, During Combat, Morale)
-*  Attributes Str, Dex, Con, Int, Wis, Cha
-*  BAB
-*  CMD and CMB (WIP)
-*  Feats ****
-*  Skills **
-*  Languages
-*  Special Qualities
+*  **General Data**: Name, CR, XP, Gender, Race*, Class(es)[^1], Alignment, Size[^3], Type (Subtype)[^1], Init, Senses[^3], Aura (but there is no field for that in the character sheet)
+*  **Defensive Data:** AC, Touch and Flat-Footed)[^2], HP[^2], Hit Dice[^2], Saves[^2], Defensive Abilities[^1], Immunities, Resistances, Weaknesses, Damage and Spell Resistance
+*  **Tactics:** Before &amp; During Combat, Morale (Buggy)
+*  **Statistics Data:** Attributes (Str, Dex, Con, Int, Wis, Cha), BAB, CMD and CMB (context notes WIP), Feats[^4], Skills[^2] (context notes WIP), Languages, Special Qualities
+*  **Offense Data:** Speed(s), Rest is WIP
 
 
-\* A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
-\*\* Including the needed calculations  
-\*\*\* Including changes to the token (e.g. size and vision)
-\*\*\*\* Creates empty Items for now
+[^1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
+[^2]: Including the needed calculations  
+[^3]: Including changes to the token (e.g. size and vision)
+[^4]: Creates empty Items for now
 
 
 **Known Bugs:**
@@ -58,8 +36,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 
 **To Do:**
-*  Bug Fixing
-*  Finish the mapping of statistics to the foundry-json (including Languages, Special Qualities, Gear)
+*  **Bug Fixing**
 *  Parse Attacks, Spells, Ecology, Description (only for SRD-Content), Gear & Treasure, Special Abilities
 *  Give usable Feedback in the status bar (for now some comments are visible in the console)
 *  Sometime in the future make a module out of it, maybe
@@ -70,6 +47,7 @@ Primer#2220 on Discord
 
 **Change Log**
 2020_06_08:
+*  Started Work on the Offense Data, finished the parsing of speed(s)
 *  Reworked the skill separation to support subSkills, e.g. Perform (Sing) +3
 *  Reworked the parsing of defensive stats to be line-independent
 *  Included Changes from Race into the calculation of HP, AC, Abilities and Skills
