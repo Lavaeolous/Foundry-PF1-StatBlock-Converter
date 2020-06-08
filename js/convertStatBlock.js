@@ -141,7 +141,7 @@ function convertStatBlock(input) {
     
     // Remove empty lines with replace(/^\s*[\r\n]/gm,"")
     // Replace weird minus signs with .replace(/–/,"-")
-    dataInput = input.value.replace(/^\s*[\r\n]/gm,"").replace(/–/gm,"-");
+    dataInput = input.value.replace(/^\s*[\r\n]/gm,"").replace(/–|—/gm,"-");
     
     // console.log("dataInput: " + dataInput);
         
@@ -353,7 +353,10 @@ function splitGeneralData(stringGeneralData) {
     let splitCR = splitGeneralData.match(/(1\/\d|\d+)/)[0];
     
     // XP
-    let splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");    
+    let splitXP =0;
+    if (splitGeneralData.search(/(\bXP\b)/) !== -1) {
+        splitXP = splitGeneralData.match(/(?:XP )([\d,.]+)/)[0].replace(/([\D]|[,?]|[\.?])/g,"");
+    }
     
     //Alignment
     let splitAlignment = "";
@@ -556,6 +559,8 @@ function splitDefenseData(stringDefenseData) {
     // Loop through the found AC Boni and set changes accordingly
     splitACBonusTypes.forEach( function ( item, index) {
         
+        console.log("item: " + item);
+        
         // get the bonus type
         let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
         let foundBonusValue = item.match(/(\+[\d]*)|(-[\d]*)/i)[0].replace(/\+/,"");
@@ -595,7 +600,7 @@ function splitDefenseData(stringDefenseData) {
         formattedInput.regeneration = tempRegen[1];
     }
     // If available, extract Fast Healing
-    if (splitDefenseData[1].search(/Regeneration/i) !== -1) {
+    if (splitDefenseData[1].search(/Fast Healing/i) !== -1) {
         let tempFastHealing = splitDefenseData[1].match(/(?:Fast Healing )([\s\S]+?)(?:\n|$|;)/i);
         formattedInput.fast_healing = tempFastHealing[1];
     }
@@ -700,8 +705,11 @@ function splitDefenseData(stringDefenseData) {
     if(splitDefenseData[3]) {
         let splitResistances = splitDefenseData[3].split(/;/g);
 
+        console.log("splitResistances: " + JSON.stringify(splitResistances));
+        
         splitResistances.forEach( function (item, index) {
-            if (this[index].match(/(DR)/gmi)) {
+            if (this[index].match(/(\bDR\b)/gmi)) {
+                console.log("item: " + item + " Index: " + index);
                 let splitDRValue = item.match(/\d+/)[0];
                 let splitDRType = item.match(/(?:\/)([\w\s]*)/)[1];
                 formattedInput.damage_reduction.dr_value = splitDRValue;
@@ -791,8 +799,12 @@ function splitStatisticsData(stringStatisticsData) {
     
     // Attack Modifier
     formattedInput.bab = stringStatisticsData.match(/(?:Base Atk[\s+-]*)([\d]*)/i)[1];
-    formattedInput.cmb = stringStatisticsData.match(/(?:Cmb[\s+-]*)([\d]*)/i)[1];
-    formattedInput.cmd = stringStatisticsData.match(/(?:CMD )(.*)/i)[1];
+    if (stringStatisticsData.search(/\bcmb\b/im) !== -1) {
+        formattedInput.cmb = stringStatisticsData.match(/(?:Cmb[\s+-]*)([\d]*)/i)[1];
+    };
+    if (stringStatisticsData.search(/\bcmd\b/im) !== -1) {
+        formattedInput.cmd = stringStatisticsData.match(/(?:CMD )(.*)/i)[1];
+    }
     
     // Feats (String from "Feats" to next linebreak)
     if (stringStatisticsData.search(/(?:Feats )/) !== -1) {
@@ -1117,6 +1129,21 @@ function setConversionItem (formattedInput) {
         ];
                 
         itemEntry.data.changes.push(hpChange);
+    }
+    
+    // Add Changes to Init if needed
+    let calculatedInitTotal = +getModifier(formattedInput.dex);
+    if (calculatedInitTotal !== formattedInput.initiative) {
+        let tempInitDifference = +formattedInput.initiative - +calculatedInitTotal;
+        
+        let initChange = [];
+        initChange.push(tempInitDifference.toString());
+        initChange.push("misc");
+        initChange.push("init");
+        initChange.push("untyped");
+        
+        itemEntry.data.changes.push(initChange);
+        
     }
 
     // Add Changes to AC
@@ -1471,13 +1498,14 @@ function mapStatisticData (formattedInput) {
     
     if (formattedInput.languages) {
         formattedInput.languages.forEach ( function (item, index) {
-            console.log("item: " + item.toLowerCase());
+            
+            let tempItem = item.replace(/\+/i, "\\+");
+            console.log("item: " + tempItem.toLowerCase());
             console.log("JSON.stringify(enumLanguages): " + JSON.stringify(enumLanguages));
 
-
-            if (JSON.stringify(enumLanguages).search(item.toLowerCase()) !== -1) {
-                console.log("pushing " + item + " onto value");
-                tempKnownLanguages.push(item.toLowerCase());
+            if (JSON.stringify(enumLanguages).search(tempItem.toLowerCase()) !== -1) {
+                console.log("pushing " + tempItem + " onto value");
+                tempKnownLanguages.push(tempItem.toLowerCase());
                 console.log("tempKnownLanguages: " + tempKnownLanguages);
             } else {
                 tempUnknownLanguages += item + ", ";
