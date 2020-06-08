@@ -16,17 +16,17 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 ![Status Image](/assets/images/status.png)
 
-*  **General Data**: Name, CR, XP, Gender, Race*, Class(es)[^1], Alignment, Size[^3], Type (Subtype)[^1], Init, Senses[^3], Aura (but there is no field for that in the character sheet)
-*  **Defensive Data:** AC, Touch and Flat-Footed)[^2], HP[^2], Hit Dice[^2], Saves[^2], Defensive Abilities[^1], Immunities, Resistances, Weaknesses, Damage and Spell Resistance
+*  **General Data**: Name, CR, XP, Gender, Race<sup>1</sup>, Class(es)<sup>1</sup>, Alignment, Size<sup>3</sup>, Type (Subtype)<sup>1</sup>, Init, Senses<sup>3</sup>, Aura (but there is no field for that in the character sheet)
+*  **Defensive Data:** AC, Touch and Flat-Footed)<sup>2</sup>, HP<sup>2</sup>, Hit Dice<sup>2</sup>, Saves<sup>2</sup>, Defensive Abilities<sup>1</sup>, Immunities, Resistances, Weaknesses, Damage and Spell Resistance
 *  **Tactics:** Before &amp; During Combat, Morale (Buggy)
-*  **Statistics Data:** Attributes (Str, Dex, Con, Int, Wis, Cha), BAB, CMD and CMB (context notes WIP), Feats[^4], Skills[^2] (context notes WIP), Languages, Special Qualities
+*  **Statistics Data:** Attributes (Str, Dex, Con, Int, Wis, Cha), BAB, CMD and CMB (context notes WIP), Feats<sup>4</sup>, Skills<sup>2</sup> (context notes WIP), Languages, Special Qualities
 *  **Offense Data:** Speed(s), Rest is WIP
 
 
-[^1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
-[^2]: Including the needed calculations  
-[^3]: Including changes to the token (e.g. size and vision)
-[^4]: Creates empty Items for now
+[1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
+[2]: Including the needed calculations  
+[3]: Including changes to the token (e.g. size and vision)
+[4]: Creates empty Items for now
 
 
 **Known Bugs:**
