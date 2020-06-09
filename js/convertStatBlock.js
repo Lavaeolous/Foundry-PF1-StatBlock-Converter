@@ -798,10 +798,55 @@ function splitOffenseData(stringOffenseData) {
             }
         });
     }
-     
-    console.log("splitSpeed: " + splitSpeed);
-    
+        
     formattedInput.speed.land.base = landSpeed;
+    
+    // Create usable Strings for melee, ranged and special attacks
+    
+    // Melee
+    // If there are ranged or special attacks
+    
+    let splitMeleeAttacks = "";
+    let splitRangedAttacks = "";
+    let splitSpecialAttacks = "";
+    
+    // Melee, Ranged and Special
+    if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bRanged\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+        console.log("Melee, Ranged and Special");
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Ranged)|(?:Special)/im)[1].replace(/\n+/g, "");
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bRanged\b/i) !== -1) {
+        // If there are Melee and Ranged attacks
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Ranged)/im)[1].replace(/\n+/g, "");
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+        // If there are Melee and Special attacks
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bRanged\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+        // If there are Ranged and Special attacks
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
+        // If there are only Melee attacks
+        console.log("only Melee");
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
+        // If there are only Ranged attacks
+        console.log("only Ranged");
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+        // If there are only Special attacks
+        console.log("only Special");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
+    } else {
+        console.log("no attacks found");
+    }
+    
+    console.log("splitMeleeAttacks: " + splitMeleeAttacks);
+    console.log("splitRangedAttacks: " + splitRangedAttacks);
+    console.log("splitSpecialAttacks: " + splitSpecialAttacks);
                                             
 }
 
