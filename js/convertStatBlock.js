@@ -1600,62 +1600,79 @@ function mapOffenseData (formattedInput) {
             let attackEffects = "";
             let mwkWeapon = "";
             let numberOfIterativeAttacks = 0;
+            let attackNotes = "";
 
             // numberOfAttacks
             if (meleeAttack.match(/(^\d+)/) !== null) {
                 numberOfAttacks = meleeAttack.match(/(^\d+)/)[1];
+                attackNotes += numberOfAttacks + " ";
+                console.log("attackNotes: " + attackNotes);
             }
             // enhancementBonus
             if (meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/) !== null) {
                 enhancementBonus = meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/)[1];
+                attackNotes += "+" + enhancementBonus + " ";
+                console.log("attackNotes: " + attackNotes);
             }
             // attackName
-            if (meleeAttack.match(/(\b[a-zA-Z-]+)(?:[ +0-9(]+\()/) !== null) {
-                attackName = meleeAttack.match(/(\b[a-zA-Z-]+)(?:[ +0-9(]+\()/)[1];
+            if (meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
+                attackName = meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/)[1];
+                attackNotes += attackName + " ";
+                console.log("attackNotes: " + attackNotes);
             }
             // attackModifier
-            if (meleeAttack.match(/(\+\d+|\-\d+)(?: \()/) !== null) {
-                attackModifier = meleeAttack.match(/(\+\d+|\-\d+)(?: \()/)[1];
+            if (meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
+                attackModifier = meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
+                
+                attackNotes += attackModifier;
+                console.log("attackNotes: " + attackNotes);
                 // Subtract BAB, STRENGTH-MOD and SIZE-MOD
-                console.log("attackModifier Before: " + attackModifier);
-                console.log("formattedInput.bab: " + formattedInput.bab);
-                console.log("enumSizeModifiers[formattedInput.size]: " + enumSizeModifiers[formattedInput.size]);
-                console.log("getModifier(formattedInput.str.total): " + getModifier(formattedInput.str.total));
-
                 attackModifier = attackModifier - formattedInput.bab - enumSizeModifiers[formattedInput.size] - getModifier(formattedInput.str.total);
+                
             }
             
             // numberOfIterativeAttacks
             if (meleeAttack.match(/(\/\+\d+)/) !== null) {
                 numberOfIterativeAttacks = meleeAttack.match(/(\/\+\d+)/g).length;
+                for (let i = numberOfIterativeAttacks; i>=1; i--) {
+                    attackNotes += "/+" + (attackModifier-(attackModifier-(5*i)));
+                    console.log("attackNotes: " + attackNotes);
+                }
             }
             
-            // DamageDie
+            // NumberOfDamageDice and DamageDie
             if (meleeAttack.match(/\d+d\d+/) !== null) {
                 numberOfDamageDice = meleeAttack.match(/(\d+)d(\d+)/)[1];
                 damageDie = meleeAttack.match(/(\d+)d(\d+)/)[2];
+                attackNotes += " (" + numberOfDamageDice + "d" + damageDie;
             }
             
             // damageBonus
             if (meleeAttack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
                 damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1];
+                attackNotes += "+" + damageBonus;
             }
             
             // critRange
             if (meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/) !== null) {
                 critRange = meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/)[1];
+                attackNotes += "/" + critRange + "-20";
             }
             
             // critMult
             if (meleeAttack.match(/(?:\/x)(\d+)/) !== null) {
                 critMult = meleeAttack.match(/(?:\/x)(\d+)/)[1];
+                attackNotes += "/x" + critMult;
             }
             
             // attackEffects
             if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
                 attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
                 attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ",");
+                attackNotes += attackEffects;
             }
+            
+            attackNotes += ")";
 
             console.log("numberOfAttacks: " + numberOfAttacks);
             console.log("enhancementBonus: " + enhancementBonus);
@@ -1664,11 +1681,14 @@ function mapOffenseData (formattedInput) {
             console.log("damage: " + numberOfDamageDice + "d" + damageDie + "+" + damageBonus + "/" + critRange + "-20/x" + critMult);
             console.log("attackEffects: " + attackEffects);
             console.log("numberOfIterativeAttacks: " + numberOfIterativeAttacks);
+            
+            
 
             // Create an attack-item for each attack in this group
             let tempAttackItem = JSON.parse(JSON.stringify(templateMeleeAttackItem));
-            tempAttackItem.name = attackName;
             
+            // Set the attackNotes as the name
+            tempAttackItem.name = attackNotes;
             
             // Push extra attacks from numberOfAttacks
             for (let i=1; i<numberOfAttacks; i++) {
@@ -1690,6 +1710,13 @@ function mapOffenseData (formattedInput) {
                 )
             }
 
+            // 
+            
+            console.log("attackNotes: " + attackNotes);
+            
+            // Push attackNotes
+            tempAttackItem.data.attackNotes = attackNotes;
+            
             console.log(JSON.stringify(tempAttackItem));
             dataOutput.items.push(tempAttackItem);
 
