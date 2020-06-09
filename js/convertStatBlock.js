@@ -561,20 +561,28 @@ function splitDefenseData(stringDefenseData) {
     let splitDefenseData = stringDefenseData.split(/\n/);
     
     // Get all AC Boni included in Input (everything in parenthesis in splitDefenseData[0]) and split them into separate strings
-    let splitACBonusTypes = JSON.stringify(splitDefenseData[0].match(/\([\s\S]*?\)/)).split(/,/);
+    let splitACBonusTypes = {};
+    if (splitDefenseData[0].search(/\([\s\S]*?\)/) !== -1) {
+        splitACBonusTypes = JSON.stringify(splitDefenseData[0].match(/\([\s\S]*?\)/)).split(/,/);
     
-    // Loop through the found AC Boni and set changes accordingly
-    splitACBonusTypes.forEach( function ( item, index) {
-        
-        // get the bonus type
-        let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
-        let foundBonusValue = item.match(/(\+[\d]*)|(-[\d]*)/i)[0].replace(/\+/,"");
-        
-        formattedInput.ac_bonus_types[foundBonusType] = +foundBonusValue;
-        
-    });
+        // Loop through the found AC Boni and set changes accordingly
+        splitACBonusTypes.forEach( function ( item, index) {
+
+            console.log("item: " + item);
+
+            // get the bonus type
+            let foundBonusType = item.match(/([a-zA-Z]+)/i)[0];
+            let foundBonusValue = item.match(/(\+[\d]*)|(-[\d]*)/i)[0].replace(/\+/,"");
+
+            formattedInput.ac_bonus_types[foundBonusType] = +foundBonusValue;
+
+        });
+        formattedInput.acNotes = JSON.parse(splitACBonusTypes)[0];
+    }
     
-    formattedInput.acNotes = JSON.parse(splitACBonusTypes)[0];
+    
+    
+    
     
     // Extract AC, Touch AC and Flat-Footed AC
     splitDefenseData[0] = splitDefenseData[0].replace(/\([\s\S]*?\)/,"");
@@ -876,10 +884,12 @@ function splitStatisticsData(stringStatisticsData) {
     
     // Skills (String from "Skills" to next linebreak)
     if (stringStatisticsData.search(/(?:Skills )/) !== -1) {
-        let splitSkills = stringStatisticsData.match(/(?:Skills\s*)(.*)(?:\n+?)/gim)[0];
+        let splitSkills = stringStatisticsData.match(/(?:Skills\s*)([\s\S]*)(?:[0-9)]+?)/gim)[0];
         splitSkills = splitSkills.replace(/Skills\s*/i, "");
         splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
         splitSkills = splitSkills.replace(/\n/, "");
+        
+        console.log("splitSkills: " + splitSkills);
         
         let splitRacialModifiers = "";
         if (splitSkills.search(/racial modifiers/i) !== -1) {
@@ -914,10 +924,12 @@ function splitStatisticsData(stringStatisticsData) {
         }
         //let tempSkillName = tempSkillMultiples
         
-        
+        console.log("splitSkills: " + splitSkills);
         
         splitSkills = splitSkills.split(/,/);
 
+        console.log("splitSkills: " + splitSkills);
+        
         splitSkills.forEach (function (item, index) {
             
             let skillTotal = item.match(/(-\d+|\d+)/)[0];
