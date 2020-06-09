@@ -1164,7 +1164,7 @@ function mapGeneralData(formattedInput) {
     }
     
     if (formattedInput.senses.search(/darkvision/i) !== -1) {
-        let rangeDarkvision = formattedInput.senses.match(/(?:darkvision\s+?)(\d+)/)[1];
+        let rangeDarkvision = formattedInput.senses.match(/(?:darkvision\s?)(\d+)/i)[1];
         dataOutput.data.attributes.vision.darkvision = rangeDarkvision;
     }
     
