@@ -949,7 +949,7 @@ function splitStatisticsData(stringStatisticsData) {
     
     // Skills (String from "Skills" to next linebreak)
     if (stringStatisticsData.search(/(?:Skills )/) !== -1) {
-        let splitSkills = stringStatisticsData.match(/(?:Skills\s*)([\s\S]*)(?:[0-9)]+?)/gim)[0];
+        let splitSkills = stringStatisticsData.match(/(?:Skills\s*)(.*)(?:[0-9)]+?)/gim)[0];
         splitSkills = splitSkills.replace(/Skills\s*/i, "");
         splitSkills = splitSkills.replace(/,\s|;\s/g, ",");
         splitSkills = splitSkills.replace(/\n/, "");
@@ -996,6 +996,8 @@ function splitStatisticsData(stringStatisticsData) {
         console.log("splitSkills: " + splitSkills);
         
         splitSkills.forEach (function (item, index) {
+            
+            console.log("item: " + item);
             
             let skillTotal = item.match(/(-\d+|\d+)/)[0];
             let skillName = item.replace(/(^\s*|\s*-[\d].*|\s*\+.*)/g, "");
@@ -1569,7 +1571,8 @@ function mapOffenseData (formattedInput) {
         console.log("meleeAttackGroup[" + i +"]: " + meleeAttackGroups[i]);
         
         // Melee Attacks
-        let meleeAttacks = meleeAttackGroups[i].split(/,/g);
+        
+        let meleeAttacks = meleeAttackGroups[i].replace(/ \band\b /,",").split(/,/g);
         let meleeAttackKeys = Object.keys(meleeAttacks);
 
         // Loop over all melee attacks
@@ -1598,7 +1601,7 @@ function mapOffenseData (formattedInput) {
             let critRange = 20;
             let critMult = 2;
             let attackEffects = "";
-            let mwkWeapon = "";
+            let mwkWeapon = false;
             let numberOfIterativeAttacks = 0;
             let attackNotes = "";
 
@@ -1609,11 +1612,17 @@ function mapOffenseData (formattedInput) {
                 console.log("attackNotes: " + attackNotes);
             }
             // enhancementBonus
-            if (meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/) !== null) {
-                enhancementBonus = meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/)[1];
+            if (meleeAttack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/) !== null) {
+                enhancementBonus = meleeAttack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/)[1];
                 attackNotes += "+" + enhancementBonus + " ";
-                console.log("attackNotes: " + attackNotes);
+                console.log("enhancementBonus: " + enhancementBonus);
             }
+            // Masterwork
+            if (meleeAttack.match(/\bmwk\b/i) !== null) {
+                mwkWeapon = true;
+                attackNotes += "mwk ";
+            }
+            
             // attackName
             if (meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
                 attackName = meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/)[1];
@@ -1623,12 +1632,25 @@ function mapOffenseData (formattedInput) {
             // attackModifier
             if (meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
                 attackModifier = meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
-                
+                console.log("attackModifier Before: " + attackModifier);
                 attackNotes += attackModifier;
                 console.log("attackNotes: " + attackNotes);
                 // Subtract BAB, STRENGTH-MOD and SIZE-MOD
                 attackModifier = attackModifier - formattedInput.bab - enumSizeModifiers[formattedInput.size] - getModifier(formattedInput.str.total);
                 
+                console.log("attackModifier After: " + attackModifier);
+                
+                if (enhancementBonus !== 0 && mwkWeapon !== false) {
+                    console.log("mwk and enhn");
+                    attackModifier = (attackModifier - enhancementBonus);
+                } else if (enhancementBonus === 0 && mwkWeapon !== false) {
+                    console.log("just mwk");
+                    attackModifier = (attackModifier - 1);
+                }
+                
+                console.log("attackModifier After After: " + attackModifier);
+                
+
             }
             
             // numberOfIterativeAttacks
@@ -1649,7 +1671,7 @@ function mapOffenseData (formattedInput) {
             
             // damageBonus
             if (meleeAttack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
-                damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1];
+                damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1] - enhancementBonus;
                 attackNotes += "+" + damageBonus;
             }
             
@@ -1685,10 +1707,42 @@ function mapOffenseData (formattedInput) {
             
 
             // Create an attack-item for each attack in this group
+            
+            // CHECK IF ITS NAME IS FOUND IN templateNaturalAttackItem
+            // IF YES, CREATE A NATURAL ATTACK INSTEAD
             let tempAttackItem = JSON.parse(JSON.stringify(templateMeleeAttackItem));
+            
+            let naturalAttackKeys = Object.keys(templateNaturalAttackItem);
+                
+            for (let i=0; i<naturalAttackKeys.length; i++) {
+                let tempAttackName = attackName.toLowerCase();
+                if (numberOfAttacks > 1) {
+                    tempAttackName = tempAttackName.replace(/s$/,"");
+                }
+                let searchString = "//" + tempAttackName + "//i";
+                console.log("searchString: " + searchString);
+                if (naturalAttackKeys[i].search(tempAttackName) !== -1) {
+                    console.log("NATURAL ATTACK FOUND");
+                    console.log("naturalAttackKeys[i]: " + naturalAttackKeys[i]);
+                    tempAttackItem = JSON.parse(JSON.stringify(templateNaturalAttackItem[naturalAttackKeys[i]]))
+                }
+            }
+            
+             
             
             // Set the attackNotes as the name
             tempAttackItem.name = attackNotes;
+            
+            // Set Masterwork Status
+            if (mwkWeapon !== false) {
+                tempAttackItem.data.masterwork = true;
+            }
+            
+            // Set Enhancement Bonus
+            if (enhancementBonus !== 0) {
+                tempAttackItem.data.enh = enhancementBonus;
+                tempAttackItem.data.masterwork = true;
+            }
             
             // Push extra attacks from numberOfAttacks
             for (let i=1; i<numberOfAttacks; i++) {
@@ -1709,13 +1763,24 @@ function mapOffenseData (formattedInput) {
                     ]
                 )
             }
+            
+            // Push Damage Parts
+            tempAttackItem.data.damage.parts.push(
+                [
+                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", @size, @critMult)",
+                    "EDIT ME"
+                ]
+            )
 
-            // 
+            // Push critRange and critMult
+            tempAttackItem.data.ability.critRange = critRange;
+            tempAttackItem.data.ability.critMult = critMult;
             
             console.log("attackNotes: " + attackNotes);
             
-            // Push attackNotes
+            // Push attackNotes and effectNotes
             tempAttackItem.data.attackNotes = attackNotes;
+            tempAttackItem.data.effectNotes = attackEffects;
             
             console.log(JSON.stringify(tempAttackItem));
             dataOutput.items.push(tempAttackItem);

@@ -46,12 +46,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "B and S"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -85,7 +80,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B and S"
       },
       "hasAttack": true,
@@ -146,12 +141,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 6, @size, @critMult)",
-              "B, P and S"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -185,7 +175,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 6, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B, P and S"
       },
       "hasAttack": true,
@@ -246,12 +236,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 6, @size, @critMult)",
-              "P"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -285,7 +270,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 6, @size, @critMult)",
+        "damage": "",
         "damageTypes": "P"
       },
       "hasAttack": true,
@@ -346,12 +331,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -385,7 +365,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -446,12 +426,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -485,7 +460,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -546,12 +521,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -559,7 +529,7 @@ export default {
         "ability": {
           "attack": "str",
           "damage": "str",
-          "damageMult": 1,
+          "damageMult": 0.5,
           "critRange": 20,
           "critMult": 2
         },
@@ -585,7 +555,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -646,12 +616,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 6, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -685,7 +650,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 6, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -746,12 +711,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 6, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -785,7 +745,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 6, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -846,12 +806,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "B"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -885,7 +840,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "B"
       },
       "hasAttack": true,
@@ -946,12 +901,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "P"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -985,7 +935,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "P"
       },
       "hasAttack": true,
@@ -1046,12 +996,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "S"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -1085,7 +1030,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "S"
       },
       "hasAttack": true,
@@ -1146,12 +1091,7 @@ export default {
         "attackBonus": "",
         "critConfirmBonus": "",
         "damage": {
-          "parts": [
-            [
-              "sizeRoll(1, 4, @size, @critMult)",
-              "P, B or S"
-            ]
-          ],
+          "parts": [],
           "critParts": []
         },
         "attackParts": [],
@@ -1185,7 +1125,7 @@ export default {
         "target": "",
         "range": "",
         "duration": "Instantaneous",
-        "damage": "sizeRoll(1, 4, @size, @critMult)",
+        "damage": "",
         "damageTypes": "P, B or S"
       },
       "hasAttack": true,
