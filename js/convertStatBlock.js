@@ -6,6 +6,8 @@ import templateRaceItem from "./templateRaceItem.js"
 import templateRacialHDItem from "./templateRacialHDItem.js"
 import templateConversionItem from "./templateConversionItem.js"
 import templateFeatItem from "./templateFeatItem.js"
+import templateMeleeAttackItem from "./templateMeleeAttackItem.js"
+import templateNaturalAttackItem from "./templateNaturalAttackItem.js"
 import templateSkills from "./templateSkills.js"
 import enumRaces from "./enumRaces.js"
 import enumTypes from "./enumTypes.js"
@@ -17,6 +19,7 @@ import enumConditions from "./enumConditions.js"
 import enumDamageTypes from "./enumDamageTypes.js"
 import enumSkills from "./enumSkills.js"
 import enumLanguages from "./enumLanguages.js"
+
 
 
 /*
@@ -77,6 +80,18 @@ var carrySizeModificators = {
     "Huge": 4,
     "Gargantuan": 8,
     "Colossal": 16
+};
+
+var enumSizeModifiers = {
+    "Fine": 8,
+    "Diminutive": 4,
+    "Tiny": 2,
+    "Small": 1,
+    "Medium": 0,
+    "Large": -1,
+    "Huge": -2,
+    "Gargantuan": -4,
+    "Colossal": -8
 };
 
 var enumTokenSize = {
@@ -144,6 +159,8 @@ function convertStatBlock(input) {
     // Remove empty lines with replace(/^\s*[\r\n]/gm,"")
     // Replace weird minus signs with .replace(/–/,"-")
     dataInput = input.value.replace(/^\s*[\r\n]/gm,"").replace(/–|—/gm,"-");
+    // Replace weird multiplication signs
+    dataInput = dataInput.replace(/×/, "x");
     
     // console.log("dataInput: " + dataInput);
         
@@ -844,6 +861,9 @@ function splitOffenseData(stringOffenseData) {
         console.log("no attacks found");
     }
     
+    formattedInput.meleeAttacks = splitMeleeAttacks;
+    formattedInput.rangedAttacks = splitRangedAttacks;
+    formattedInput.specialAttacks = splitSpecialAttacks;
     console.log("splitMeleeAttacks: " + splitMeleeAttacks);
     console.log("splitRangedAttacks: " + splitRangedAttacks);
     console.log("splitSpecialAttacks: " + splitSpecialAttacks);
@@ -1528,7 +1548,7 @@ function mapOffenseData (formattedInput) {
     console.log("formattedInput.speed: " + JSON.stringify(formattedInput.speed));
     let speedKeys = Object.keys(formattedInput.speed);
     
-    for (var i = 0; i < speedKeys.length; i++) {
+    for (let i = 0; i < speedKeys.length; i++) {
         dataOutput.data.attributes.speed[speedKeys[i]].base = +formattedInput.speed[speedKeys[i]].base;
         dataOutput.data.attributes.speed[speedKeys[i]].total = +formattedInput.speed[speedKeys[i]].base;
         if (speedKeys[i] === "fly") {
@@ -1536,7 +1556,147 @@ function mapOffenseData (formattedInput) {
         }
     }
     
-    console.log("outputSpeeds: " + JSON.stringify(dataOutput.data.attributes.speed));
+    // Melee Attack Groups
+    // For Attacks that can be made in one Full Attack
+    // e.g. 2 Slams +10 (1d8+18), 2 Wings +5 (1d4+18) or Bite +10 (1d8+24 plus Grab)
+    // Where the attack groups are seperated by "or"
+    let meleeAttackGroups = formattedInput.meleeAttacks.split(/\bor\b/g);
+    let meleeAttackGroupKeys = Object.keys(meleeAttackGroups);
+    
+    
+    
+    for (let i = 0; i < meleeAttackGroupKeys.length; i++) {
+        console.log("meleeAttackGroup[" + i +"]: " + meleeAttackGroups[i]);
+        
+        // Melee Attacks
+        let meleeAttacks = meleeAttackGroups[i].split(/,/g);
+        let meleeAttackKeys = Object.keys(meleeAttacks);
+
+        // Loop over all melee attacks
+        for (let j = 0; j < meleeAttackKeys.length; j++) {
+            console.log("Melee: " + meleeAttacks[j].replace(/^ | $/, ""));
+
+            // DIFFERENT ATTACK FORMATS
+            // 2 Slams +10 (1d8+18)                             Multiple attacks
+            // +3 Longsword +15 (1d8+12)                        Magic Enhancement
+            // scimitar +0 (1d6/18-20)                          Mundane Weapon and Crit-Range
+            // mwk quarterstaff +0 (1d6–1)                      masterwork Weapon
+            // bite +24 (3d8+14/19–20 plus poison)              Natural Attacks - Primary, plus Secondary Effect Poison
+            // tail +19 (3d6+7 plus grab)                       Natural Attacks - Secondary
+            // swarm (2d6 plus distraction and infestation)     Swarm Attacks
+            
+            // mwk greatsword +16/+11 (3d6+14/19–20)            Iterative Attacks
+
+            let meleeAttack = meleeAttacks[j].replace(/^ | $/, "");
+            let numberOfAttacks = 1;
+            let enhancementBonus = 0;
+            let attackName = "";
+            let attackModifier = 0;
+            let numberOfDamageDice = 0;
+            let damageDie = 0;
+            let damageBonus = 0;
+            let critRange = 20;
+            let critMult = 2;
+            let attackEffects = "";
+            let mwkWeapon = "";
+            let numberOfIterativeAttacks = 0;
+
+            // numberOfAttacks
+            if (meleeAttack.match(/(^\d+)/) !== null) {
+                numberOfAttacks = meleeAttack.match(/(^\d+)/)[1];
+            }
+            // enhancementBonus
+            if (meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/) !== null) {
+                enhancementBonus = meleeAttack.match(/(?:[^\w]\+)(\d+)(?:\s\w)/)[1];
+            }
+            // attackName
+            if (meleeAttack.match(/(\b[a-zA-Z-]+)(?:[ +0-9(]+\()/) !== null) {
+                attackName = meleeAttack.match(/(\b[a-zA-Z-]+)(?:[ +0-9(]+\()/)[1];
+            }
+            // attackModifier
+            if (meleeAttack.match(/(\+\d+|\-\d+)(?: \()/) !== null) {
+                attackModifier = meleeAttack.match(/(\+\d+|\-\d+)(?: \()/)[1];
+                // Subtract BAB, STRENGTH-MOD and SIZE-MOD
+                console.log("attackModifier Before: " + attackModifier);
+                console.log("formattedInput.bab: " + formattedInput.bab);
+                console.log("enumSizeModifiers[formattedInput.size]: " + enumSizeModifiers[formattedInput.size]);
+                console.log("getModifier(formattedInput.str.total): " + getModifier(formattedInput.str.total));
+
+                attackModifier = attackModifier - formattedInput.bab - enumSizeModifiers[formattedInput.size] - getModifier(formattedInput.str.total);
+            }
+            
+            // numberOfIterativeAttacks
+            if (meleeAttack.match(/(\/\+\d+)/) !== null) {
+                numberOfIterativeAttacks = meleeAttack.match(/(\/\+\d+)/g).length;
+            }
+            
+            // DamageDie
+            if (meleeAttack.match(/\d+d\d+/) !== null) {
+                numberOfDamageDice = meleeAttack.match(/(\d+)d(\d+)/)[1];
+                damageDie = meleeAttack.match(/(\d+)d(\d+)/)[2];
+            }
+            
+            // damageBonus
+            if (meleeAttack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
+                damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1];
+            }
+            
+            // critRange
+            if (meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/) !== null) {
+                critRange = meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/)[1];
+            }
+            
+            // critMult
+            if (meleeAttack.match(/(?:\/x)(\d+)/) !== null) {
+                critMult = meleeAttack.match(/(?:\/x)(\d+)/)[1];
+            }
+            
+            // attackEffects
+            if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
+                attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
+                attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ",");
+            }
+
+            console.log("numberOfAttacks: " + numberOfAttacks);
+            console.log("enhancementBonus: " + enhancementBonus);
+            console.log("attackName: " + attackName);
+            console.log("attackModifier After: " + attackModifier);
+            console.log("damage: " + numberOfDamageDice + "d" + damageDie + "+" + damageBonus + "/" + critRange + "-20/x" + critMult);
+            console.log("attackEffects: " + attackEffects);
+            console.log("numberOfIterativeAttacks: " + numberOfIterativeAttacks);
+
+            // Create an attack-item for each attack in this group
+            let tempAttackItem = JSON.parse(JSON.stringify(templateMeleeAttackItem));
+            tempAttackItem.name = attackName;
+            
+            
+            // Push extra attacks from numberOfAttacks
+            for (let i=1; i<numberOfAttacks; i++) {
+                tempAttackItem.data.attackParts.push(
+                    [
+                        "0",
+                        "Additional Attack: " + i
+                    ]
+                )
+            }
+            
+            // Push extra attacks from numberOfIterativeAttacks
+            for (let i=1; i<=numberOfIterativeAttacks; i++) {
+                tempAttackItem.data.attackParts.push(
+                    [
+                        +(i*-5),
+                        "Iterative Attack with " + (i*-5)
+                    ]
+                )
+            }
+
+            console.log(JSON.stringify(tempAttackItem));
+            dataOutput.items.push(tempAttackItem);
+
+        } // End of Melee Attack
+    } // End of Melee Attack Group
+    
+        
     
 }
 

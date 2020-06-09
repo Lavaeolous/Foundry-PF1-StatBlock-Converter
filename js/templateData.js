@@ -78,8 +78,9 @@ export default {
           "maneuverability": "average"
         }
     },
-    "melee": "",
-    "ranged": "",
+    "meleeAttacks": "",
+    "rangedAttacks": "",
+    "specialAttacks": "",
     "space": 0,
     "reach": 0,
     "offensive_abilities": "",
