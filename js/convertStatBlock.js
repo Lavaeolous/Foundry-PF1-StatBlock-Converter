@@ -384,8 +384,8 @@ function splitGeneralData(stringGeneralData) {
     
     //Alignment
     let splitAlignment = "";
-    if (splitGeneralData.search(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /) !== -1) {
-        splitAlignment = splitGeneralData.match(/(LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
+    if (splitGeneralData.search(/(\*A|LG|LN|LE|NG|N|NE|CG|CN|CE) /) !== -1) {
+        splitAlignment = splitGeneralData.match(/(\*A|LG|LN|LE|NG|N|NE|CG|CN|CE) /)[0].replace(/\s+?/,"");
     }
     
     // Size, Space and Reach
@@ -1691,7 +1691,7 @@ function mapOffenseData (formattedInput) {
             if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
                 attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
                 attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ",");
-                attackNotes += attackEffects;
+                attackNotes += " plus " + attackEffects;
             }
             
             attackNotes += ")";
