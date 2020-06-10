@@ -39,37 +39,47 @@
             <div class="oneHalf">
                 <label class="statBlockInputLabel">Input</label>
                 <textarea class="statBlockInput" id="input" form="statBlockInputForm" placeholder="Paste Statblock here">
-Angelic Guardian CR 5
-Source Magnimar, City of Monuments pg. 52
+GowrowCR 5
+
 XP 1,600
-N Medium construct
-Init +2; Senses darkvision 60 ft., low-light vision; Perception +0
-Defense
-AC 18, touch 12, flat-footed 16 (+2 Dex, +6 natural)
-hp 53 (6d10+20)
-Fort +2, Ref +4, Will +2
-Defensive Abilities deflective wings; DR 5/adamantine; Immune construct traits, fire
-Offense
-Speed 30 ft., fly 60 ft. (average)
-Melee 2 slams +10 (1d6+4), 2 wings +5 (1d4+2) or Bite +99 (1d99+99 plus grab), shortswordtest +10/+5 (1d8+8/×3), Tongi +15/+10/+5 (1d6+4/19-20/x3
-Special Attacks breath weapon (60-ft. line, 6d6 fire damage, Reflex DC 13 half, usable every 1d4 rounds)
-Statistics
-Str 18, Dex 15, Con —, Int —, Wis 11, Cha 1
-Base Atk +6; CMB +10; CMD 22
-Languages Common (cannot speak)
-SQ metallic feathers
-Ecology
-Environment any urban (Magnimar)
-Organization solitary, assembly (2–4), or choir (5–8)
-Treasure none
-Special Abilities
-Deflective Wings (Ex) As a standard action, an angelic guardian can spread its wings and protect a single adjacent creature from the next ranged attack. The next time the protected creature would normally be hit with an attack from a ranged attack, the attack is instead deflected and the protected creature takes no damage. An angelic guardian can only deflect one ranged attack per turn in this way. This effect lasts until the angelic guardian’s next turn or until the protected creature leaves its square, whichever comes first.
+N Large dragon (aquatic)
+Init +7; Senses darkvision 60 ft., low-light vision; Perception +12
 
-Metallic Feathers (Ex) An angelic guardian’s wings are honed to razor-sharp edges, and attacks with them deal slashing damage instead of bludgeoning damage.
-Description
-Those toiling in the Golemworks of Magnimar provide myriad goods to their buyers, but perhaps none are so popular as the highly sought-after angelic guardian. Nobles, entrepreneurs, and wealthy paranoiacs alike purchase angelic guardians to serve as their personal protectors. Though inspired by Varisian depictions of angelic beings, these metallic beings are not truly from another plane, but are instead merely stylized automatons designed to watch over and protect their masters. They can be found throughout much of the Summit, where they line aristocrats’ gardens and stand stoically for days or even weeks without moving, their burning halos the only feature suggestive of animation.
+DEFENSE
 
-Angelic guardians can be forged from various substances, though their bodies are typically made from brass and their wings from steel. Angelic guardians stand nearly 7 feet tall and weigh 2,000 pounds.
+AC 18, touch 12, flat-footed 15 (+3 Dex, +6 natural, –1 size)
+hp 59 (7d12+14)
+Fort +7, Ref +8, Will +9
+Immune paralysis, sleep, sonic
+
+OFFENSE
+
+Speed 30 ft., fly 30 ft. (clumsy), swim 30 ft.
+Melee bite +10 (2d6+4), tail +10 (1d8+4/19–20)
+Space 10 ft.; Reach 10 ft.
+Special Attacks aquatic combatant, breath weapon (30-ft. cone, 6d6 sonic damage, Reflex DC 15 half, usable every 1d4 rounds), swim-by attack
+
+STATISTICS
+
+Str 18, Dex 16, Con 15, Int 9, Wis 14, Cha 11
+Base Atk +7; CMB +12; CMD 25 (29 vs. trip)
+Feats Combat Reflexes, Improved Initiative, Iron Will, Power Attack
+Skills Fly +3, Intimidate +10, Perception +12, Survival +12, Swim +22
+Languages Draconic
+SQ amphibious, hibernate
+
+SPECIAL ABILITIES
+
+Aquatic Combatant (Ex)
+A gowrow’s natural weapons and fighting style are adapted to its aquatic nature.
+
+Its bite and tail attacks are primary natural attacks that deal piercing damage, but above water, it can deal bludgeoning, piercing, and slashing damage with its bite and piercing and slashing damage with its tail.
+
+Hibernate (Ex)
+A gowrow can dig a burrow into wet ground and hibernate for up to a decade before needing to emerge and feed.
+
+Swim-By Attack (Ex)
+Known for water ambushes, gowrows gain Spring Attack as a bonus feat when swimming.
                 </textarea>
                 <form onsubmit="return false" onClick="convertStatBlock(input)" id="statBlockInputForm">
                     <input type="submit" class="submitButton" value="Convert Stat Block"/>

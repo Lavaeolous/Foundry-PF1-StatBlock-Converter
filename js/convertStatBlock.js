@@ -1008,7 +1008,24 @@ function splitStatisticsData(stringStatisticsData) {
                 let tempSkillName = skillName.replace(/\s*\(([^)]+)\)/g, "");
                 tempSkillName = tempSkillName.replace(/^ | $/g, "");
                 if (skillName.search(/\bKnowledge\b/i) !== -1) {
-                    formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()].total = +skillTotal;
+                    
+                    // Check if its for ALL knowledge skills
+                    console.log("SkillSubtype Knowledge: " + skillSubtype);
+                    if (skillSubtype.match(/\ball\b/i) !== null) {
+                        // I'm lazy, so just type them all down instead of looping
+                        formattedInput.skills.knowledge.arcana.total = +skillTotal;
+                        formattedInput.skills.knowledge.dungeoneering.total = +skillTotal;
+                        formattedInput.skills.knowledge.engineering.total = +skillTotal;
+                        formattedInput.skills.knowledge.geography.total = +skillTotal;
+                        formattedInput.skills.knowledge.history.total = +skillTotal;
+                        formattedInput.skills.knowledge.local.total = +skillTotal;
+                        formattedInput.skills.knowledge.nature.total = +skillTotal;
+                        formattedInput.skills.knowledge.nobility.total = +skillTotal;
+                        formattedInput.skills.knowledge.planes.total = +skillTotal;
+                        formattedInput.skills.knowledge.religion.total = +skillTotal;
+                    } else {
+                        formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()].total = +skillTotal;
+                    }
                 } else {
                     formattedInput.skills[tempSkillName.toLowerCase()][skillSubtype.toLowerCase()] = +skillTotal;
                 }
@@ -1636,7 +1653,7 @@ function mapOffenseData (formattedInput) {
                 attackNotes += attackModifier;
                 console.log("attackNotes: " + attackNotes);
                 // Subtract BAB, STRENGTH-MOD and SIZE-MOD
-                attackModifier = attackModifier - formattedInput.bab - enumSizeModifiers[formattedInput.size] - getModifier(formattedInput.str.total);
+                attackModifier = +attackModifier - +formattedInput.bab - +enumSizeModifiers[formattedInput.size] - +getModifier(formattedInput.str.total);
                 
                 console.log("attackModifier After: " + attackModifier);
                 
@@ -1724,14 +1741,30 @@ function mapOffenseData (formattedInput) {
                 if (naturalAttackKeys[i].search(tempAttackName) !== -1) {
                     console.log("NATURAL ATTACK FOUND");
                     console.log("naturalAttackKeys[i]: " + naturalAttackKeys[i]);
-                    tempAttackItem = JSON.parse(JSON.stringify(templateNaturalAttackItem[naturalAttackKeys[i]]))
+                    tempAttackItem = JSON.parse(JSON.stringify(templateNaturalAttackItem[naturalAttackKeys[i]]));
                 }
             }
             
-             
+            // Check, if its a primary attack (only relevant for natural attacks)
+            let secondaryAttackModifier = 0;
+            if (tempAttackItem.data.primaryAttack === false) {
+                
+                // Calculate if there is a difference between the calculatedAttackModifier and the one noted in the input statblock
+                let calculatedAttackModifier = +formattedInput.bab + +enumSizeModifiers[formattedInput.size] + +getModifier(formattedInput.str.total) - 5;
+                
+                if (calculatedAttackModifier !== attackModifier) {
+                    secondaryAttackModifier = +attackModifier - +calculatedAttackModifier;
+                }
+                
+                console.log("calculatedAttackModifier: " + calculatedAttackModifier);
+                console.log("attackModifier: " + attackModifier);
+            }
             
-            // Set the attackNotes as the name
-            tempAttackItem.name = attackNotes;
+            // Set the attackBonus
+            tempAttackItem.data.attackBonus = (+attackModifier - +secondaryAttackModifier).toString();
+            
+            // Set the attackName
+            tempAttackItem.name = attackName;
             
             // Set Masterwork Status
             if (mwkWeapon !== false) {
@@ -1767,8 +1800,8 @@ function mapOffenseData (formattedInput) {
             // Push Damage Parts
             tempAttackItem.data.damage.parts.push(
                 [
-                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", @size, @critMult)",
-                    "EDIT ME"
+                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult)",
+                    "[insert damage type here]"
                 ]
             )
 
@@ -1782,7 +1815,6 @@ function mapOffenseData (formattedInput) {
             tempAttackItem.data.attackNotes = attackNotes;
             tempAttackItem.data.effectNotes = attackEffects;
             
-            console.log(JSON.stringify(tempAttackItem));
             dataOutput.items.push(tempAttackItem);
 
         } // End of Melee Attack
