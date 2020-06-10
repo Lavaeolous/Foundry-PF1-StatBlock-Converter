@@ -566,14 +566,7 @@ function splitDefenseData(stringDefenseData) {
     // Remove linebreaks in parenthesis
     stringDefenseData = stringDefenseData.replace(/(\([^(.]+?)(?:\n)([^(.]+?\))+?/mi, "$1 $2");
     
-    /*
-    // Remove linebreaks in Melee Attacks
-    stringDefenseData = stringDefenseData.replace(/(Melee.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
-    // Remove linebreaks in Ranged Attacks
-    stringDefenseData = stringDefenseData.replace(/(Ranged.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
-    // Remove linebreaks in Multi Attacks
-    stringDefenseData = stringDefenseData.replace(/(Multi.*)(?:\n)((\b.+?\b)|\+|\d)/mi, "$1 S2");
-    */
+    
     
     let splitDefenseData = stringDefenseData.split(/\n/);
     
@@ -786,31 +779,26 @@ function splitDefenseData(stringDefenseData) {
 function splitOffenseData(stringOffenseData) {
     console.log("parsing Offense Data");
     
+    
     let splitOffenseData = stringOffenseData.replace(/^ | $|^\n*/,"");
     
     console.log("splitOffenseData: " + splitOffenseData);
     
     // Speed
     let splitSpeed = splitOffenseData.match(/(?:\bSpeed\b )(.*)(?:\n|$)/i)[1];
-    
     let landSpeed = splitSpeed.match(/\d+/);
     
     // Check for other Speeds
     if (splitSpeed.search(/,/g) !== -1) {
         let splitSpeeds = splitSpeed.replace(/, /g, ",").replace(/\d+ ft.,/, "").split(/,/g);
-        console.log("splitSpeeds: " + splitSpeeds);
         
         splitSpeeds.forEach ( function (item, index) {
-            console.log("item: " + item);
             let speedType = item.match(/\b\w*\b/);
             let speedSpeed = item.match(/\d+/);
-            console.log("speedType: " + speedType);
-            console.log("speedSpeed: " + speedSpeed);
             formattedInput.speed[speedType].base = speedSpeed;
             
             if (item.search(/fly/) !== -1) {
                 let flyManeuverability = item.match(/(?:\((.+)\))/)[1];
-                console.log("maneuverability: " + flyManeuverability);
                 formattedInput.speed.fly.maneuverability = flyManeuverability;
             }
         });
@@ -826,42 +814,71 @@ function splitOffenseData(stringOffenseData) {
     let splitMeleeAttacks = "";
     let splitRangedAttacks = "";
     let splitSpecialAttacks = "";
+    let splitSpaceAndReach = "";
+    
+    console.log("splitOffenseData: " + splitOffenseData);
     
     // Melee, Ranged and Special
+    
+    /* THIS NEEDS TO BE WAY MORE ROBUST
+     * SPLITTING IS INCONSISTEN DEPENDING ON WHERE WHICH STRING IS FOUND
+     */
+    
+    // REWORKED SPLITTING
+    
+    if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+    }
+    
+    if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+    }
+    
+    if (splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+    }
+    
+    if (splitOffenseData.search(/\bSpace\b/i) !== -1) {
+        splitSpaceAndReach = splitOffenseData.match(/(?:Space )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+    }
+    
+
+    /* OLD AND CUMBERSOME
     if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bRanged\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
         console.log("Melee, Ranged and Special");
-        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Ranged)|(?:Special)/im)[1].replace(/\n+/g, "");
-        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
-        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Ranged)|(?:Special Attacks)/im)[1].replace(/\n+/g, "");
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special Attacks)/im)[1].replace(/\n+/g, "");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
     } else if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bRanged\b/i) !== -1) {
         // If there are Melee and Ranged attacks
         splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Ranged)/im)[1].replace(/\n+/g, "");
         splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
-    } else if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+    } else if (splitOffenseData.search(/\bMelee\b/i) !== -1 && splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
         // If there are Melee and Special attacks
         splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
-        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
-    } else if (splitOffenseData.search(/\bRanged\b/i) !== -1 && splitOffenseData.search(/\bSpecial\b/i) !== -1) {
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+    } else if (splitOffenseData.search(/\bRanged\b/i) !== -1 && splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
         // If there are Ranged and Special attacks
-        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special)/im)[1].replace(/\n+/g, "");
-        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)(?:Special Attacks)/im)[1].replace(/\n+/g, "");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks\s*)([\s\S]*)(?:$)/im)[1].replace(/\n+/g, "");
     } else if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
         // If there are only Melee attacks
         console.log("only Melee");
-        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
+        
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee\s*)([\s\S]*)(?=Ranged)|(?=Space)|(?=Special Attacks)/im)[1].replace(/\n+/g, "");
     } else if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
         // If there are only Ranged attacks
         console.log("only Ranged");
         splitRangedAttacks = splitOffenseData.match(/(?:Ranged\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
     } else if (splitOffenseData.search(/\bSpecial\b/i) !== -1) {
         // If there are only Special attacks
-        console.log("only Special");
-        splitSpecialAttacks = splitOffenseData.match(/(?:Special\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
+        console.log("only Special Attacks");
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks\s*)([\s\S]*)$/im)[1].replace(/\n+/g, "");
     } else {
         console.log("no attacks found");
-    }
+    }*/
     
-    formattedInput.meleeAttacks = splitMeleeAttacks;
+    formattedInput.meleeAttacks = splitMeleeAttacks.replace(/Melee /i, "");
     formattedInput.rangedAttacks = splitRangedAttacks;
     formattedInput.specialAttacks = splitSpecialAttacks;
     console.log("splitMeleeAttacks: " + splitMeleeAttacks);
@@ -987,14 +1004,9 @@ function splitStatisticsData(stringStatisticsData) {
             }
             
         }
-        //let tempSkillName = tempSkillMultiples
-        
-        console.log("splitSkills: " + splitSkills);
-        
+                
         splitSkills = splitSkills.split(/,/);
 
-        console.log("splitSkills: " + splitSkills);
-        
         splitSkills.forEach (function (item, index) {
             
             console.log("item: " + item);
@@ -1575,6 +1587,8 @@ function mapOffenseData (formattedInput) {
         }
     }
     
+    console.log("meleeAttacks: " + formattedInput.meleeAttacks);
+    
     // Melee Attack Groups
     // For Attacks that can be made in one Full Attack
     // e.g. 2 Slams +10 (1d8+18), 2 Wings +5 (1d4+18) or Bite +10 (1d8+24 plus Grab)
@@ -1639,37 +1653,26 @@ function mapOffenseData (formattedInput) {
                 mwkWeapon = true;
                 attackNotes += "mwk ";
             }
-            
             // attackName
             if (meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
-                attackName = meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/)[1];
+                attackName = meleeAttack.match(/(\b[a-zA-Z ]+)(?:[ +0-9(/]+\()/)[1].replace(/^ | $/g, "");
                 attackNotes += attackName + " ";
-                console.log("attackNotes: " + attackNotes);
             }
             // attackModifier
             if (meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
                 attackModifier = meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
-                console.log("attackModifier Before: " + attackModifier);
                 attackNotes += attackModifier;
-                console.log("attackNotes: " + attackNotes);
                 // Subtract BAB, STRENGTH-MOD and SIZE-MOD
                 attackModifier = +attackModifier - +formattedInput.bab - +enumSizeModifiers[formattedInput.size] - +getModifier(formattedInput.str.total);
-                
-                console.log("attackModifier After: " + attackModifier);
-                
-                if (enhancementBonus !== 0 && mwkWeapon !== false) {
+                                
+                if (enhancementBonus !== 0) {
                     console.log("mwk and enhn");
                     attackModifier = (attackModifier - enhancementBonus);
-                } else if (enhancementBonus === 0 && mwkWeapon !== false) {
+                } else if (enhancementBonus !== 0 && mwkWeapon === true) {
                     console.log("just mwk");
                     attackModifier = (attackModifier - 1);
-                }
-                
-                console.log("attackModifier After After: " + attackModifier);
-                
-
+                }                
             }
-            
             // numberOfIterativeAttacks
             if (meleeAttack.match(/(\/\+\d+)/) !== null) {
                 numberOfIterativeAttacks = meleeAttack.match(/(\/\+\d+)/g).length;
@@ -1678,36 +1681,34 @@ function mapOffenseData (formattedInput) {
                     console.log("attackNotes: " + attackNotes);
                 }
             }
-            
             // NumberOfDamageDice and DamageDie
             if (meleeAttack.match(/\d+d\d+/) !== null) {
                 numberOfDamageDice = meleeAttack.match(/(\d+)d(\d+)/)[1];
                 damageDie = meleeAttack.match(/(\d+)d(\d+)/)[2];
                 attackNotes += " (" + numberOfDamageDice + "d" + damageDie;
             }
-            
             // damageBonus
             if (meleeAttack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
                 damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1] - enhancementBonus;
                 attackNotes += "+" + damageBonus;
             }
-            
             // critRange
             if (meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/) !== null) {
                 critRange = meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/)[1];
                 attackNotes += "/" + critRange + "-20";
             }
-            
             // critMult
             if (meleeAttack.match(/(?:\/x)(\d+)/) !== null) {
                 critMult = meleeAttack.match(/(?:\/x)(\d+)/)[1];
                 attackNotes += "/x" + critMult;
             }
-            
             // attackEffects
             if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
                 attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
                 attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ",");
+                
+                // Create InlineRolls if needed
+                
                 attackNotes += " plus " + attackEffects;
             }
             
@@ -1721,8 +1722,6 @@ function mapOffenseData (formattedInput) {
             console.log("attackEffects: " + attackEffects);
             console.log("numberOfIterativeAttacks: " + numberOfIterativeAttacks);
             
-            
-
             // Create an attack-item for each attack in this group
             
             // CHECK IF ITS NAME IS FOUND IN templateNaturalAttackItem
@@ -1760,11 +1759,16 @@ function mapOffenseData (formattedInput) {
                 console.log("attackModifier: " + attackModifier);
             }
             
-            // Set the attackBonus
+            // Set the attackBonus: Modifier - secondaryAttackModifier 
             tempAttackItem.data.attackBonus = (+attackModifier - +secondaryAttackModifier).toString();
             
             // Set the attackName
-            tempAttackItem.name = attackName;
+            if (enhancementBonus !== 0) {
+                tempAttackItem.name = "+" + enhancementBonus + " " + attackName;
+            } else {
+                tempAttackItem.name = attackName;
+            };
+            
             
             // Set Masterwork Status
             if (mwkWeapon !== false) {
@@ -1800,7 +1804,7 @@ function mapOffenseData (formattedInput) {
             // Push Damage Parts
             tempAttackItem.data.damage.parts.push(
                 [
-                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult)",
+                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult) - " + enhancementBonus,
                     "[insert damage type here]"
                 ]
             )
@@ -1813,7 +1817,7 @@ function mapOffenseData (formattedInput) {
             
             // Push attackNotes and effectNotes
             tempAttackItem.data.attackNotes = attackNotes;
-            tempAttackItem.data.effectNotes = attackEffects;
+            tempAttackItem.data.effectNotes = makeValueRollable(attackEffects);
             
             dataOutput.items.push(tempAttackItem);
 
@@ -2162,4 +2166,9 @@ function getDiceAverage (diceSize) {
     }
         
     return sum/diceSize;
+}
+
+function makeValueRollable(inputText) {
+    var output = inputText.replace(/(\d+d\d+)/, "[[$1]]");
+    return output;
 }
