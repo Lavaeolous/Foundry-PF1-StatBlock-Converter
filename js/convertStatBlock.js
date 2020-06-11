@@ -821,15 +821,15 @@ function splitOffenseData(stringOffenseData) {
     
     // REWORKED SPLITTING
     
-    if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/i) !== -1) {
         splitMeleeAttacks = splitOffenseData.match(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
-    if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/i) !== -1) {
         splitRangedAttacks = splitOffenseData.match(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
-    if (splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/i) !== -1) {
         splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
