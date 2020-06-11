@@ -1557,11 +1557,11 @@ function mapOffenseData (formattedInput) {
     // Where the attack groups are seperated by "or"
     let meleeAttackGroups = formattedInput.meleeAttacks.split(/\bor\b/g);
     
-    setAttackItem(meleeAttackGroups);
+    setAttackItem(meleeAttackGroups, "mwak");
     
     let rangedAttackGroups = formattedInput.rangedAttacks.split(/\bor\b/g);
     
-    setAttackItem(rangedAttackGroups);
+    setAttackItem(rangedAttackGroups, "rwak");
     
     
         
@@ -1569,7 +1569,7 @@ function mapOffenseData (formattedInput) {
 }
 
 // Set Attack Items
-function setAttackItem (attackGroups) {
+function setAttackItem (attackGroups, attackType) {
     
     let attackGroupKeys = Object.keys(attackGroups);
 
@@ -1609,6 +1609,15 @@ function setAttackItem (attackGroups) {
             let mwkWeapon = false;
             let numberOfIterativeAttacks = 0;
             let attackNotes = "";
+            
+            
+            // Check if its Melee or Ranged
+            let attackAttrModifier = 0;
+            if (attackType == "mwak") {
+                attackAttrModifier = +getModifier(formattedInput.str.total);
+            } else if (attackType == "rwak") {
+                attackAttrModifier = +getModifier(formattedInput.dex.total);
+            }
 
             console.log("attack: " + attack);
             
@@ -1636,8 +1645,8 @@ function setAttackItem (attackGroups) {
             if (attack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
                 attackModifier = attack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
                 attackNotes += attackModifier;
-                // Subtract BAB, STRENGTH-MOD and SIZE-MOD
-                attackModifier = +attackModifier - +formattedInput.bab - +enumSizeModifiers[formattedInput.size] - +getModifier(formattedInput.str.total);
+                // Subtract BAB, ATTR-MOD and SIZE-MOD
+                attackModifier = +attackModifier - +formattedInput.bab - +enumSizeModifiers[formattedInput.size] - attackAttrModifier;
                                 
                 if (enhancementBonus !== 0) {
                     attackModifier = (attackModifier - enhancementBonus);
@@ -1713,9 +1722,9 @@ function setAttackItem (attackGroups) {
             // Check, if its a primary attack (only relevant for natural attacks)
             let secondaryAttackModifier = 0;
             if (tempAttackItem.data.primaryAttack === false) {
-                
+   
                 // Calculate if there is a difference between the calculatedAttackModifier and the one noted in the input statblock
-                let calculatedAttackModifier = +formattedInput.bab + +enumSizeModifiers[formattedInput.size] + +getModifier(formattedInput.str.total) - 5;
+                let calculatedAttackModifier = +formattedInput.bab + +enumSizeModifiers[formattedInput.size] + +attackAttrModifier - 5;
                 
                 if (calculatedAttackModifier !== attackModifier) {
                     secondaryAttackModifier = +attackModifier - +calculatedAttackModifier;
@@ -1783,10 +1792,18 @@ function setAttackItem (attackGroups) {
             tempAttackItem.data.ability.critRange = critRange;
             tempAttackItem.data.ability.critMult = critMult;
             
-            
             // Push attackNotes and effectNotes
             tempAttackItem.data.attackNotes = attackNotes;
             tempAttackItem.data.effectNotes = makeValueRollable(attackEffects);
+            
+            // Set the Attack Type (Melee, Ranged, etc.)
+            tempAttackItem.data.actionType = attackType;
+            
+            if (attackType == "mwak") {
+                tempAttackItem.data.ability.attack = "str";
+            } else if (attackType == "rwak") {
+                tempAttackItem.data.ability.attack = "dex"
+            }
             
             dataOutput.items.push(tempAttackItem);
 
