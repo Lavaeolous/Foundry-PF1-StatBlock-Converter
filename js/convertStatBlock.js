@@ -1577,7 +1577,7 @@ function setAttackItem (attackGroups, attackType) {
         
         // Melee Attacks
         
-        let attacks = attackGroups[i].replace(/ \band\b /g,",").split(/,/g);
+        let attacks = attackGroups[i].replace(/\band\b (?![^(]*\)|\()/g,",").split(/,/g);
         let attackKeys = Object.keys(attacks);
 
         // Loop over all melee attacks
