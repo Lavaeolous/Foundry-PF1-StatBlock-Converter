@@ -1571,9 +1571,9 @@ function mapOffenseData (formattedInput) {
 // Set Attack Items
 function setAttackItem (attackGroups) {
     
-    let meleeAttackGroupKeys = Object.keys(attackGroups);
+    let attackGroupKeys = Object.keys(attackGroups);
 
-    for (let i = 0; i < attackGroups.length; i++) {
+    for (let i = 0; i < attackGroupKeys.length; i++) {
         
         // Melee Attacks
         
