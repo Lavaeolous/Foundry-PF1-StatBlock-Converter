@@ -807,19 +807,19 @@ function splitOffenseData(stringOffenseData) {
     // REWORKED SPLITTING
     
     if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
-        splitMeleeAttacks = splitOffenseData.match(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+        splitMeleeAttacks = splitOffenseData.match(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
     if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
-        splitRangedAttacks = splitOffenseData.match(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+        splitRangedAttacks = splitOffenseData.match(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
     if (splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
-        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+        splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
     if (splitOffenseData.search(/\bSpace\b/i) !== -1) {
-        splitSpaceAndReach = splitOffenseData.match(/(?:Space )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[0];
+        splitSpaceAndReach = splitOffenseData.match(/(?:Space )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
         
     formattedInput.meleeAttacks = splitMeleeAttacks.replace(/Melee /i, "");
@@ -1296,7 +1296,7 @@ function setConversionItem (formattedInput) {
     
     // Add Changes to HP if needed
     // For that calculate the HP-Total from Classes, RacialHD and Con-Mod*Level
-    // and compare that to the hp.total from the input
+    // and compare that to the hp.total from the inputf
     let calculatedHPTotal = 0;
     if (formattedInput.con.total === "-" && formattedInput.creature_type === "undead") {
         console.log("calculating hp total for undead with no con (so with cha instead)");
@@ -1545,7 +1545,7 @@ function mapOffenseData (formattedInput) {
         
         // Melee Attacks
         
-        let meleeAttacks = meleeAttackGroups[i].replace(/ \band\b /,",").split(/,/g);
+        let meleeAttacks = meleeAttackGroups[i].replace(/(?<=\)) \band\b /g,",").split(/,/g);
         let meleeAttackKeys = Object.keys(meleeAttacks);
 
         // Loop over all melee attacks
@@ -1570,6 +1570,7 @@ function mapOffenseData (formattedInput) {
             let numberOfDamageDice = 0;
             let damageDie = 0;
             let damageBonus = 0;
+            let damageModifier = 0;
             let critRange = 20;
             let critMult = 2;
             let attackEffects = "";
@@ -1577,6 +1578,8 @@ function mapOffenseData (formattedInput) {
             let numberOfIterativeAttacks = 0;
             let attackNotes = "";
 
+            console.log("meleeAttack: " + meleeAttack);
+            
             // numberOfAttacks
             if (meleeAttack.match(/(^\d+)/) !== null) {
                 numberOfAttacks = meleeAttack.match(/(^\d+)/)[1];
@@ -1641,7 +1644,7 @@ function mapOffenseData (formattedInput) {
             // attackEffects
             if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
                 attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
-                attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ",");
+                attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ", ");
                 
                 // Create InlineRolls if needed
                 
@@ -1730,10 +1733,16 @@ function mapOffenseData (formattedInput) {
                 )
             }
             
-            // Push Damage Parts
+            // Push Damage Parts & Calculate the difference between input and calculatedDamageBonus
+            let strDamageBonus = getModifier(formattedInput.str.total);
+            let calculatedDamageBonus = +strDamageBonus + +enhancementBonus;
+            damageModifier = +damageBonus - +calculatedDamageBonus;
+            console.log("calculatedDamageBonus: " + calculatedDamageBonus);
+            console.log("damageBonus: " + damageBonus);
+            
             tempAttackItem.data.damage.parts.push(
                 [
-                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult) - " + enhancementBonus,
+                    "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult) + " + damageModifier,
                     "[insert damage type here]"
                 ]
             )
