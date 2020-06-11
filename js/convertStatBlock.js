@@ -17,6 +17,7 @@ import enumClassData from "./enumClassData.js"
 import enumBonusTypes from "./enumBonusTypes.js"
 import enumConditions from "./enumConditions.js"
 import enumDamageTypes from "./enumDamageTypes.js"
+import enumAttackDamageTypes from "./enumAttackDamageTypes.js"
 import enumSkills from "./enumSkills.js"
 import enumLanguages from "./enumLanguages.js"
 
@@ -415,9 +416,11 @@ function splitGeneralData(stringGeneralData) {
                 let classLevel = "";
 
                 // Get Classlevel and words in between class an level
-                let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s]*?)(?:[\\s]*?)(\\d+)", "ig");
-
+                let regExClassAndLevel = new RegExp("(" + item + ")" + "(?:[\\s]*?)([\\w\\s()]*?)(?:[\\s]*?)(\\d+)", "ig");
+                
                 classNameAndLevel = splitGeneralData.match(regExClassAndLevel);
+                console.log("regex: " + regExClassAndLevel);
+                console.log("classNameAndLevel: " + classNameAndLevel);
                 
                 if (item.search(/Medium/i) !== -1) {
                     className = "Medium";
@@ -821,19 +824,19 @@ function splitOffenseData(stringOffenseData) {
     
     // REWORKED SPLITTING
     
-    if (splitOffenseData.search(/\bMelee\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im) !== -1) {
         splitMeleeAttacks = splitOffenseData.match(/(?:Melee )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
-    if (splitOffenseData.search(/\bRanged\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im) !== -1) {
         splitRangedAttacks = splitOffenseData.match(/(?:Ranged )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
-    if (splitOffenseData.search(/\bSpecial Attacks\b/i) !== -1) {
+    if (splitOffenseData.search(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im) !== -1) {
         splitSpecialAttacks = splitOffenseData.match(/(?:Special Attacks )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
     
-    if (splitOffenseData.search(/\bSpace\b/i) !== -1) {
+    if (splitOffenseData.search(/\bSpace\b/im) !== -1) {
         splitSpaceAndReach = splitOffenseData.match(/(?:Space )(.*)(?:(?:\n+)(?:(\b.+?\b)|(?:\+)|(?:\d))|$)/im)[1];
     }
         
@@ -1561,6 +1564,8 @@ function mapOffenseData (formattedInput) {
     
     let rangedAttackGroups = formattedInput.rangedAttacks.split(/\bor\b/g);
     
+    console.log("formattedInput.rangedAttacks: " + formattedInput.rangedAttacks);
+    
     setAttackItem(rangedAttackGroups, "rwak");
     
     
@@ -1570,6 +1575,8 @@ function mapOffenseData (formattedInput) {
 
 // Set Attack Items
 function setAttackItem (attackGroups, attackType) {
+    
+    console.log("attackGroups: " + attackGroups);
     
     let attackGroupKeys = Object.keys(attackGroups);
 
@@ -1603,6 +1610,8 @@ function setAttackItem (attackGroups, attackType) {
             let damageDie = 0;
             let damageBonus = 0;
             let damageModifier = 0;
+            let damageType = "undefined";
+            let weaponSpecial = "-";
             let critRange = 20;
             let critMult = 2;
             let attackEffects = "";
@@ -1638,7 +1647,7 @@ function setAttackItem (attackGroups, attackType) {
             }
             // attackName
             if (attack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
-                attackName = attack.match(/(\b[a-zA-Z ]+)(?:[ +0-9(/]+\()/)[1].replace(/^ | $/g, "");
+                attackName = attack.match(/(\b[a-zA-Z ]+)(?:[ +0-9(/]+\()/)[1].replace(/^ | $/g, "").replace(/\bmwk\b /i, "");
                 attackNotes += attackName + " ";
             }
             // attackModifier
@@ -1781,10 +1790,28 @@ function setAttackItem (attackGroups, attackType) {
             console.log("calculatedDamageBonus: " + calculatedDamageBonus);
             console.log("damageBonus: " + damageBonus);
             
+            // Try to find the damageType by checking if the attackName can be found in enumAttackDamageTypes
+            let tempAttackDamageTypeKeys = Object.keys(enumAttackDamageTypes);
+            if (attackName !== "") {
+                let damageTypeRegex = new RegExp("(\\b" + attackName.replace(/\bmwk\b /i,"") + "\\b)", "ig");
+            
+                for (let i=0; i < tempAttackDamageTypeKeys.length; i++) {
+                    if (tempAttackDamageTypeKeys[i].search(damageTypeRegex) !== -1) {
+                        damageType = enumAttackDamageTypes[tempAttackDamageTypeKeys[i]].type;
+                        weaponSpecial = enumAttackDamageTypes[tempAttackDamageTypeKeys[i]].special;
+                        
+                        // If the weapon has special properties, add that to the attackNotes
+                        if (weaponSpecial !== "-") {
+                            attackNotes += " [" + weaponSpecial + "]";
+                        }
+                    }
+                }
+            }
+
             tempAttackItem.data.damage.parts.push(
                 [
                     "sizeRoll(" + numberOfDamageDice + ", " + damageDie + ", 0, @critMult) + " + damageModifier,
-                    "[insert damage type here]"
+                    damageType
                 ]
             )
 
