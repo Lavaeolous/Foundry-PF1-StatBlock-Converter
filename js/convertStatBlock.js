@@ -838,7 +838,7 @@ function splitOffenseData(stringOffenseData) {
     }
         
     formattedInput.meleeAttacks = splitMeleeAttacks.replace(/Melee /i, "");
-    formattedInput.rangedAttacks = splitRangedAttacks;
+    formattedInput.rangedAttacks = splitRangedAttacks.replace(/Ranged /i, "");
     formattedInput.specialAttacks = splitSpecialAttacks;
     console.log("splitMeleeAttacks: " + splitMeleeAttacks);
     console.log("splitRangedAttacks: " + splitRangedAttacks);
@@ -1549,25 +1549,39 @@ function mapOffenseData (formattedInput) {
             dataOutput.data.attributes.speed.fly.maneuverability = formattedInput.speed.fly.maneuverability.toLowerCase();
         }
     }
-        
+    
+    
     // Melee Attack Groups
     // For Attacks that can be made in one Full Attack
     // e.g. 2 Slams +10 (1d8+18), 2 Wings +5 (1d4+18) or Bite +10 (1d8+24 plus Grab)
     // Where the attack groups are seperated by "or"
     let meleeAttackGroups = formattedInput.meleeAttacks.split(/\bor\b/g);
-    let meleeAttackGroupKeys = Object.keys(meleeAttackGroups);
+    
+    setAttackItem(meleeAttackGroups);
+    
+    let rangedAttackGroups = formattedInput.rangedAttacks.split(/\bor\b/g);
+    
+    setAttackItem(rangedAttackGroups);
     
     
+        
     
-    for (let i = 0; i < meleeAttackGroupKeys.length; i++) {
+}
+
+// Set Attack Items
+function setAttackItem (attackGroups) {
+    
+    let meleeAttackGroupKeys = Object.keys(attackGroups);
+
+    for (let i = 0; i < attackGroups.length; i++) {
         
         // Melee Attacks
         
-        let meleeAttacks = meleeAttackGroups[i].replace(/(?<=\)) \band\b /g,",").split(/,/g);
-        let meleeAttackKeys = Object.keys(meleeAttacks);
+        let attacks = attackGroups[i].replace(/(?<=\)) \band\b /g,",").split(/,/g);
+        let attackKeys = Object.keys(attacks);
 
         // Loop over all melee attacks
-        for (let j = 0; j < meleeAttackKeys.length; j++) {
+        for (let j = 0; j < attackKeys.length; j++) {
 
             // DIFFERENT ATTACK FORMATS
             // 2 Slams +10 (1d8+18)                             Multiple attacks
@@ -1580,7 +1594,7 @@ function mapOffenseData (formattedInput) {
             
             // mwk greatsword +16/+11 (3d6+14/19–20)            Iterative Attacks
 
-            let meleeAttack = meleeAttacks[j].replace(/^ | $/, "");
+            let attack = attacks[j].replace(/^ | $/, "");
             let numberOfAttacks = 1;
             let enhancementBonus = 0;
             let attackName = "";
@@ -1596,31 +1610,31 @@ function mapOffenseData (formattedInput) {
             let numberOfIterativeAttacks = 0;
             let attackNotes = "";
 
-            console.log("meleeAttack: " + meleeAttack);
+            console.log("attack: " + attack);
             
             // numberOfAttacks
-            if (meleeAttack.match(/(^\d+)/) !== null) {
-                numberOfAttacks = meleeAttack.match(/(^\d+)/)[1];
+            if (attack.match(/(^\d+)/) !== null) {
+                numberOfAttacks = attack.match(/(^\d+)/)[1];
                 attackNotes += numberOfAttacks + " ";
             }
             // enhancementBonus
-            if (meleeAttack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/) !== null) {
-                enhancementBonus = meleeAttack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/)[1];
+            if (attack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/) !== null) {
+                enhancementBonus = attack.match(/(?:[^\w]\+|^\+)(\d+)(?:\s\w)/)[1];
                 attackNotes += "+" + enhancementBonus + " ";
             }
             // Masterwork
-            if (meleeAttack.match(/\bmwk\b/i) !== null) {
+            if (attack.match(/\bmwk\b/i) !== null) {
                 mwkWeapon = true;
                 attackNotes += "mwk ";
             }
             // attackName
-            if (meleeAttack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
-                attackName = meleeAttack.match(/(\b[a-zA-Z ]+)(?:[ +0-9(/]+\()/)[1].replace(/^ | $/g, "");
+            if (attack.match(/(\b[a-zA-Z]+)(?:[ +0-9(/]+\()/) !== null) {
+                attackName = attack.match(/(\b[a-zA-Z ]+)(?:[ +0-9(/]+\()/)[1].replace(/^ | $/g, "");
                 attackNotes += attackName + " ";
             }
             // attackModifier
-            if (meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
-                attackModifier = meleeAttack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
+            if (attack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/) !== null) {
+                attackModifier = attack.match(/(\+\d+|-\d+)(?:[+0-9/ ]+\()/)[1];
                 attackNotes += attackModifier;
                 // Subtract BAB, STRENGTH-MOD and SIZE-MOD
                 attackModifier = +attackModifier - +formattedInput.bab - +enumSizeModifiers[formattedInput.size] - +getModifier(formattedInput.str.total);
@@ -1632,36 +1646,36 @@ function mapOffenseData (formattedInput) {
                 }                
             }
             // numberOfIterativeAttacks
-            if (meleeAttack.match(/(\/\+\d+)/) !== null) {
-                numberOfIterativeAttacks = meleeAttack.match(/(\/\+\d+)/g).length;
+            if (attack.match(/(\/\+\d+)/) !== null) {
+                numberOfIterativeAttacks = attack.match(/(\/\+\d+)/g).length;
                 for (let i = numberOfIterativeAttacks; i>=1; i--) {
                     attackNotes += "/+" + (attackModifier-(attackModifier-(5*i)));
                 }
             }
             // NumberOfDamageDice and DamageDie
-            if (meleeAttack.match(/\d+d\d+/) !== null) {
-                numberOfDamageDice = meleeAttack.match(/(\d+)d(\d+)/)[1];
-                damageDie = meleeAttack.match(/(\d+)d(\d+)/)[2];
+            if (attack.match(/\d+d\d+/) !== null) {
+                numberOfDamageDice = attack.match(/(\d+)d(\d+)/)[1];
+                damageDie = attack.match(/(\d+)d(\d+)/)[2];
                 attackNotes += " (" + numberOfDamageDice + "d" + damageDie;
             }
             // damageBonus
-            if (meleeAttack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
-                damageBonus = meleeAttack.match(/(?:d\d+\+|\-)(\d+)/)[1] - enhancementBonus;
+            if (attack.match(/(?:d\d+)(\+\d+|\-\d+)/) !== null) {
+                damageBonus = attack.match(/(?:d\d+\+|\-)(\d+)/)[1] - enhancementBonus;
                 attackNotes += "+" + damageBonus;
             }
             // critRange
-            if (meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/) !== null) {
-                critRange = meleeAttack.match(/(?:\/)(\d+)(?:-\d+)/)[1];
+            if (attack.match(/(?:\/)(\d+)(?:-\d+)/) !== null) {
+                critRange = attack.match(/(?:\/)(\d+)(?:-\d+)/)[1];
                 attackNotes += "/" + critRange + "-20";
             }
             // critMult
-            if (meleeAttack.match(/(?:\/x)(\d+)/) !== null) {
-                critMult = meleeAttack.match(/(?:\/x)(\d+)/)[1];
+            if (attack.match(/(?:\/x)(\d+)/) !== null) {
+                critMult = attack.match(/(?:\/x)(\d+)/)[1];
                 attackNotes += "/x" + critMult;
             }
             // attackEffects
-            if (meleeAttack.match(/(?:plus )(.+)(?:\))/) !== null) {
-                attackEffects = meleeAttack.match(/(?:plus )(.+)(?:\))/)[1];
+            if (attack.match(/(?:plus )(.+)(?:\))/) !== null) {
+                attackEffects = attack.match(/(?:plus )(.+)(?:\))/)[1];
                 attackEffects = attackEffects.replace(/(\s+\band\b\s+)/i, ", ");
                 
                 // Create InlineRolls if needed
@@ -1778,8 +1792,6 @@ function mapOffenseData (formattedInput) {
 
         } // End of Melee Attack
     } // End of Melee Attack Group
-    
-        
     
 }
 

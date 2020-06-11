@@ -33,5 +33,5 @@ export default {
   "sort": 100001,
   "flags": {},
   "_id": "",
-  "img": "icons/svg/mystery-man.svg"
+  "img": "systems/pf1/icons/skills/yellow_36.jpg"
 }
