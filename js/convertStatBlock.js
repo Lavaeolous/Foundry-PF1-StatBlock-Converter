@@ -525,10 +525,25 @@ function splitGeneralData(stringGeneralData) {
         
     // Save the found entries into formattedInput
     formattedInput.name = splitName;
-    formattedInput.cr = splitCR;
+    
+    // Save the Challenge Rating as a number
+    if (splitCR.search("/") !== -1) {
+        let nominator = 1;
+        let denominator = splitCR.match(/\/(\d)/)[1];
+        if (denominator == 3) {
+            formattedInput.cr = 0.3375;
+        } else {
+            formattedInput.cr = +nominator / +denominator;
+        }
+    } else {
+        formattedInput.cr = splitCR;
+    }
+    
+    
+    console.log("cr: " + formattedInput.cr);
     
     // For now, use cr as level
-    formattedInput.level = formattedInput.cr;
+    formattedInput.level = splitCR;
             
     formattedInput.xp = splitXP;
     formattedInput.alignment = splitAlignment;
@@ -1098,9 +1113,12 @@ function mapGeneralData(formattedInput) {
     
     // Details
     dataOutput.data.details.level.value = formattedInput.level;
-    dataOutput.data.details.cr = formattedInput.cr;
+    dataOutput.data.details.cr = +formattedInput.cr;
     dataOutput.data.details.xp.value = formattedInput.xp;
     dataOutput.data.details.alignment = formattedInput.alignment;
+    
+    console.log("dataoutput.cr: " + dataOutput.data.details.cr);
+    console.log("dataoutput.level: " + dataOutput.data.details.level.value);
     
     // Changes for Undead Creatures
     let tempHPTotal = 0;
