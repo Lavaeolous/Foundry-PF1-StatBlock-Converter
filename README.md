@@ -20,7 +20,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  **Defensive Data:** AC, Touch and Flat-Footed)<sup>2</sup>, HP<sup>2</sup>, Hit Dice<sup>2</sup>, Saves<sup>2</sup>, Defensive Abilities<sup>1</sup>, Immunities, Resistances, Weaknesses, Damage and Spell Resistance
 *  **Tactics:** Before &amp; During Combat, Morale (Buggy)
 *  **Statistics Data:** Attributes (Str, Dex, Con, Int, Wis, Cha), BAB, CMD and CMB (context notes WIP), Feats<sup>4</sup>, Skills<sup>2</sup> (context notes WIP), Languages, Special Qualities
-*  **Offense Data:** Speed(s), Melee Attacks (Weapon, Natural, Swarm) [Rest is WIP]
+*  **Offense Data:** Speed(s), Melee Attacks (Weapon, Natural, Swarm), Ranged Attacks, Damage Types [Rest is WIP]
 
 
 [1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
@@ -46,6 +46,10 @@ Primer#2220 on Discord
 
 
 **Change Log**
+
+2020_06_11:
+*  Fixes to Attack Parsing
+*  Added Support for Ranged Attacks Parsing
 
 2020_06_10:
 *  First Draft of Melee Attack Parsing done: Weapon and Natural Attacks will be parsed and converted into separate Attacks
