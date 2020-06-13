@@ -1,6 +1,16 @@
 # Foundry-PF1-StatBlock-Converter
 Tool to parse Creature StatBlocks for the Pathfinder 1 GameSystem on FoundryVTT
 
+# FoundryVTT Module
+**You can now use this converter directly in foundry!**
+Visit [SBC Module](https://github.com/Lavaeolous/PF1-StatBlock-Converter-Module) for installation instructions.
+
+For archive purposes this repository will not be deleted, but the development of new features will happen for the module!
+
+_____________________
+
+
+# Web-Version
 Link: https://lavaeolous.github.io/Foundry-PF1-StatBlock-Converter/index.html
 
 This Tool takes a Statblock as found on the srd, aon or in pdfs per copy and paste and tries to convert that to a usable json. The generated JSON can, if everything works as intended, be imported in Foundry. As this is a first draft, i guess most of the time it will not work :slight_smile: But maybe it's useful for some of you.
@@ -20,7 +30,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 *  **Defensive Data:** AC, Touch and Flat-Footed)<sup>2</sup>, HP<sup>2</sup>, Hit Dice<sup>2</sup>, Saves<sup>2</sup>, Defensive Abilities<sup>1</sup>, Immunities, Resistances, Weaknesses, Damage and Spell Resistance
 *  **Tactics:** Before &amp; During Combat, Morale (Buggy)
 *  **Statistics Data:** Attributes (Str, Dex, Con, Int, Wis, Cha), BAB, CMD and CMB (context notes WIP), Feats<sup>4</sup>, Skills<sup>2</sup> (context notes WIP), Languages, Special Qualities
-*  **Offense Data:** Speed(s), Melee Attacks (Weapon, Natural, Swarm) [Rest is WIP]
+*  **Offense Data:** Speed(s), Melee Attacks (Weapon, Natural, Swarm), Ranged Attacks, Damage Types [Rest is WIP]
 
 
 [1]: A new Item is created for these Values including the needed calculations for Hit Dice, HP, etc.  
@@ -37,7 +47,7 @@ Currently, the tool only parses the following data and generates equivalent Foun
 
 **To Do:**
 *  **Bug Fixing**
-*  Parse Attacks, Spells, Ecology, Description (only for SRD-Content), Gear & Treasure, Special Abilities
+*  Parse Spells, Ecology, Description (only for SRD-Content), Gear & Treasure, Special Abilities
 *  Give usable Feedback in the status bar (for now some comments are visible in the console)
 *  Sometime in the future make a module out of it, maybe
 
@@ -46,6 +56,13 @@ Primer#2220 on Discord
 
 
 **Change Log**
+
+2020_06_13:
+*  Build a module out of this converter! [SBC Module](https://github.com/Lavaeolous/PF1-StatBlock-Converter-Module) 
+
+2020_06_11:
+*  Fixes to Attack Parsing
+*  Added Support for Ranged Attacks Parsing
 
 2020_06_10:
 *  First Draft of Melee Attack Parsing done: Weapon and Natural Attacks will be parsed and converted into separate Attacks
